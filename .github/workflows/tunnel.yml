@@ -15,6 +15,8 @@
 name: CI
 
 on:
+  workflow_dispatch:
+  
   push:
     branches: 
       - '*'
@@ -45,8 +47,7 @@ jobs:
           rm ../tunnel.zip
           zip -r ../tunnel.zip *
         
-      - name: Commit and push
-      - name: Add & Commit
+      - name: Push new zip file to repo
         uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
         with:
           fetch: true
