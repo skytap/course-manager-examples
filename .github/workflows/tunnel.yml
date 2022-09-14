@@ -16,12 +16,12 @@ name: Build tunnel script
 
 on:
   workflow_dispatch:
-  
+
   push:
-    branches: 
-      - '*'
+    branches:
+      - "**"
     paths:
-      - 'scripts/tunnel/**'
+      - "scripts/tunnel/**"
 
 jobs:
   build:
@@ -31,20 +31,20 @@ jobs:
         uses: actions/setup-node@v3.4.1
         with:
           node-version: 16.x
-      
+
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Install node.js dependencies
         working-directory: ./scripts/tunnel
         run: npm install
-      
+
       - name: Create zip file
         working-directory: ./scripts/tunnel
         run: |
           rm -f ../tunnel.zip
           zip -r ../tunnel.zip *
-        
+
       - name: Push new zip file to repo
         uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
         with:
