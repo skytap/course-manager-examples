@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: CI
+name: Build tunnel script
 
 on:
   workflow_dispatch:
@@ -43,7 +43,7 @@ jobs:
       - name: Create zip file
         working-directory: ./scripts/tunnel
         run: |
-          rm ../tunnel.zip
+          rm -f ../tunnel.zip
           zip -r ../tunnel.zip *
         
       - name: Push new zip file to repo
