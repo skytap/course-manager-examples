@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: 
+      - '*'
+    paths:
+      - 'scripts/tunnel/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup node.js environment
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: 16.x
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install node.js dependencies
+        working-directory: ./scripts/tunnel
+        run: |
+          cd scripts/tunnel
+          npm install
+      
+      - name: Create zip file
+        working-directory: ./scripts/tunnel
+        run: |
+          rm ../tunnel.zip
+          zip -r ../tunnel.zip *
+        
+      - name: Commit and push
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
+        with:
+          fetch: true
+          add: scripts/tunnel.zip
+          message: Updating zip file
+          push: true
