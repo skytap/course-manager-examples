@@ -22,6 +22,7 @@ on:
       - '*'
     paths:
       - 'scripts/tunnel/**'
+      - '.github/workflows/tunnel.yml'
 
 jobs:
   build:
@@ -37,9 +38,7 @@ jobs:
       
       - name: Install node.js dependencies
         working-directory: ./scripts/tunnel
-        run: |
-          cd scripts/tunnel
-          npm install
+        run: npm install
       
       - name: Create zip file
         working-directory: ./scripts/tunnel
