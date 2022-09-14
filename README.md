@@ -2,10 +2,6 @@
 # Course Manager Code Examples
 This repository contains example scripts for use with Course Manager by Skytap. If you are not already a Skytap customer and would like to learn more about our product, you can [find more information here](https://www.skytap.com/skytap-virtual-it-labs/)
 
-## Scripts
-- [tunnel](scripts/tunnel/)
-  Connects network in Course Manager lab environment to a shared network in the same Skytap region
-
 ## License 
 Copyright 2022 Skytap Inc.
 
