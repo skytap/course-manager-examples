@@ -19,14 +19,14 @@ To identify the target environment, the script uses a [tag set on the source tem
   - Add the new service account to the project containing your Course Manager lab environments (usually called 'Course Manager Resources') with role 'editor'
   - Log in as the new user and create an API token. Note the username and token for use later
   
-### Prepare your shared environments (one per region)
+### Prepare the shared environments (one per region)
 
   - Ensure network is visible to other environments
   - Enable NAT for connected networks on the target environment
   - Ensure that no overlap will occur between the source network, target network, and NAT range
   - More information about network routing between environments [available here](https://help.skytap.com/connecting-multiple-environments.html)
 
-### Prepare your lab templates
+### Prepare the lab templates
 
   - Import the shared Script Host v9 template to your account. If you do not yet have access to this template, ask your Skytap relationship manager for help.
   - Create a new environment from this template
