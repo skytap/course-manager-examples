@@ -41,8 +41,8 @@ jobs:
       - name: Create zip file
         working-directory: ./scripts/${{ inputs.script_name }}
         run: |
-          rm -f ../${{ inputs.script_name }}
-          zip -r ../${{ inputs.script_name }} *
+          rm -f ../${{ inputs.script_name }}.zip
+          zip -r ../${{ inputs.script_name }}.zip *
 
       - name: Push new zip file to repo
         uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
