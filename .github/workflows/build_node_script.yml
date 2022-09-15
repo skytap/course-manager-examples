@@ -1,0 +1,50 @@
+# Copyright 2022 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Build node script
+
+on:
+  workflow_call:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup node.js environment
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: 16.x
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install node.js dependencies
+        working-directory: ./scripts/tunnel
+        run: npm install
+
+      - name: Create zip file
+        working-directory: ./scripts/tunnel
+        run: |
+          rm -f ../tunnel.zip
+          zip -r ../tunnel.zip *
+
+      - name: Push new zip file to repo
+        uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
+        with:
+          fetch: true
+          default_author: github_actions
+          add: scripts/tunnel.zip
+          message: Updating zip file
+          push: true
