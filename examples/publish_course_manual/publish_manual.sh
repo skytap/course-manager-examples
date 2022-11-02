@@ -7,6 +7,17 @@
 #       VERSION: 1.0
 #       CREATED: 11/01/2022
 ###################################################################
+#    Copyright 2022 Skytap Inc.
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#        http://www.apache.org/licenses/LICENSE-2.0
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+###################################################################
 
 #### Dependencies ####
 # jq - Command-line JSON processor (https://stedolan.github.io/jq/download/)
@@ -16,12 +27,12 @@
 
 #### Variables ####
 readonly HTML_FILE='./ABC_training_course_manual.html'
-readonly COURSE_ID='25'
+readonly COURSE_ID="REPLACE WITH COURSE_ID"
 readonly ATTACHMENT_DIR='./files'
-readonly COURSE_MANAGER_SUBDOMAIN="jessica-uat"
+readonly COURSE_MANAGER_SUBDOMAIN="REPLACE WITH COURSE_MANAGER_SUBDOMAIN"
 readonly COURSE_MANAGER_HOST="skytap-portal.com"
-readonly API_TOKEN="d4fbb24a-7351-4a1f-912f-a96a7af68b7c"
-readonly API_SECRET="e2774e553ef8efdec4c54000f768329eec231ef7901ff70f8c5e2e720b11dd0f"
+readonly API_TOKEN="REPLACE WITH API_TOKEN"
+readonly API_SECRET="REPLACE WITH API_SECRET"
 readonly AUTHORIZATION_BASIC=$(echo -n "$API_TOKEN:$API_SECRET" | base64)
 readonly SECONDS_BETWEEN_POLLS=5
 readonly COURSE_MANUAL_API_URL="https://$COURSE_MANAGER_SUBDOMAIN.$COURSE_MANAGER_HOST/api/v1/courses/$COURSE_ID/course_manual/versions/draft"
