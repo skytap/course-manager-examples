@@ -24,6 +24,8 @@
 # md5sum - Compute and check MD5 message digest. [Could use md5 as a replacement] (https://man7.org/linux/man-pages/man1/md5sum.1.html)
 # curl - A command line tool for getting or sending data using URL syntax (https://curl.se/)
 # Other standard functions, though replacements could be found: (echo, base64, awk, xxd, file, basename, wc)
+for app in jq md5sum curl echo base64 awk xxd file basename wc; do command -v "${app}" &>/dev/null || not_available+=("${app}"); done
+(( ${#not_available[@]} > 0 )) && echo "Please install missing dependencies: ${not_available[*]}" 1>&2 && exit 1
 
 #### Variables ####
 readonly BASE64=`((echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64`
