@@ -26,6 +26,7 @@
 # Other standard functions, though replacements could be found: (echo, base64, awk, xxd, file, basename, wc)
 
 #### Variables ####
+readonly BASE64=`((echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64`
 readonly HTML_FILE='./ABC_training_course_manual.html'
 readonly COURSE_ID="REPLACE WITH COURSE_ID"
 readonly ATTACHMENT_DIR='./files'
@@ -33,7 +34,7 @@ readonly COURSE_MANAGER_SUBDOMAIN="REPLACE WITH COURSE_MANAGER_SUBDOMAIN"
 readonly COURSE_MANAGER_HOST="skytap-portal.com"
 readonly API_TOKEN="REPLACE WITH API_TOKEN"
 readonly API_SECRET="REPLACE WITH API_SECRET"
-readonly AUTHORIZATION_BASIC=$(echo -n "$API_TOKEN:$API_SECRET" | base64)
+readonly AUTHORIZATION_BASIC=$(echo -n "$API_TOKEN:$API_SECRET" | $BASE64)
 readonly SECONDS_BETWEEN_POLLS=5
 readonly COURSE_MANUAL_API_URL="https://$COURSE_MANAGER_SUBDOMAIN.$COURSE_MANAGER_HOST/api/v1/courses/$COURSE_ID/course_manual/versions/draft"
 
@@ -113,7 +114,7 @@ GetManualDraft() {
 
 # Calculates the MD5 checksum for the attachment, in base64.
 MD5inBase64 () {
-  md5sum "$1" | awk '{print $1}' | xxd -r -p | base64
+  md5sum "$1" | awk '{print $1}' | xxd -r -p | $BASE64
 }
 
 # Generates the attachment info for passed filepath.
@@ -184,7 +185,7 @@ UploadAttachments () {
   for EncodedAttachment in $(echo "$Manual" | jq -r 'getpath(["attachment_upload_data"])[] | @base64');
   do
     Attachment() {
-      echo ${EncodedAttachment} | base64 --decode | jq -r ${1}
+      echo ${EncodedAttachment} | $BASE64 --decode | jq -r ${1}
     }
     file_path=$(Attachment '.file_path')
     uploadURL=$(Attachment '.blob_upload_url')
