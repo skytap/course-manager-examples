@@ -28,7 +28,7 @@ for app in jq md5sum curl echo base64 awk xxd file basename wc; do command -v "$
 (( ${#not_available[@]} > 0 )) && echo "Please install missing dependencies: ${not_available[*]}" 1>&2 && exit 1
 
 #### Variables ####
-readonly BASE64=`((echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64`
+readonly BASE64=$( ( (echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64)
 readonly HTML_FILE='./ABC_training_course_manual.html'
 readonly COURSE_ID="REPLACE WITH COURSE_ID"
 readonly ATTACHMENT_DIR='./files'
