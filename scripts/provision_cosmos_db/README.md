@@ -6,9 +6,6 @@ This script uses the Azure CLI to provision a database in Azure CosmosDB and the
 
 ## Getting started
 
-### Configure the Custom Data fields
-
-
 ### Prepare the Lab Template
 
   - Import the shared Script Host template to your account.
