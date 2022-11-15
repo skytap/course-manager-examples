@@ -1,0 +1,4 @@
+image_name: mcr.microsoft.com/azure-cli
+command: /bin/bash
+args: run
+
