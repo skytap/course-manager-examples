@@ -29,7 +29,6 @@ for app in jq md5sum curl echo base64 awk xxd file basename wc; do command -v "$
 
 #### Variables ####
 readonly BASE64=$( ( (echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64)
-
 readonly HTML_FILE='./ABC_training_course_manual.html'
 readonly COURSE_ID="REPLACE WITH COURSE_ID"
 readonly ATTACHMENT_DIR='./files'
@@ -37,7 +36,6 @@ readonly COURSE_MANAGER_SUBDOMAIN="REPLACE WITH COURSE_MANAGER_SUBDOMAIN"
 readonly COURSE_MANAGER_HOST="skytap-portal.com"
 readonly API_TOKEN="REPLACE WITH API_TOKEN"
 readonly API_SECRET="REPLACE WITH API_SECRET"
-
 readonly AUTHORIZATION_BASIC=$(echo -n "$API_TOKEN:$API_SECRET" | $BASE64)
 readonly SECONDS_BETWEEN_POLLS=5
 readonly COURSE_MANUAL_API_URL="https://$COURSE_MANAGER_SUBDOMAIN.$COURSE_MANAGER_HOST/api/v1/courses/$COURSE_ID/course_manual/versions/draft"
