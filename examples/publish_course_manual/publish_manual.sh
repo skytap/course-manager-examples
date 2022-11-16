@@ -29,6 +29,7 @@ for app in jq md5sum curl echo base64 awk xxd file basename wc; do command -v "$
 
 #### Variables ####
 readonly BASE64=$( ( (echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64)
+
 readonly HTML_FILE='./ABC_training_course_manual.html'
 readonly COURSE_ID="REPLACE WITH COURSE_ID"
 readonly ATTACHMENT_DIR='./files'
@@ -36,6 +37,7 @@ readonly COURSE_MANAGER_SUBDOMAIN="REPLACE WITH COURSE_MANAGER_SUBDOMAIN"
 readonly COURSE_MANAGER_HOST="skytap-portal.com"
 readonly API_TOKEN="REPLACE WITH API_TOKEN"
 readonly API_SECRET="REPLACE WITH API_SECRET"
+
 readonly AUTHORIZATION_BASIC=$(echo -n "$API_TOKEN:$API_SECRET" | $BASE64)
 readonly SECONDS_BETWEEN_POLLS=5
 readonly COURSE_MANUAL_API_URL="https://$COURSE_MANAGER_SUBDOMAIN.$COURSE_MANAGER_HOST/api/v1/courses/$COURSE_ID/course_manual/versions/draft"
@@ -44,7 +46,7 @@ readonly COURSE_MANUAL_API_URL="https://$COURSE_MANAGER_SUBDOMAIN.$COURSE_MANAGE
 
 # Tests the Course Manager API to see if it is working.
 TestAPI () {
-  HTTPCode=$(curl -s -o /dev/null -w '%{http_code}' -L -X GET $COURSE_MANUAL_API_URL \
+  HTTPCode=$(curl -k -s -o /dev/null -w '%{http_code}' -L -X GET $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json")
   if [[ $HTTPCode != "200" && $HTTPCode != "204" ]]; then
@@ -68,7 +70,7 @@ TestAPI () {
 # Deletes the existing Course Manual draft.
 DeleteManualDraft() {
   echo "Deleting the manual draft if any exists."
-  HTTPCode=$(curl -s -o /dev/null -w '%{http_code}' -L -X DELETE $COURSE_MANUAL_API_URL \
+  HTTPCode=$(curl -k -s -o /dev/null -w '%{http_code}' -L -X DELETE $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json")
   if [[ $HTTPCode != "202" ]]; then
@@ -82,7 +84,7 @@ DeleteManualDraft() {
 # Second argument is the descriptive action that the update is performing/triggering.
 UpdateManualDraft() {
   echo "Updating the manual draft. ($2)"
-  HTTPCode=$(curl -s -o /dev/null -w '%{http_code}' -L -X PUT $COURSE_MANUAL_API_URL \
+  HTTPCode=$(curl -k -s -o /dev/null -w '%{http_code}' -L -X PUT $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json" \
                   --header "Accept: application/json" \
@@ -103,7 +105,7 @@ UpdateManualDraft() {
 # Stores json representation of the manual in $manual
 GetManualDraft() {
   local response
-  response=$(curl -s -w "\n%{http_code}" -L -X GET $COURSE_MANUAL_API_URL \
+  response=$(curl -k -s -w "\n%{http_code}" -L -X GET $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json")
   Manual=$(head -n 1 <<< "$response")  # get all but the last line
@@ -154,7 +156,7 @@ GenerateAttachmentUploadData () {
 
 # Takes the HTML content from file and makes it ready for the API. JSON escaping and removing newlines.
 LoadContentFromFile () {
-  Content=$(sed 's/\"/\\\"/g' "$HTML_FILE" | tr -d '\n')
+  Content=$(cat $HTML_FILE | jq -Rsa .)
 }
 
 # Updates $CurrentStatus with the current state of the manual.
@@ -192,7 +194,7 @@ UploadAttachments () {
     file_path=$(Attachment '.file_path')
     uploadURL=$(Attachment '.blob_upload_url')
     if [ "${uploadURL}" != "null" ]; then
-      response=$(curl -X PUT -T "$file_path" "$uploadURL" \
+      response=$(curl -k -X PUT -T "$file_path" "$uploadURL" \
                        --header "Content-Length: $(wc -c "$file_path" | awk '{print $1}')" \
                        --header "Content-Type: $(file -b --mime-type "$file_path")" \
                        --header "Content-MD5: $(MD5inBase64 "$file_path")" \
@@ -209,7 +211,7 @@ DeleteManualDraft
 LoadContentFromFile
 GenerateAttachmentUploadData
 if [ $Attachments ]; then
-  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": \"$Content\", \"attachment_upload_data\": $AttachmentUploadData }" "Processing content"
+  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": $Content, \"attachment_upload_data\": $AttachmentUploadData }" "Processing content"
   PollForState "needs_attachments" "draft"
 
   ### Upload attachments
@@ -217,7 +219,7 @@ if [ $Attachments ]; then
   UpdateManualDraft "{\"status\": \"ready_to_process\"}" "Processing attachments"
   PollForState "ready_to_publish" "needs_attachments"
 else
-  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": \"$Content\"}"
+  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": $Content}"
   PollForState 'ready_to_publish' 'draft'
 fi
 
