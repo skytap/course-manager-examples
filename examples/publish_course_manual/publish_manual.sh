@@ -154,7 +154,7 @@ GenerateAttachmentUploadData () {
 
 # Takes the HTML content from file and makes it ready for the API. JSON escaping and removing newlines.
 LoadContentFromFile () {
-  Content=$(sed 's/\"/\\\"/g' "$HTML_FILE" | tr -d '\n')
+  Content=$(cat $HTML_FILE | jq -Rsa .)
 }
 
 # Updates $CurrentStatus with the current state of the manual.
@@ -209,7 +209,7 @@ DeleteManualDraft
 LoadContentFromFile
 GenerateAttachmentUploadData
 if [ $Attachments ]; then
-  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": \"$Content\", \"attachment_upload_data\": $AttachmentUploadData }" "Processing content"
+  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": $Content, \"attachment_upload_data\": $AttachmentUploadData }" "Processing content"
   PollForState "needs_attachments" "draft"
 
   ### Upload attachments
@@ -217,7 +217,7 @@ if [ $Attachments ]; then
   UpdateManualDraft "{\"status\": \"ready_to_process\"}" "Processing attachments"
   PollForState "ready_to_publish" "needs_attachments"
 else
-  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": \"$Content\"}"
+  UpdateManualDraft "{\"status\": \"content_complete\", \"content\": $Content}"
   PollForState 'ready_to_publish' 'draft'
 fi
 
