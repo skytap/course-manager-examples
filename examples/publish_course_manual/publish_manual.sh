@@ -46,7 +46,7 @@ readonly COURSE_MANUAL_API_URL="https://$COURSE_MANAGER_SUBDOMAIN.$COURSE_MANAGE
 
 # Tests the Course Manager API to see if it is working.
 TestAPI () {
-  HTTPCode=$(curl -k -s -o /dev/null -w '%{http_code}' -L -X GET $COURSE_MANUAL_API_URL \
+  HTTPCode=$(curl -s -o /dev/null -w '%{http_code}' -L -X GET $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json")
   if [[ $HTTPCode != "200" && $HTTPCode != "204" ]]; then
@@ -70,7 +70,7 @@ TestAPI () {
 # Deletes the existing Course Manual draft.
 DeleteManualDraft() {
   echo "Deleting the manual draft if any exists."
-  HTTPCode=$(curl -k -s -o /dev/null -w '%{http_code}' -L -X DELETE $COURSE_MANUAL_API_URL \
+  HTTPCode=$(curl -s -o /dev/null -w '%{http_code}' -L -X DELETE $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json")
   if [[ $HTTPCode != "202" ]]; then
@@ -84,7 +84,7 @@ DeleteManualDraft() {
 # Second argument is the descriptive action that the update is performing/triggering.
 UpdateManualDraft() {
   echo "Updating the manual draft. ($2)"
-  HTTPCode=$(curl -k -s -o /dev/null -w '%{http_code}' -L -X PUT $COURSE_MANUAL_API_URL \
+  HTTPCode=$(curl -s -o /dev/null -w '%{http_code}' -L -X PUT $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json" \
                   --header "Accept: application/json" \
@@ -105,7 +105,7 @@ UpdateManualDraft() {
 # Stores json representation of the manual in $manual
 GetManualDraft() {
   local response
-  response=$(curl -k -s -w "\n%{http_code}" -L -X GET $COURSE_MANUAL_API_URL \
+  response=$(curl -s -w "\n%{http_code}" -L -X GET $COURSE_MANUAL_API_URL \
                   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
                   --header "Content-Type: application/json")
   Manual=$(head -n 1 <<< "$response")  # get all but the last line
@@ -194,7 +194,7 @@ UploadAttachments () {
     file_path=$(Attachment '.file_path')
     uploadURL=$(Attachment '.blob_upload_url')
     if [ "${uploadURL}" != "null" ]; then
-      response=$(curl -k -X PUT -T "$file_path" "$uploadURL" \
+      response=$(curl -X PUT -T "$file_path" "$uploadURL" \
                        --header "Content-Length: $(wc -c "$file_path" | awk '{print $1}')" \
                        --header "Content-Type: $(file -b --mime-type "$file_path")" \
                        --header "Content-MD5: $(MD5inBase64 "$file_path")" \
