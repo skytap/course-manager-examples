@@ -17,7 +17,7 @@ metadata=$(curl -s "http://169.254.169.254/skytap")
 control_url=$(echo $metadata | jq -r ".user_data" | jq -r ".control_url")
 broadcast_url=$(echo $metadata | jq -r ".configuration_user_data" | jq -r ".lab_access_url")/learning_console/broadcast
 participant_id=$(curl -s "$control_url" | jq -r ".id")
-db_id="ToDoList-$participant_id-$(openssl rand -hex 4)"
+db_id="ToDoList-$participant_id-$RANDOM"
 az login --service-principal -u $az_username -p $az_password --tenant $az_tenant --output none
 
 db_url=$(az cosmosdb show -n $db_account_name -g $az_rg -o tsv --query "documentEndpoint")
