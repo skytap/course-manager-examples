@@ -29,4 +29,4 @@ message = <<~EOF
   They have completed #{control_data["course_manual_readership"]["last_completed_page"]} out of #{control_data["course_manual_version"]["page_count"]}
 EOF
 
-RestClient.post(WEBHOOK_ENDPOINT, message, content_type: :json)
+RestClient.post(WEBHOOK_ENDPOINT, message)
