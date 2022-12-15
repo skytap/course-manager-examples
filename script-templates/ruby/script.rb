@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative "lib/metadata"
+require_relative "lib/skytap_metadata"
+require_relative "lib/lab_control"
 
-puts "Welcome to #{Metadata.new.control_data['title']}!"
+skytap_metadata = SkytapMetadata.get
+lab_control = LabControl.get
+
+puts "Welcome to #{lab_control.control_data['title']}!"
+puts "This Skytap environment is #{skytap_metadata.metadata['configuration_url']}"
