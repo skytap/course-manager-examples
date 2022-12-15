@@ -1,0 +1,39 @@
+{
+    "id":360,
+    "consumed_at":null,
+    "control_url":"https://example.skytap-portal.com/lab_access/self_learner/360/9999999999b1213c9de6e3b0dd9e6b8ab2ffdf85704a34b1c243019b34c38248/control/310/8e7c2b59a5e3305ba590b6b4c278e5a90c97262493c6e24e3c74c5f17344dd35",
+    "course_attachments":[
+       {
+          "id":621,
+          "byte_size":1107,
+          "content_type":"application/zip",
+          "filename":"hello_world.zip",
+          "type":"scripts",
+          "url":"https://example.skytap-portal.com/rails/active_storage/blobs/redirect/dJfhhsEfdsMiOnsibWVzc2FnZSI6IkJBaHBBbWNCIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--c51e6580814e126bb66b9aaf123860e07557a7a1/hello_world.zip"
+       }
+    ],
+    "course_id":69,
+    "course_identifier":null,
+    "custom_content":"",
+    "iframe_url":"https://example.skytap-portal.com/self_learner_iframe/360/9999999999b1213c9de6e3b0dd9e6b8ab2ffdf85704a34b1c243019b34c38248",
+    "integration_data":{
+       "AcmeDataProUsername":"user1",
+       "AcmeDataProPassword":"password1",
+       "cosmos_url":"",
+       "cosmos_name":"",
+       "cosmos_key":""
+    },
+    "remaining_runtime_in_seconds":15383,
+    "request_time":"2022-12-14T02:12:52Z",
+    "tags":[
+       {
+          "id":4,
+          "name":"Lab Runtime 5 hours",
+          "public":true
+       }
+    ],
+    "template":"Acme DataCloud Template (US-East-2)",
+    "title":"Intro to Acme DataCloud",
+    "user_access_url":"https://acme-training-new.skytap-portal.com/lab_access/self_learner/360/9999999999b1213c9de6e3b0dd9e6b8ab2ffdf85704a34b1c243019b34c38248",
+    "user_identifier":"user001@skytap.com"
+ }
