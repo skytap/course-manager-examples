@@ -15,4 +15,3 @@
 require_relative "lib/metadata"
 
 puts "Welcome to #{Metadata.new.control_data['title']}!"
-puts "The skytap environment is #{Metadata.new.metadata['configuration_url']}!"
