@@ -37,7 +37,7 @@ metadata.control_data                           # => returns Course Manager lab 
 metadata.update_control_data(hash_of_changes)   # => modifies Course Manager lab metadata and state
 ```
 
-One challenge in developing against this data is these endpoints are available only to scripts running in a Skytap environment -- but many customers may prefer to develop their scripts locally. To aid with this, the Metadata class can transparently return "stubbed" data when your script is run outside of Skytap. The stub data returned is defined in the lib/stub_data directory. Feel free to modify the stub data if you wish.
+One challenge in developing against this data is these endpoints are available only to scripts running in a Skytap environment -- but many customers may prefer to develop their scripts locally. To aid with this, the Metadata class can transparently return "stubbed" data when your script is run outside of Skytap. The stub data returned is defined in the `lib/stub_data` directory. Feel free to modify the stub data if you wish.
 
 ## License
 
