@@ -19,25 +19,76 @@ In addition, building a script from this template requires Docker Desktop, Podma
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
-The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
+The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab. This template provides `SkytapMetadata` and `LabControl` classes, which provide lightweight interfaces to these two service endpoints that can be used from your script code.
 
-The Metadata class, included in your `script.rb` by default, provides a lightweight interface to access both of these services. Simply instantiate a Metadata object:
+These classes make it easier to consume the Metadata and Control Endpoint services. In addition, they make it easier to develop your scripts locally. A chellenge in developing scripts that consume these services is that they are only available from within a Skytap environment. To help with this, the `SkytapMetadata` and `LabControl` classes transparently return "stubbed" data when your script is running outside of Skytap. The stub data is defined in `lib/stub_data` and can be customized as appropriate.
+
+### SkytapMetadata Interface
+
+The `SkytapMetadata` class is required in your `script.rb` by default:
 
 ```
-metadata = Metadata.new
+require_relative "lib/skytap_metadata"
 ```
 
-Then, you can call methods on the object as follows:
+`SkytapMetadata` is a singleton. To use it, get a reference to its instance:
+
+```
+metadata = SkytapMetadata.get
+```
+
+Then, you can call methods as follows:
 
 ```
 metadata.metadata                               # => returns Skytap metadata as a hash
 metadata.user_data                              # => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
 metadata.configuration_user_data                # => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
-metadata.control_data                           # => returns Course Manager lab metadata as a hash
-metadata.update_control_data(hash_of_changes)   # => modifies Course Manager lab metadata and state
+metadata.control_url                            # => returns the control endpoint URL
 ```
 
-One challenge in developing against this data is these endpoints are available only to scripts running in a Skytap environment -- but many customers may prefer to develop their scripts locally. To aid with this, the Metadata class can transparently return "stubbed" data when your script is run outside of Skytap. The stub data returned is defined in the `lib/stub_data` directory. Feel free to modify the stub data if you wish.
+### LabControl Interface
+The `LabControl` class is required in your `script.rb` by default:
+
+```
+require_relative "lib/lab_control"
+```
+
+`LabControl` is a singleton. To use it, get a reference to its instance:
+
+```
+control = LabControl.get
+```
+
+Then, you can call methods as follows:
+
+```
+control.control_data                            # => returns control metadata as a hash
+control.update_control_data(data)               # => updates control data (see below)
+control.refresh_content_pane                    # => requests any open content panes for the lab to refresh
+control.refresh_lab                             # => requests any open learning consoles for the lab to refresh their Skytap environment view
+```
+
+#### Updating control data
+
+The `update_control_data` method can be used to achieve the following:
+
+**Change runstate:**
+```
+control.update_control_data(runstate: "running")    # => or "suspended", "halted", "stopped"
+```
+
+**Update custom data:**
+```
+control.update_control_data(integration_data: {
+  acme_username: "user001",
+  acme_password: "password123!"
+})
+```
+
+Please note:
+* Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
+* Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data and then merge your changes in
+
 
 ## License
 
