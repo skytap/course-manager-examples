@@ -21,10 +21,6 @@ In addition, building a script from this template requires Docker Desktop, Podma
 
 The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab. This template provides `SkytapMetadata` and `LabControl` classes, which provide lightweight interfaces to these two service endpoints that can be used from your script code. These classes make it easier to consume the Metadata and Control Endpoint services. In addition, they make it easier to develop your scripts locally.
 
-## Metadata Stub Service
-
-A chellenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `utils/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, it is located in the `lib/stub_data` directory.
-
 ### SkytapMetadata Interface
 
 The `SkytapMetadata` class is required in your `script.rb` by default:
@@ -86,8 +82,11 @@ control.update_control_data(integration_data: { acme_username: "user001", acme_p
 
 Please note:
 * Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
-* Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data and then merge your changes in
+* Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
 
+### Metadata Stub Service
+
+A chellenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `utils/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, it is located in the `lib/stub_data` directory.
 
 ## License
 
