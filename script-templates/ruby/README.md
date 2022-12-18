@@ -74,17 +74,14 @@ control.refresh_lab                             # => requests any open learning 
 
 The `update_control_data` method can be used to achieve the following:
 
-**Change runstate:**
+Change runstate:
 ```
-control.update_control_data(runstate: "running")    # => or "suspended", "halted", "stopped"
+control.update_control_data(runstate: "running")    # or "suspended", "halted", "stopped"
 ```
 
-**Update custom data:**
+Update custom data:
 ```
-control.update_control_data(integration_data: {
-  acme_username: "user001",
-  acme_password: "password123!"
-})
+control.update_control_data(integration_data: { acme_username: "user001", acme_password: "password123!" })
 ```
 
 Please note:
