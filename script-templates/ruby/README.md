@@ -19,9 +19,11 @@ In addition, building a script from this template requires Docker Desktop, Podma
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
-The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab. This template provides `SkytapMetadata` and `LabControl` classes, which provide lightweight interfaces to these two service endpoints that can be used from your script code.
+The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab. This template provides `SkytapMetadata` and `LabControl` classes, which provide lightweight interfaces to these two service endpoints that can be used from your script code. These classes make it easier to consume the Metadata and Control Endpoint services. In addition, they make it easier to develop your scripts locally.
 
-These classes make it easier to consume the Metadata and Control Endpoint services. In addition, they make it easier to develop your scripts locally. A chellenge in developing scripts that consume these services is that they are only available from within a Skytap environment. To help with this, the `SkytapMetadata` and `LabControl` classes transparently return "stubbed" data when your script is running outside of Skytap. The stub data is defined in `lib/stub_data` and can be customized as appropriate.
+## Metadata Stub Service
+
+A chellenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `utils/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, it is located in the `lib/stub_data` directory.
 
 ### SkytapMetadata Interface
 

@@ -15,9 +15,11 @@
 require "json"
 require_relative "api_helper"
 
-class BaseSkytapMetadata
-  def initialize(metadata_url)
-    @metadata_url = metadata_url
+class SkytapMetadata
+  METADATA_URL = "http://gw/skytap"
+
+  def self.get
+    @skytap_metadata ||= new(METADATA_URL)
   end
 
   def metadata
@@ -36,50 +38,13 @@ class BaseSkytapMetadata
     user_data["control_url"]
   end
 
-  def stubbed?
-    false
-  end
-
   private
+
+  def initialize(metadata_url)
+    @metadata_url = metadata_url
+  end
 
   def metadata_json
     @metadata_json ||= APIHelper.rest_call(@metadata_url, "get")
-  end
-end
-
-class StubbedSkytapMetadata < BaseSkytapMetadata
-  STUB_METADATA_FILE_PATH = File.join(File.dirname(__FILE__), "stub_data/metadata_sample.json")
-
-  def initialize; end
-
-  def stubbed?
-    true
-  end
-
-  private
-
-  def metadata_json
-    @metadata_json ||= File.read(STUB_METADATA_FILE_PATH)
-  end
-end
-
-
-class SkytapMetadata
-  METADATA_URL = "http://169.254.169.254/skytap"
-
-  def self.get
-    @skytap_metadata ||=
-      if skytap?
-        BaseSkytapMetadata.new(METADATA_URL)
-      else
-        StubbedSkytapMetadata.new
-      end
-  end
-
-  private
-
-  def self.skytap?
-    metadata_uri = URI(METADATA_URL)
-    !!(Net::HTTP.start(metadata_uri.hostname, metadata_uri.port, {open_timeout: 1}) rescue nil)
   end
 end

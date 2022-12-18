@@ -16,9 +16,9 @@ require "json"
 require_relative "skytap_metadata"
 require_relative "api_helper"
 
-class BaseLabControl
-  def initialize(control_url)
-    @control_url = control_url
+class LabControl
+  def self.get
+    @lab_control ||= new(SkytapMetadata.get.control_url)
   end
 
   def control_data
@@ -40,47 +40,16 @@ class BaseLabControl
 
   private
 
+  def initialize(control_url)
+    @control_url = control_url
+  end
+
   def lab_broadcast(type)
-    return unless lab_broadcast_url
-    APIHelper.rest_call(lab_broadcast_url, "post", {type: type})
+    broadcast_url = "#{control_data['user_access_url']}/learning_console/broadcast"
+    APIHelper.rest_call(broadcast_url, "post", {type: type})
   end
 
   def control_data_json
     @control_data_json ||= APIHelper.rest_call(@control_url, "get")
-  end
-
-  def lab_broadcast_url
-    "#{control_data['user_access_url']}/learning_console/broadcast"
-  end
-end
-
-class StubbedLabControl < BaseLabControl
-  def initialize; end
-
-  def update_control_data(data)
-    @control_data_json = JSON.parse(@control_data_json).merge(data.to_h).to_json
-  rescue
-    raise ArgumentError, "Invalid data"
-  end
-
-  private
-
-  def lab_broadcast_url
-    nil
-  end
-
-  def control_data_json
-    @control_data_json ||= File.read(File.join(File.dirname(__FILE__), "stub_data/control_data_sample.json"))
-  end
-end
-
-class LabControl
-  def self.get
-    @lab_control ||= 
-      if SkytapMetadata.get.stubbed?
-        StubbedLabControl.new
-      else
-        BaseLabControl.new(SkytapMetadata.get.control_url)
-      end
   end
 end

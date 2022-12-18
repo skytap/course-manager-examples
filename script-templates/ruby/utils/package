@@ -13,14 +13,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+OUTPUT_DIR=out
+OUTPUT_NAME="${PWD##*/}".zip
+IMAGE_NAME=alpine:3.17.0
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
 source utils/init
-
-OUTPUT_DIR=out
-OUTPUT_NAME="${PWD##*/}".zip
-IMAGE_NAME=alpine:3.17.0
 
 utils/build
 
