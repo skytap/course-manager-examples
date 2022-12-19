@@ -12,15 +12,15 @@ In addition, building a script from this template requires Docker Desktop, Podma
 
 * Make a copy of this directory structure and rename the directory to your desired script name.
 * `script` is the entry point for the script. Feel free to put all your code logic here.
-* You can add additional files to the script as well. For example, if you'd like to break your code into multiple files or include non-gem libraries, that code can be placed in the `lib` directory and sourced into `script.rb`.
-* To test running your script, run the `utils/run` command. This will run your code in a Linux container to match the runtime environment of the Script Host.
+* You can add additional files to the script as well. For example, if you'd like to break your code into multiple files or include other data or utilities, that code can be placed in the `lib` directory and sourced into `script`. (Do note that binaries must be compatible with the runtime environment of the script, which can be found in `config.yml`.)
+* To test running your script, run the `utils/run` command. This will run your code in a container, in a fashion similar to that used by the Script Host.
 * To package your script into the ZIP format required by Course Manager, use the `utils/package` command. The resulting ZIP file will be placed in the `out/` subdirectory and can be uploaded directly to your course.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
 The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
 
-### Skytap Metadata Service Interface
+### Skytap Metadata Service
 
 Access the Metadata Service using the URL `http://gw/skytap` from your script. Please do not use other URLs to access it (see "Metadata Stub Service" section for more details). 
 
@@ -86,7 +86,7 @@ A chellenge in developing scripts that interact with lab metadata is that it is 
 **Important**: To ensure that your scripts can be run both locally and in Skytap, please take note of the following:
 
 * While the Metadata Service can be accessed via several different URLs within Skytap, the Metadata Stub Service only supports `http://gw/skytap`. Please always access the Metadata Service via this URL for best compatibility.
-* If your code accesses to the Lab Control endpoint, note that the endpoint URL used by the Metadata Stub Service will use http, but in production, the Lab Control endpoint will use https. Your code should always retrieve the correct Lab Control endpoint from the Metadata Service as shown above, expect that it may use either HTTP or HTTPS, and function accordingly.
+* If your code accesses to the Lab Control endpoint, note that the endpoint URL used by the Metadata Stub Service will use http, but in production, the Lab Control endpoint will use https. Your code should always retrieve the Lab Control endpoint from the Metadata Service as shown above, expect that it may use either HTTP or HTTPS, and function accordingly.
 
 
 ## License
