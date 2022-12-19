@@ -15,7 +15,7 @@
 # limitations under the License.
 OUTPUT_DIR=out
 OUTPUT_NAME="${PWD##*/}".zip
-IMAGE_NAME=alpine:3.17.0
+ZIP_IMAGE_NAME=alpine:3.17.0
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
@@ -23,7 +23,7 @@ source utils/init
 
 utils/build
 
-$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME apk add zip && mkdir -p $OUTPUT_DIR && zip -r $OUTPUT_DIR/$OUTPUT_NAME * -x $OUTPUT_DIR/\* -x utils/\* -x lib/stub_data/\*
+$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $ZIP_IMAGE_NAME apk add zip && mkdir -p $OUTPUT_DIR && zip -r $OUTPUT_DIR/$OUTPUT_NAME * -x $OUTPUT_DIR/\* -x utils/\* -x lib/stub_data/\*
 
 echo Zip package written to $OUTPUT_DIR/$OUTPUT_NAME
 
