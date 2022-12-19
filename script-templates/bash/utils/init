@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2022 Skytap Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative "lib/skytap_metadata"
-require_relative "lib/lab_control"
+set -e
 
-skytap_metadata = SkytapMetadata.get
-lab_control = LabControl.get
+DOCKER=$(which podman || which docker)
+[ -n "$DOCKER" ] || (echo "docker or podman is required" && exit 1)
 
-puts "Welcome to #{lab_control.control_data['title']}!"
-puts "This Skytap environment is #{skytap_metadata.metadata['configuration_url']}"
+IMAGE_NAME_LINE=$(cat config.yml|grep image_name)
+IMAGE_NAME=$(echo ${IMAGE_NAME_LINE#*:}|xargs)
 
-lab_control.update_control_data({"integration_data" => { "AcmeDataProUsername" => "user_assigned_from_script", "AcmeDataProPassword" => "password_assigned_from_script"}})
+COMMAND_LINE=$(cat config.yml|grep command)
+COMMAND=$(echo ${COMMAND_LINE#*:}|xargs)
 
-lab_control.refresh_content_pane
-
-puts "Integration data updated to #{lab_control.control_data['integration_data']}"
+ARGS_LINE=$(cat config.yml|grep args)
+ARGS=$(echo ${ARGS_LINE#*:}|xargs)

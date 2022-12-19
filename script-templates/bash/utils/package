@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2022 Skytap Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,18 +13,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+OUTPUT_DIR=out
+OUTPUT_NAME="${PWD##*/}".zip
+IMAGE_NAME=alpine:3.17.0
 
-require_relative "lib/skytap_metadata"
-require_relative "lib/lab_control"
+pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
-skytap_metadata = SkytapMetadata.get
-lab_control = LabControl.get
+source utils/init
 
-puts "Welcome to #{lab_control.control_data['title']}!"
-puts "This Skytap environment is #{skytap_metadata.metadata['configuration_url']}"
+$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME apk add zip && mkdir -p $OUTPUT_DIR && zip -r $OUTPUT_DIR/$OUTPUT_NAME * -x $OUTPUT_DIR/\* -x utils/\* -x lib/stub_data/\*
 
-lab_control.update_control_data({"integration_data" => { "AcmeDataProUsername" => "user_assigned_from_script", "AcmeDataProPassword" => "password_assigned_from_script"}})
+echo Zip package written to $OUTPUT_DIR/$OUTPUT_NAME
 
-lab_control.refresh_content_pane
-
-puts "Integration data updated to #{lab_control.control_data['integration_data']}"
+popd > /dev/null
