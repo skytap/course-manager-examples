@@ -29,7 +29,7 @@ fi
 
 $DOCKER network inspect $SCRIPT_NET_NAME > /dev/null 2>&1 || $DOCKER network create $SCRIPT_NET_NAME
 
-METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --net $SCRIPT_NET_NAME --name gw \
+METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --net $SCRIPT_NET_NAME --name skytap-metadata \
   --mount type=bind,source=$PWD/lib/stub_data/metadata.json.erb,target=/metadata_server/metadata.json.erb,readonly \
   --mount type=bind,source=$PWD/lib/stub_data/control_data.json,target=/metadata_server/control_data.json,readonly \
   $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)

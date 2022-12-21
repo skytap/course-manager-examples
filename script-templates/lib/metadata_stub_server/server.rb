@@ -15,7 +15,7 @@
 require "sinatra/base"
 
 class MetadataStubServer < Sinatra::Base
-  set :lab_url, ENV['CM_LAB_URL'] || "http://gw/lab_access/self_learner/1/111"
+  set :lab_url, ENV['CM_LAB_URL'] || "http://skytap-metadata/lab_access/self_learner/1/111"
   set :control_url, ENV['CM_CONTROL_URL'] || "#{settings.lab_url}/control/1/111"
   set :broadcast_url, ENV['CM_BROADCAST_URL'] || "#{settings.lab_url}/learning_console/broadcast"
 

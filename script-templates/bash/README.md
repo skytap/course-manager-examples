@@ -8,6 +8,8 @@ This template and the supporting scripts should work on Linux and macOS.
 
 In addition, building a script from this template requires Docker Desktop, Podman or a similar utility to run containers. The `docker` or `podman` utility should be on your system path.
 
+Scripts developed from this template require **Course Manager Script Host v10 or higher** for full compatibility.
+
 ## Using This Template
 
 * Make a copy of this directory structure and rename the directory to your desired script name.
@@ -22,12 +24,12 @@ The Skytap Metadata Service provides read-only metadata about the Skytap environ
 
 ### Skytap Metadata Service
 
-Access the Metadata Service using the URL `http://gw/skytap` from your script. Please do not use other URLs to access it (see "Metadata Stub Service" section for more details). 
+Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script. Please do not use other URLs to access it (see "Metadata Stub Service" section for more details). 
 
 For example:
 
 ```
-curl -s http://gw/skytap # => { "id":"11111111", "name":"Windows Server 2019 Datacenter" ...,}
+curl -s http://skytap-metadata/skytap # => { "id":"11111111", "name":"Windows Server 2019 Datacenter" ...,}
 ```
 
 ### Lab Control Endpoint
@@ -35,7 +37,7 @@ curl -s http://gw/skytap # => { "id":"11111111", "name":"Windows Server 2019 Dat
 The URL for the Lab Control Endpoint must be retrieved from the Skytap Metadata Service. For example:
 
 ```
-CONTROL_URL=$(curl -s http://gw/skytap|jq -r ".user_data | fromjson | .control_url")
+CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
 ```
 
 That URL, can then be accessed from your script:
@@ -67,7 +69,7 @@ curl -s -X PUT $CONTROL_URL -d '{"runstate": "running"}' # or "suspended", "halt
 To refresh either the Content or Environment pane within any open Learning Console instances for a given lab, first determine the broadcast URL. This is easiest done by appending `/learning_console/broadcast` to the user access URL as it appears in the Control Endpoint payload. This can be done with logic like:
 
 ```
-CONTROL_URL=$(curl -s http://gw/skytap|jq -r ".user_data | fromjson | .control_url")
+CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
 CONTROL_DATA=$(curl -s $CONTROL_URL)
 BROADCAST_URL=$(echo $CONTROL_DATA | jq -r .user_access_url)/learning_console/broadcast
 ```
@@ -85,7 +87,7 @@ A chellenge in developing scripts that interact with lab metadata is that it is 
 
 **Important**: To ensure that your scripts can be run both locally and in Skytap, please take note of the following:
 
-* While the Metadata Service can be accessed via several different URLs within Skytap, the Metadata Stub Service only supports `http://gw/skytap`. Please always access the Metadata Service via this URL for best compatibility.
+* Scripts should always access the Metadata Service via the URL **http://skytap-metadata/skytap**. This is a special URL that only works in Course Manager scripts. This should work in scripts run with `utils/run`, as well as from the Script Host in Course Manager-deployed labs (beginning with Script Host v10).
 * If your code accesses to the Lab Control endpoint, note that the endpoint URL used by the Metadata Stub Service will use http, but in production, the Lab Control endpoint will use https. Your code should always retrieve the Lab Control endpoint from the Metadata Service as shown above, expect that it may use either HTTP or HTTPS, and function accordingly.
 
 

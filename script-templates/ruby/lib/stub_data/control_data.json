@@ -1,7 +1,7 @@
 {
    "id":360,
    "consumed_at":null,
-   "control_url":"http://gw/lab_access/self_learner/1/111/control/1/111",
+   "control_url":"http://skytap-metadata/lab_access/self_learner/1/111/control/1/111",
    "course_attachments":[
       {
          "id":621,
@@ -9,13 +9,13 @@
          "content_type":"application/zip",
          "filename":"hello_world.zip",
          "type":"scripts",
-         "url":"http://gw/rails/active_storage/blobs/redirect/1/hello_world.zip"
+         "url":"http://skytap-metadata/rails/active_storage/blobs/redirect/1/hello_world.zip"
       }
    ],
    "course_id":69,
    "course_identifier":null,
    "custom_content":"",
-   "iframe_url":"http://gw/self_learner_iframe/1/111",
+   "iframe_url":"http://skytap-metadata/self_learner_iframe/1/111",
    "integration_data":{
       "AcmeDataProUsername":"user1",
       "AcmeDataProPassword":"password1",
@@ -34,6 +34,6 @@
    ],
    "template":"Acme DataCloud Template (US-East-2)",
    "title":"Intro to Acme DataCloud",
-   "user_access_url":"http://gw/lab_access/self_learner/1/111",
+   "user_access_url":"http://skytap-metadata/lab_access/self_learner/1/111",
    "user_identifier":"user001@skytap.com"
 }

@@ -18,13 +18,13 @@ set -e
 
 apk add curl jq > /dev/null
 
-CONTROL_URL=$(curl -s http://gw/skytap|jq -r ".user_data | fromjson | .control_url")
+CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
 
 CONTROL_DATA=$(curl -s $CONTROL_URL)
 
 echo "Welcome to $(echo $CONTROL_DATA | jq -r .title)!"
 
-echo "This Skytap environment is $(curl -s http://gw/skytap|jq -r .configuration_url)"
+echo "This Skytap environment is $(curl -s http://skytap-metadata/skytap|jq -r .configuration_url)"
 
 curl -s -X PUT $CONTROL_URL -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}' > /dev/null
 

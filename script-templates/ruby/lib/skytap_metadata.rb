@@ -16,7 +16,7 @@ require "json"
 require_relative "api_helper"
 
 class SkytapMetadata
-  METADATA_URL = "http://gw/skytap"
+  METADATA_URL = "http://skytap-metadata/skytap"
 
   def self.get
     @skytap_metadata ||= new(METADATA_URL)
