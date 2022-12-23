@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 OUTPUT_DIR=out
 OUTPUT_NAME="${PWD##*/}".zip
 ZIP_IMAGE_NAME=alpine:3.17.0
@@ -23,8 +24,10 @@ source utils/init
 
 [ -f utils/build ] && utils/build
 
-$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $ZIP_IMAGE_NAME apk add zip && mkdir -p $OUTPUT_DIR && zip -r $OUTPUT_DIR/$OUTPUT_NAME * -x $OUTPUT_DIR/\* -x utils/\* -x lib/stub_data/\*
+echo -e "Creating ZIP package..."
 
-echo Zip package written to $OUTPUT_DIR/$OUTPUT_NAME
+$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $ZIP_IMAGE_NAME apk add zip && mkdir -p $OUTPUT_DIR && zip -r $OUTPUT_DIR/$OUTPUT_NAME * -x whatevaa -x push.yml -x $OUTPUT_DIR/\* -x utils/\* -x lib/stub_data/\*
+
+echo -e "Package written to $OUTPUT_DIR/$OUTPUT_NAME\n"
 
 popd > /dev/null

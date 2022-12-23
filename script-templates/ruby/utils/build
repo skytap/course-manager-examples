@@ -21,6 +21,10 @@ source utils/init
 [ -f Gemfile.lock ] && rm -f Gemfile.lock
 [ -d vendor/cache ] && rm -rf vendor/cache
 
+echo -e "Building Ruby dependencies...\n"
+
 $DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME /bin/bash -c bundle package
+
+echo -e "Build complete\n"
 
 popd > /dev/null
