@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2022 Skytap Inc.
 
@@ -27,3 +27,5 @@ COMMAND=$(echo ${COMMAND_LINE#*:}|xargs)
 
 ARGS_LINE=$(cat config.yml|grep args)
 ARGS=$(echo ${ARGS_LINE#*:}|xargs)
+
+UTILS_IMAGE_NAME=ghcr.io/mhgoldman/course_manager_utils_image:0.1

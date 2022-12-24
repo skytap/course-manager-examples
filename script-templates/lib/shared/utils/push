@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2022 Skytap Inc.
 
@@ -14,122 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [ -z "$APP_HOSTNAME" ]; then
-  APP_HOSTNAME_LINE=$(cat push.yml 2>/dev/null|grep app_hostname)
-  APP_HOSTNAME=$(echo ${APP_HOSTNAME_LINE#*:}|xargs)
-fi
-
-if [ -z "$API_KEY" ]; then
-  API_KEY_LINE=$(cat push.yml 2>/dev/null|grep api_key)
-  API_KEY=$(echo ${API_KEY_LINE#*:}|xargs)
-fi
-
-if [ -z "$API_SECRET" ]; then
-  API_SECRET_LINE=$(cat push.yml 2>/dev/null|grep api_secret)
-  API_SECRET=$(echo ${API_SECRET_LINE#*:}|xargs)
-fi
-
-if [ -z "$COURSE_ID" ]; then
-  COURSE_ID_LINE=$(cat push.yml 2>/dev/null|grep course_id)
-  COURSE_ID=$(echo ${COURSE_ID_LINE#*:}|xargs)
-fi
-
-if [ -z "$APP_HOSTNAME" ] || [ -z "$API_KEY" ] || [ -z "$API_SECRET" ] || [ -z "$COURSE_ID" ]; then
-  echo "APP_HOSTNAME, API_KEY API_SECRET and COURSE_ID are required!"
-  echo "Please set these environment variables, or create a push.yml using the example found in push.example.yml."
-  exit 1
-fi
-
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
 source utils/init
 
+#TODO redudant bc already doing it as part of package
+[ -f utils/build ] && utils/build
+
 utils/package
 
-BASE64=$( ( (echo test | base64 -w 0 > /dev/null 2>&1) && echo "base64 -w 0") || echo base64)
-MD5=$( ( (echo test | md5 -r > /dev/null 2>&1) && echo "md5 -r") || echo md5sum)
+SCRIPT_NAME="${PWD##*/}"
 
-for app in curl awk xxd wc jq; do command -v "${app}" &>/dev/null || not_available+=("${app}"); done
-(( ${#not_available[@]} > 0 )) && echo "Please install missing dependencies: ${not_available[*]}" 1>&2 && exit 1
+SCRATCH_DIR=$PWD/.scratch
 
-SCRIPTS_URL=https://$APP_HOSTNAME/api/v1/courses/$COURSE_ID/scripts
-AUTHORIZATION_BASIC=$(echo -n "$API_KEY:$API_SECRET" | $BASE64)
+[ -e $SCRATCH_DIR ] && rm -rf $SCRATCH_DIR
+mkdir -p $SCRATCH_DIR
 
-PACKAGE_DIR=out
-PACKAGE_FILE=${PWD##*/}.zip
-PACKAGE_PATH=$PACKAGE_DIR/$PACKAGE_FILE
-PACKAGE_SIZE=$(wc -c $PACKAGE_PATH | awk '{print $1}')
-PACKAGE_MD5=($($MD5 $PACKAGE_PATH | awk '{print $1}' | xxd -r -p | $BASE64))
+cp $PWD/utils/_push $SCRATCH_DIR
+cp $PWD/push.yml $SCRATCH_DIR
+cp $PWD/out/$SCRIPT_NAME.zip $SCRATCH_DIR
 
-CREATE_SCRIPT_PAYLOAD=$(cat <<EOF
-{
-  "filename": "$PACKAGE_FILE",
-  "byte_size": $PACKAGE_SIZE,
-  "checksum": "$PACKAGE_MD5",
-  "content_type": "application/zip"
-}
-EOF
-)
-
-echo -e "\nCreating remote script object..."
-
-CREATE_SCRIPT_HTTP_CODE=$(curl -s -L -o $TMPDIR/create_script_result.json -w "%{http_code}" -X POST $SCRIPTS_URL \
-  --header "Authorization: Basic $AUTHORIZATION_BASIC" \
-  --header "Content-Type: application/json" \
-  --header "Accept: application/json" \
-  --data-raw "$CREATE_SCRIPT_PAYLOAD")
-
-echo -e "Completed with result $CREATE_SCRIPT_HTTP_CODE"
-[ "$CREATE_SCRIPT_HTTP_CODE" != "200" ] && echo "Aborting" && exit 1
-
-UPLOAD_DEST_URL=$(cat $TMPDIR/create_script_result.json | jq -r ".direct_upload.url")
-SCRIPT_ID=$(cat $TMPDIR/create_script_result.json | jq -r ".id")
-SCRIPT_URL=$SCRIPTS_URL/$SCRIPT_ID
-
-echo -e "\nUploading $PACKAGE_PATH to $UPLOAD_DEST_URL..."
-
-UPLOAD_HTTP_CODE=$(curl -L -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
-  --header "Content-Length: $PACKAGE_SIZE" \
-  --header "Content-Type: application/zip" \
-  --header "Content-MD5: $PACKAGE_MD5" \
-  --header "Content-Disposition: inline; filename=\"$PACKAGE_FILE\"; filename*=UTF-8''$PACKAGE_FILE")
-
-echo -e "Completed with result $UPLOAD_HTTP_CODE"
-[ "$UPLOAD_HTTP_CODE" != "200" ] && echo "Aborting due to an error" && exit 1
-
-echo -e "\nNotifying server that upload of $SCRIPT_URL is complete..."
-
-NOTIFY_UPLOADED_CODE=$(curl -L -w "%{http_code}" -X PUT $SCRIPT_URL \
-  --header "Authorization: Basic $AUTHORIZATION_BASIC" \
-  --header "Content-Type: application/json" \
-  --header "Accept: application/json" \
-  --data-raw "{\"uploaded\": true}")
-
-echo -e "Completed with result $NOTIFY_UPLOADED_CODE"
-[ "$NOTIFY_UPLOADED_CODE" != "202" ] && echo "Aborting due to an error" && exit 1
-
-
-echo -e -n "Waiting for upload to be processed..."
-
-COUNTER=20
-DONE=0
-until [ $COUNTER -eq 0 ]; do
-  NOTIFY_UPLOADED_CODE=$(curl -s -L -o $TMPDIR/upload_poll.json -w "%{http_code}" -X GET $SCRIPT_URL \
-    --header "Authorization: Basic $AUTHORIZATION_BASIC" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json")
-  [ "$NOTIFY_UPLOADED_CODE" != "200" ] && echo "Aborting due to an error (exit code $NOTIFY_UPLOADED_CODE)" && exit 1
-
-  [ $(cat $TMPDIR/upload_poll.json | grep true) ] && DONE=1 && break
-  COUNTER=$((COUNTER-1))
-  echo -n "."
-  sleep 10
-done
-
-if [ "$DONE" = "1" ]; then
-  echo -e "\n\nDone!\n"
-else
-  echo -e "\n\nUpload has not been processed yet. It may have failed, or may be taking longer than usual to process. Check the Logs for more information\n."
-fi
+$DOCKER run  --rm -v $SCRATCH_DIR:$SCRATCH_DIR -w $SCRATCH_DIR $UTILS_IMAGE_NAME bash _push
 
 popd > /dev/null
