@@ -14,19 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-OUTPUT_DIR=out
-OUTPUT_NAME="${PWD##*/}".zip
+PUBLISHER_IMAGE_NAME=ghcr.io/mhgoldman/cm_script_publisher:0.1
+
+DOCKER=$(which podman || which docker)
+[ -n "$DOCKER" ] || (echo "docker or podman is required" && exit 1)
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
-source utils/init
-
 [ -f utils/build ] && utils/build
 
-echo -e "Creating ZIP package..."
-
-$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $UTILS_IMAGE_NAME mkdir -p $OUTPUT_DIR && zip -r $OUTPUT_DIR/$OUTPUT_NAME * -x push.yml -x $OUTPUT_DIR/\* -x utils/\* -x lib/stub_data/\*
-
-echo -e "Package written to $OUTPUT_DIR/$OUTPUT_NAME\n"
+$DOCKER run -v $PWD:/work -w /work $PUBLISHER_IMAGE_NAME
 
 popd > /dev/null

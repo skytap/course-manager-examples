@@ -14,50 +14,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [ -z "$APP_HOSTNAME" ]; then
-  APP_HOSTNAME_LINE=$(cat push.yml 2>/dev/null|grep app_hostname)
-  APP_HOSTNAME=$(echo ${APP_HOSTNAME_LINE#*:}|xargs)
-fi
+set -e
 
-if [ -z "$API_KEY" ]; then
-  API_KEY_LINE=$(cat push.yml 2>/dev/null|grep api_key)
-  API_KEY=$(echo ${API_KEY_LINE#*:}|xargs)
-fi
+[ -z "$CM_APP_HOSTNAME" ] && CM_APP_HOSTNAME=$(cat .publish.yml 2>/dev/null|yq '.app_hostname // ""')
+[ -z "$CM_API_KEY" ] && CM_API_KEY=$(cat .publish.yml 2>/dev/null|yq '.api_key // ""')
+[ -z "$CM_API_SECRET" ] && CM_API_SECRET=$(cat .publish.yml 2>/dev/null|yq '.api_secret // ""')
+[ -z "$CM_COURSE_ID" ] && CM_COURSE_ID=$(cat .publish.yml 2>/dev/null|yq '.course_id // ""')
+[ -z "$CM_SCRIPT_NAME" ] && CM_SCRIPT_NAME=$(cat .publish.yml 2>/dev/null|yq '.script_name // ""')
 
-if [ -z "$API_SECRET" ]; then
-  API_SECRET_LINE=$(cat push.yml 2>/dev/null|grep api_secret)
-  API_SECRET=$(echo ${API_SECRET_LINE#*:}|xargs)
-fi
-
-if [ -z "$COURSE_ID" ]; then
-  COURSE_ID_LINE=$(cat push.yml 2>/dev/null|grep course_id)
-  COURSE_ID=$(echo ${COURSE_ID_LINE#*:}|xargs)
-fi
-
-if [ -z "$APP_HOSTNAME" ] || [ -z "$API_KEY" ] || [ -z "$API_SECRET" ] || [ -z "$COURSE_ID" ]; then
-  echo "APP_HOSTNAME, API_KEY API_SECRET and COURSE_ID are required!"
-  echo "Please set these environment variables, or create a push.yml using the example found in push.example.yml."
+if [ -z "$CM_APP_HOSTNAME" ] || [ -z "$CM_API_KEY" ] || [ -z "$CM_API_SECRET" ] || [ -z "$CM_COURSE_ID" ] || [ -z "$CM_SCRIPT_NAME" ]; then
+  echo "CM_APP_HOSTNAME, CM_API_KEY, CM_API_SECRET, CM_COURSE_ID and CM_SCRIPT_NAME are required!"
+  echo "Please set these environment variables, or create a .publish.yml using the example found in publish.example.yml."
   exit 1
 fi
 
-SCRIPTS_URL=https://$APP_HOSTNAME/api/v1/courses/$COURSE_ID/scripts
-AUTHORIZATION_BASIC=$(echo -n "$API_KEY:$API_SECRET" | base64 -w 0)
+PACKAGE_NAME=$CM_SCRIPT_NAME.zip
+PACKAGE_PATH=/tmp/$PACKAGE_NAME
+SCRIPTS_URL=https://$CM_APP_HOSTNAME/api/v1/courses/$CM_COURSE_ID/scripts
+AUTHORIZATION_BASIC=$(echo -n "$CM_API_KEY:$CM_API_SECRET" | base64 -w 0)
 
-PACKAGE_FILE=$(ls -1a *.zip)
-PACKAGE_SIZE=$(wc -c $PACKAGE_FILE | awk '{print $1}')
-PACKAGE_MD5=($(md5sum $PACKAGE_FILE | awk '{print $1}' | xxd -r -p | base64 -w 0))
+echo -e "\nCreating ZIP package $PACKAGE_NAME..."
+# todo these exclusions aren't really working
+zip -r $PACKAGE_PATH * -x .publish.yml -x utils/ -x lib/stub_data/
+
+PACKAGE_SIZE=$(wc -c $PACKAGE_PATH | awk '{print $1}')
+PACKAGE_MD5=($(md5sum $PACKAGE_PATH | awk '{print $1}' | xxd -r -p | base64 -w 0))
+
+echo -e "\nCreating remote script object..."
 
 CREATE_SCRIPT_PAYLOAD=$(cat <<EOF
 {
-  "filename": "$PACKAGE_FILE",
+  "filename": "$PACKAGE_NAME",
   "byte_size": $PACKAGE_SIZE,
   "checksum": "$PACKAGE_MD5",
   "content_type": "application/zip"
 }
 EOF
 )
-
-echo -e "\nCreating remote script object..."
 
 CREATE_SCRIPT_HTTP_CODE=$(curl -k -L -o /tmp/create_script_result.json -w "%{http_code}" -X POST $SCRIPTS_URL \
   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
@@ -72,13 +65,13 @@ UPLOAD_DEST_URL=$(cat /tmp/create_script_result.json | jq -r ".direct_upload.url
 SCRIPT_ID=$(cat /tmp/create_script_result.json | jq -r ".id")
 SCRIPT_URL=$SCRIPTS_URL/$SCRIPT_ID
 
-echo -e "\nUploading $PACKAGE_FILE to $UPLOAD_DEST_URL..."
+echo -e "\nUploading $PACKAGE_NAME to $UPLOAD_DEST_URL..."
 
-UPLOAD_HTTP_CODE=$(curl -k -L -w "%{http_code}" -X PUT -T "$PACKAGE_FILE" $UPLOAD_DEST_URL \
+UPLOAD_HTTP_CODE=$(curl -k -L -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
   --header "Content-Length: $PACKAGE_SIZE" \
   --header "Content-Type: application/zip" \
   --header "Content-MD5: $PACKAGE_MD5" \
-  --header "Content-Disposition: inline; filename=\"$PACKAGE_FILE\"; filename*=UTF-8''$PACKAGE_FILE")
+  --header "Content-Disposition: inline; filename=\"$PACKAGE_NAME\"; filename*=UTF-8''$PACKAGE_NAME")
 
 echo -e "Completed with result $UPLOAD_HTTP_CODE"
 [ "$UPLOAD_HTTP_CODE" != "200" ] && echo "Aborting due to an error" && exit 1

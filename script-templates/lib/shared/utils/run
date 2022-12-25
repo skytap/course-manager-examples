@@ -16,7 +16,17 @@
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
-source utils/init
+DOCKER=$(which podman || which docker)
+[ -n "$DOCKER" ] || (echo "docker or podman is required" && exit 1)
+
+IMAGE_NAME_LINE=$(cat config.yml|grep image_name)
+IMAGE_NAME=$(echo ${IMAGE_NAME_LINE#*:}|xargs)
+
+COMMAND_LINE=$(cat config.yml|grep command)
+COMMAND=$(echo ${COMMAND_LINE#*:}|xargs)
+
+ARGS_LINE=$(cat config.yml|grep args)
+ARGS=$(echo ${ARGS_LINE#*:}|xargs)
 
 [ -f utils/build ] && utils/build
 
