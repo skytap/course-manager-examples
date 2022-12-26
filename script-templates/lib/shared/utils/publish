@@ -23,6 +23,6 @@ pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
 [ -f utils/build ] && utils/build
 
-$DOCKER run -v $PWD:/work -w /work $PUBLISHER_IMAGE_NAME
+$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script $PUBLISHER_IMAGE_NAME
 
 popd > /dev/null

@@ -1,5 +1,3 @@
-# Copy and rename to .publish.yml
-
 app_hostname: customer-subdomain.skytap-portal.com
 api_key: api-key-goes-here
 api_secret: api-secret-goes-here

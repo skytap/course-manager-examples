@@ -16,15 +16,32 @@
 
 set -e
 
-[ -z "$CM_APP_HOSTNAME" ] && CM_APP_HOSTNAME=$(cat .publish.yml 2>/dev/null|yq '.app_hostname // ""')
-[ -z "$CM_API_KEY" ] && CM_API_KEY=$(cat .publish.yml 2>/dev/null|yq '.api_key // ""')
-[ -z "$CM_API_SECRET" ] && CM_API_SECRET=$(cat .publish.yml 2>/dev/null|yq '.api_secret // ""')
-[ -z "$CM_COURSE_ID" ] && CM_COURSE_ID=$(cat .publish.yml 2>/dev/null|yq '.course_id // ""')
-[ -z "$CM_SCRIPT_NAME" ] && CM_SCRIPT_NAME=$(cat .publish.yml 2>/dev/null|yq '.script_name // ""')
+if [ ! -f .publish.yml ]; then
+  trap 'exit 1' SIGINT
+  read -p "Course Manager app hostname: " CM_APP_HOSTNAME
+  read -p "API key: " CM_API_KEY
+  read -p "API secret: " CM_API_SECRET
+  read -p "Course ID: " CM_COURSE_ID
+  read -p "Script name: " CM_SCRIPT_NAME
+  trap SIGINT
+  cat > .publish.yml <<EOF
+app_hostname: "$CM_APP_HOSTNAME"
+api_key: "$CM_API_KEY"
+api_secret: "$CM_API_SECRET"
+course_id: "$CM_COURSE_ID"
+script_name: "$CM_SCRIPT_NAME"
+EOF
+  echo Wrote settings to .publish.yml
+else
+  CM_APP_HOSTNAME=$(cat .publish.yml | yq '.app_hostname // ""')
+  CM_API_KEY=$(cat .publish.yml | yq '.api_key // ""')
+  CM_API_SECRET=$(cat .publish.yml | yq '.api_secret // ""')
+  CM_COURSE_ID=$(cat .publish.yml | yq '.course_id // ""')
+  CM_SCRIPT_NAME=$(cat .publish.yml | yq '.script_name // ""')
+fi
 
 if [ -z "$CM_APP_HOSTNAME" ] || [ -z "$CM_API_KEY" ] || [ -z "$CM_API_SECRET" ] || [ -z "$CM_COURSE_ID" ] || [ -z "$CM_SCRIPT_NAME" ]; then
-  echo "CM_APP_HOSTNAME, CM_API_KEY, CM_API_SECRET, CM_COURSE_ID and CM_SCRIPT_NAME are required!"
-  echo "Please set these environment variables, or create a .publish.yml using the example found in publish.example.yml."
+  echo One or configuration options was not set. Please update .publish.yml and try again.
   exit 1
 fi
 
