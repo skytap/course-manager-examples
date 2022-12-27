@@ -51,8 +51,7 @@ SCRIPTS_URL=https://$CM_APP_HOSTNAME/api/v1/courses/$CM_COURSE_ID/scripts
 AUTHORIZATION_BASIC=$(echo -n "$CM_API_KEY:$CM_API_SECRET" | base64 -w 0)
 
 echo -e "\nCreating ZIP package $PACKAGE_NAME..."
-# todo these exclusions aren't really working
-zip -r $PACKAGE_PATH * -x .publish.yml -x utils/ -x lib/stub_data/
+zip -r $PACKAGE_PATH * -x .publish.yml -x "utils/*" -x "lib/stub_data/*"
 
 PACKAGE_SIZE=$(wc -c $PACKAGE_PATH | awk '{print $1}')
 PACKAGE_MD5=($(md5sum $PACKAGE_PATH | awk '{print $1}' | xxd -r -p | base64 -w 0))
