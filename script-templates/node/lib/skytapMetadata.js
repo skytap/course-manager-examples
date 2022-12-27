@@ -16,7 +16,7 @@ class SkytapMetadata {
 
 class PrivateSkytapMetadata {
     constructor() {
-        this.baseURL = "http://gw/skytap";
+        this.baseURL = "http://skytap-metadata/skytap";
     }
 
     async metadata() {

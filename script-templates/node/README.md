@@ -1,21 +1,25 @@
-# Node Script Template TBD UPDATE ME!!!
+# Node.js Script Template
 
-This is a code template that can be used as a starting point for developing a Course Manager Script in Ruby.
+This is a code template that can be used as a starting point for developing a Course Manager Script in Node.js.
 
 ## Requirements
 
 This template and the supporting scripts should work on Linux and macOS. 
 
-In addition, building a script from this template requires Docker Desktop, Podman or a similar utility to run containers. The `docker` or `podman` utility should be on your system path.
+Building a script from this template requires Docker Desktop, Podman or a similar utility to run containers. The `docker` or `podman` utility should be on your system path.
+
+Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Skytap Support to have API access enabled for your account.
+
+Scripts developed from this template require **Course Manager Script Host v10 or higher** for full compatibility.
 
 ## Using This Template
 
 * Make a copy of this directory structure and rename the directory to your desired script name.
-* Add any gems required by your script to `Gemfile`. Gems will be built in a Linux container to ensure the architecture matches the runtime environment of the Script Host.
-* `script.rb` is the entry point for the script. Feel free to put all your code logic here.
-* You can add additional files to the script as well. For example, if you'd like to break your Ruby code into multiple files or include non-gem libraries, that code can be placed in the `lib` directory and included into `script.rb` using `require_relative`.
+* Add any Node packages required by your script to `package.json` using `npm install <package-name> --save`. Packages will be built in a Linux container to ensure the architecture matches the runtime environment of the Script Host.
+* `script.js` is the entry point for the script. Feel free to put all your code logic here.
+* You can add additional files to the script as well. For example, if you'd like to break your code into multiple files or include non-gem libraries, that code can be placed in the `lib` directory and included into `script.js` using `require`.
 * To test running your script, run the `utils/run` command. This will run your code in a Linux container to match the runtime environment of the Script Host.
-* To package your script into the ZIP format required by Course Manager, use the `utils/package` command. The resulting ZIP file will be placed in the `out/` subdirectory and can be uploaded directly to your course.
+* To publish your script to Course Manager, run `utils/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
@@ -25,59 +29,60 @@ The Skytap Metadata Service provides read-only metadata about the Skytap environ
 
 The `SkytapMetadata` class is required in your `script.rb` by default:
 
+
 ```
-require_relative "lib/skytap_metadata"
+const SkytapMetadata = require('./lib/skytapMetadata');
 ```
 
 `SkytapMetadata` is a singleton. To use it, get a reference to its instance:
 
 ```
-metadata = SkytapMetadata.get
+const metadata = SkytapMetadata.get();
 ```
 
 Then, you can call methods as follows:
 
 ```
-metadata.metadata                               # => returns Skytap metadata as a hash
-metadata.user_data                              # => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
-metadata.configuration_user_data                # => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
-metadata.control_url                            # => returns the control endpoint URL
+metadata.metadata()                            # => returns Skytap metadata as a hash
+metadata.userData                              # => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
+metadata.configurationUserData()               # => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
+metadata.controlURL()                          # => returns the control endpoint URL
 ```
 
 ### LabControl Interface
-The `LabControl` class is required in your `script.rb` by default:
+The `LabControl` class is required in your `script.js` by default:
 
 ```
-require_relative "lib/lab_control"
+const LabControl = require('./lib/labControl');
 ```
 
 `LabControl` is a singleton. To use it, get a reference to its instance:
 
 ```
-control = LabControl.get
+const control = LabControl.get();
 ```
 
 Then, you can call methods as follows:
 
 ```
-control.control_data                            # => returns control metadata as a hash
-control.update_control_data(data)               # => updates control data (see below)
-control.refresh_content_pane                    # => requests any open content panes for the lab to refresh
-control.refresh_lab                             # => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.controlData()                         # => returns control metadata as a hash
+control.updateControlData(data)               # => updates control data (see below)
+control.refreshContentPane()                  # => requests any open content panes for the lab to refresh
+control.refreshLab()                          # => requests any open learning consoles for the lab to refresh their Skytap environment view
 ```
 
 #### Updating control data
 
-The `update_control_data` method can be used to achieve the following:
+The `updateControlData()` method can be used to achieve the following:
 
 Change runstate:
 ```
-control.update_control_data(runstate: "running")    # or "suspended", "halted", "stopped"
+control.update_control_data({'runstate': 'running')    # or 'suspended', 'halted', 'stopped'
 ```
 
 Update custom data:
 ```
-control.update_control_data(integration_data: { acme_username: "user001", acme_password: "password123!" })
+control.update_control_data({'integration_data': { 'acme_username': 'user001', 'acme_password': 'password123!' })
 ```
 
 Please note:

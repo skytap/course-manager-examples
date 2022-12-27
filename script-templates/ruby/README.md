@@ -6,7 +6,11 @@ This is a code template that can be used as a starting point for developing a Co
 
 This template and the supporting scripts should work on Linux and macOS. 
 
-In addition, building a script from this template requires Docker Desktop, Podman or a similar utility to run containers. The `docker` or `podman` utility should be on your system path.
+Building a script from this template requires Docker Desktop, Podman or a similar utility to run containers. The `docker` or `podman` utility should be on your system path.
+
+Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Skytap Support to have API access enabled for your account.
+
+Scripts developed from this template require **Course Manager Script Host v10 or higher** for full compatibility.
 
 ## Using This Template
 
@@ -15,7 +19,7 @@ In addition, building a script from this template requires Docker Desktop, Podma
 * `script.rb` is the entry point for the script. Feel free to put all your code logic here.
 * You can add additional files to the script as well. For example, if you'd like to break your Ruby code into multiple files or include non-gem libraries, that code can be placed in the `lib` directory and included into `script.rb` using `require_relative`.
 * To test running your script, run the `utils/run` command. This will run your code in a Linux container to match the runtime environment of the Script Host.
-* To package your script into the ZIP format required by Course Manager, use the `utils/package` command. The resulting ZIP file will be placed in the `out/` subdirectory and can be uploaded directly to your course.
+* To publish your script to Course Manager, run `utils/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
