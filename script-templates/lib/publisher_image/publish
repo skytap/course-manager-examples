@@ -83,7 +83,7 @@ SCRIPT_URL=$SCRIPTS_URL/$SCRIPT_ID
 
 echo -e "\nUploading $PACKAGE_NAME to $UPLOAD_DEST_URL..."
 
-UPLOAD_HTTP_CODE=$(curl -k -L -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
+UPLOAD_HTTP_CODE=$(curl -k -L -o /dev/null -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
   --header "Content-Length: $PACKAGE_SIZE" \
   --header "Content-Type: application/zip" \
   --header "Content-MD5: $PACKAGE_MD5" \
@@ -94,7 +94,7 @@ echo -e "Completed with result $UPLOAD_HTTP_CODE"
 
 echo -e "\nNotifying server that upload of $SCRIPT_URL is complete..."
 
-NOTIFY_UPLOADED_CODE=$(curl -k -L -w "%{http_code}" -X PUT $SCRIPT_URL \
+NOTIFY_UPLOADED_CODE=$(curl -k -L -o /dev/null -w "%{http_code}" -X PUT $SCRIPT_URL \
   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
   --header "Content-Type: application/json" \
   --header "Accept: application/json" \
@@ -108,20 +108,18 @@ echo -e -n "Waiting for upload to be processed..."
 COUNTER=20
 DONE=0
 until [ $COUNTER -eq 0 ]; do
-  NOTIFY_UPLOADED_CODE=$(curl -k -s -L -o /tmp/upload_poll.json -w "%{http_code}" -X GET $SCRIPT_URL \
+  NOTIFY_UPLOADED_CODE=$(curl -k -L -s -o /dev/null -w "%{http_code}" -X GET $SCRIPT_URL \
     --header "Authorization: Basic $AUTHORIZATION_BASIC" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json")
-  [ "$NOTIFY_UPLOADED_CODE" != "200" ] && echo "Aborting due to an error (exit code $NOTIFY_UPLOADED_CODE)" && exit 1
-
-  [ $(cat /tmp/upload_poll.json | grep true) ] && DONE=1 && break
+  [ "$NOTIFY_UPLOADED_CODE" = "200" ] && break
   COUNTER=$((COUNTER-1))
   echo -n "."
   sleep 10
 done
 
-if [ "$DONE" = "1" ]; then
+if [ "$NOTIFY_UPLOADED_CODE" = "200" ]; then
   echo -e "\n\nDone!\n"
 else
-  echo -e "\n\nUpload has not been processed yet. It may have failed, or may be taking longer than usual to process. Check the Logs for more information\n."
+  echo -e "\n\nUpload has not been processed yet. It may have failed, or may be taking longer than usual to process. Check the logs for more information\n."
 fi
