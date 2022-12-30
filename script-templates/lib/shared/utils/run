@@ -37,17 +37,27 @@ if [ -n "$CONTROL_URL" ]; then
   CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
 fi
 
-$DOCKER network inspect $SCRIPT_NET_NAME > /dev/null 2>&1 || $DOCKER network create $SCRIPT_NET_NAME
-
-METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --net $SCRIPT_NET_NAME --name skytap-metadata \
+METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --name skytap-metadata-$RANDOM \
   --mount type=bind,source=$PWD/lib/stub_data/metadata.json.erb,target=/metadata_server/metadata.json.erb,readonly \
   --mount type=bind,source=$PWD/lib/stub_data/control_data.json,target=/metadata_server/control_data.json,readonly \
   $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)
 
 set +e
 
-$DOCKER run --net $SCRIPT_NET_NAME --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
+METADATA_SERVER_IP=$(
+  $DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null ||
+  $DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null
+)
 
-$DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null 2>&1
+if [ -n "$METADATA_SERVER_IP" ]; then
+  METADATA_SERVER_HOST_PARAM="--add-host skytap-metadata:$METADATA_SERVER_IP"
+else
+  echo "Error: Could not determine metadata stub server IP address"
+  exit 1
+fi
+
+$DOCKER run $METADATA_SERVER_HOST_PARAM --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
+
+$DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null
 
 popd > /dev/null
