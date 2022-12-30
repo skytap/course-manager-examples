@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Build webhook_rb script
+name: Build webhook-rb script
 
 on:
   workflow_dispatch:
@@ -21,10 +21,10 @@ on:
     branches-ignore:
       - master
     paths:
-      - "scripts/webhook_rb/**"
+      - "scripts/webhook-rb/**"
 
 jobs:
   build:
     uses: ./.github/workflows/build_ruby_script.yml
     with:
-      script_name: webhook_rb
+      script_name: webhook-rb
