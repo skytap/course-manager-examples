@@ -68,7 +68,7 @@ CREATE_SCRIPT_PAYLOAD=$(cat <<EOF
 EOF
 )
 
-CREATE_SCRIPT_HTTP_CODE=$(curl -k -L -o /tmp/create_script_result.json -w "%{http_code}" -X POST $SCRIPTS_URL \
+CREATE_SCRIPT_HTTP_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /tmp/create_script_result.json -w "%{http_code}" -X POST $SCRIPTS_URL \
   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
   --header "Content-Type: application/json" \
   --header "Accept: application/json" \
@@ -83,7 +83,7 @@ SCRIPT_URL=$SCRIPTS_URL/$SCRIPT_ID
 
 echo -e "\nUploading $PACKAGE_NAME to $UPLOAD_DEST_URL..."
 
-UPLOAD_HTTP_CODE=$(curl -k -L -o /dev/null -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
+UPLOAD_HTTP_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /dev/null -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
   --header "Content-Length: $PACKAGE_SIZE" \
   --header "Content-Type: application/zip" \
   --header "Content-MD5: $PACKAGE_MD5" \
@@ -94,7 +94,7 @@ echo -e "Completed with result $UPLOAD_HTTP_CODE"
 
 echo -e "\nNotifying server that upload of $SCRIPT_URL is complete..."
 
-NOTIFY_UPLOADED_CODE=$(curl -k -L -o /dev/null -w "%{http_code}" -X PUT $SCRIPT_URL \
+NOTIFY_UPLOADED_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /dev/null -w "%{http_code}" -X PUT $SCRIPT_URL \
   --header "Authorization: Basic $AUTHORIZATION_BASIC" \
   --header "Content-Type: application/json" \
   --header "Accept: application/json" \
@@ -108,7 +108,7 @@ echo -e -n "Waiting for upload to be processed..."
 COUNTER=20
 DONE=0
 until [ $COUNTER -eq 0 ]; do
-  NOTIFY_UPLOADED_CODE=$(curl -k -L -s -o /dev/null -w "%{http_code}" -X GET $SCRIPT_URL \
+  NOTIFY_UPLOADED_CODE=$(curl $EXTRA_CURL_OPTIONS -L -s -o /dev/null -w "%{http_code}" -X GET $SCRIPT_URL \
     --header "Authorization: Basic $AUTHORIZATION_BASIC" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json")

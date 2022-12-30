@@ -1,0 +1,2 @@
+#!/bin/bash
+podman build -f Dockerfile -t ghcr.io/mhgoldman/cm_script_publisher:0.1
