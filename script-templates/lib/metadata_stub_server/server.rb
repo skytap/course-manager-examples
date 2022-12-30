@@ -19,8 +19,8 @@ class MetadataStubServer < Sinatra::Base
   set :control_url, ENV['CM_CONTROL_URL'] || "#{settings.lab_url}/control/1/111"
   set :broadcast_url, ENV['CM_BROADCAST_URL'] || "#{settings.lab_url}/learning_console/broadcast"
 
-  set :control_data_json, File.read(File.join(File.dirname(__FILE__), "control_data.json"))
-  set :metadata_json, File.read(File.join(File.dirname(__FILE__), "metadata.json.erb"))
+  set :control_data_json, File.read(File.join(File.dirname(__FILE__), "lib/stub_data/control_data.json"))
+  set :metadata_json, File.read(File.join(File.dirname(__FILE__), "lib/stub_data/metadata.json.erb"))
 
   before { content_type "application/json" }
 

@@ -14,8 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/..
-
-source utils/_setup
-
-$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME npm install --no-fund
+# This script does not need anything to be built.

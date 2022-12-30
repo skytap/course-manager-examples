@@ -16,13 +16,13 @@
 
 PUBLISHER_IMAGE_NAME=ghcr.io/mhgoldman/cm_script_publisher:0.1
 
-DOCKER=$(which podman || which docker)
-[ -n "$DOCKER" ] || (echo "docker or podman is required" && exit 1)
+cd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/..
 
-pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
+source utils/_setup
 
+echo -e "====== Running build ======"
 [ -f utils/build ] && utils/build
 
-$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script -e EXTRA_CURL_OPTIONS=$EXTRA_CURL_OPTIONS $PUBLISHER_IMAGE_NAME
+echo -e "\n====== Running publish ======"
 
-popd > /dev/null
+$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script -e EXTRA_CURL_OPTIONS=$EXTRA_CURL_OPTIONS $PUBLISHER_IMAGE_NAME

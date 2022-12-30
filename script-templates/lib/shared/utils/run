@@ -14,33 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
+cd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/..
 
-DOCKER=$(which podman || which docker)
-[ -n "$DOCKER" ] || (echo "docker or podman is required" && exit 1)
+source utils/_setup
 
-IMAGE_NAME_LINE=$(cat config.yml|grep image_name)
-IMAGE_NAME=$(echo ${IMAGE_NAME_LINE#*:}|xargs)
-
-COMMAND_LINE=$(cat config.yml|grep command)
-COMMAND=$(echo ${COMMAND_LINE#*:}|xargs)
-
-ARGS_LINE=$(cat config.yml|grep args)
-ARGS=$(echo ${ARGS_LINE#*:}|xargs)
-
+echo -e "\n====== Running build ======"
 [ -f utils/build ] && utils/build
 
+echo -e "\n====== Setting up runtime environment ======"
 METADATA_SERVER_IMAGE=ghcr.io/mhgoldman/course_manager_metadata_stub_server:0.1
-SCRIPT_NET_NAME=cm-script-net
 
 if [ -n "$CONTROL_URL" ]; then
   CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
 fi
 
+if [ -d "$PWD/lib/stub_data" ]; then
+  STUB_DATA_MOUNT_PARAM="-v $PWD/lib/stub_data:/metadata_server/lib/stub_data"
+fi
+
 METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --name skytap-metadata-$RANDOM \
-  --mount type=bind,source=$PWD/lib/stub_data/metadata.json.erb,target=/metadata_server/metadata.json.erb,readonly \
-  --mount type=bind,source=$PWD/lib/stub_data/control_data.json,target=/metadata_server/control_data.json,readonly \
-  $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)
+  $STUB_DATA_MOUNT_PARAM $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)
 
 set +e
 
@@ -52,12 +45,13 @@ METADATA_SERVER_IP=$(
 if [ -n "$METADATA_SERVER_IP" ]; then
   METADATA_SERVER_HOST_PARAM="--add-host skytap-metadata:$METADATA_SERVER_IP"
 else
-  echo "Error: Could not determine metadata stub server IP address"
-  exit 1
+  echo "Warning: Could not determine metadata stub server IP address. Metadata service calls will not work."
 fi
 
+echo -e "\n====== Running script ======"
 $DOCKER run $METADATA_SERVER_HOST_PARAM --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
 
+echo -e "\n====== Cleaning up runtime environment ======"
 $DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null
 
-popd > /dev/null
+echo

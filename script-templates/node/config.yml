@@ -1,3 +1,3 @@
 image_name: node:19.3-alpine
 command: npm
-args: start
+args: start --silent
