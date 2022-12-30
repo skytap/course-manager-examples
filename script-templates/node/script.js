@@ -22,6 +22,7 @@ const LabControl = require('./lib/labControl');
     console.log(`Welcome to ${(await labControl.controlData()).title}!`);
     console.log(`This Skytap environment is ${(await skytapMetadata.metadata()).configuration_url}`)
 
+    // Note: custom data attributes must be configured in Course Manager settings to be saved; see README.md
     await labControl.updateControlData({'integration_data':{'AcmeDataProUsername': 'user_assigned_from_script', 'AcmeDataProPassword':'password_assigned_from_script'}});
 
     await labControl.refreshContentPane();

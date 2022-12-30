@@ -21,6 +21,7 @@ lab_control = LabControl.get
 puts "Welcome to #{lab_control.control_data['title']}!"
 puts "This Skytap environment is #{skytap_metadata.metadata['configuration_url']}"
 
+# Note: custom data attributes must be configured in Course Manager settings to be saved; see README.md
 lab_control.update_control_data({"integration_data" => { "AcmeDataProUsername" => "user_assigned_from_script", "AcmeDataProPassword" => "password_assigned_from_script"}})
 
 lab_control.refresh_content_pane
