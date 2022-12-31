@@ -1,5 +1,0 @@
-app_hostname: customer-subdomain.skytap-portal.com
-api_key: api-key-goes-here
-api_secret: api-secret-goes-here
-course_id: 1
-script_name: script-name-goes-here
