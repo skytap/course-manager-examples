@@ -106,7 +106,6 @@ echo -e "Completed with result $NOTIFY_UPLOADED_CODE"
 echo -e -n "Waiting for upload to be processed..."
 
 COUNTER=20
-DONE=0
 until [ $COUNTER -eq 0 ]; do
   NOTIFY_UPLOADED_CODE=$(curl $EXTRA_CURL_OPTIONS -L -s -o /dev/null -w "%{http_code}" -X GET $SCRIPT_URL \
     --header "Authorization: Basic $AUTHORIZATION_BASIC" \

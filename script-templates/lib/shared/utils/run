@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2022 Skytap Inc.
 
@@ -24,32 +24,34 @@ echo -e "\n====== Running build ======"
 echo -e "\n====== Setting up runtime environment ======"
 METADATA_SERVER_IMAGE=ghcr.io/mhgoldman/course_manager_metadata_stub_server:0.1
 
-if [ -n "$CONTROL_URL" ]; then
-  CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
-fi
+[ -n "$CONTROL_URL" ] && CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
 
-if [ -d "$PWD/lib/stub_data" ]; then
-  STUB_DATA_MOUNT_PARAM="-v $PWD/lib/stub_data:/metadata_server/lib/stub_data"
-fi
+[ -f "$PWD/lib/stub_data/metadata.json.erb" ] && STUB_METADATA_MOUNT_PARAM="--mount type=bind,source=$PWD/lib/stub_data/metadata.json.erb,target=/metadata_server/lib/stub_data/metadata.json.erb,readonly"
+[ -f "$PWD/lib/stub_data/control_data.json" ] && STUB_CONTROL_DATA_MOUNT_PARAM="--mount type=bind,source=$PWD/lib/stub_data/control_data.json,target=/metadata_server/lib/stub_data/control_data.json,readonly"
 
 METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --name skytap-metadata-$RANDOM \
-  $STUB_DATA_MOUNT_PARAM $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)
+  $STUB_METADATA_MOUNT_PARAM $STUB_CONTROL_DATA_MOUNT_PARAM $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)
+
+[ -z "$METADATA_SERVER_CONTAINER_ID" ] && echo "Error: metadata stub server couldn't start" && exit 1
+
+HC_COUNTER=20
+until [ $HC_COUNTER -eq 0 ]; do
+  METADATA_SERVER_HEALTH=$($DOCKER inspect --format '{{ .State.Health.Status }}' $METADATA_SERVER_CONTAINER_ID)
+  [ "$METADATA_SERVER_HEALTH" = "healthy" ] && break
+  HC_COUNTER=$((HC_COUNTER-1))
+  sleep 0.5
+done
+
+[ "$METADATA_SERVER_HEALTH" = "healthy" ] || (echo "Error: metadata stub server couldn't start" && exit 1)
 
 set +e
 
-METADATA_SERVER_IP=$(
-  $DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null ||
-  $DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null
-)
+METADATA_SERVER_IP=$($DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null)
 
-if [ -n "$METADATA_SERVER_IP" ]; then
-  METADATA_SERVER_HOST_PARAM="--add-host skytap-metadata:$METADATA_SERVER_IP"
-else
-  echo "Warning: Could not determine metadata stub server IP address. Metadata service calls will not work."
-fi
+[ -z "$METADATA_SERVER_IP" ] && echo "Error: Could not determine metadata stub server's IP address" && exit 1
 
 echo -e "\n====== Running script ======"
-$DOCKER run $METADATA_SERVER_HOST_PARAM --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
+$DOCKER run --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
 
 echo -e "\n====== Cleaning up runtime environment ======"
 $DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null
