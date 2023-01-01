@@ -23,7 +23,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Create zip files
         working-directory: ./script-templates
         shell: bash
@@ -33,7 +32,6 @@ jobs:
           for name in */ ; do
             zip -r $name.zip $name/*
           done
-
       - name: Push new zip file to repo
         uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
         with:
