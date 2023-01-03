@@ -33,11 +33,11 @@ script_name: "$CM_SCRIPT_NAME"
 EOF
   echo Wrote settings to .publish.yml
 else
-  CM_APP_HOSTNAME=$(cat .publish.yml | yq '.app_hostname // ""')
-  CM_API_KEY=$(cat .publish.yml | yq '.api_key // ""')
-  CM_API_SECRET=$(cat .publish.yml | yq '.api_secret // ""')
-  CM_COURSE_ID=$(cat .publish.yml | yq '.course_id // ""')
-  CM_SCRIPT_NAME=$(cat .publish.yml | yq '.script_name // ""')
+  CM_APP_HOSTNAME=$(cat .publish.yml | yq '.app_hostname // ""' || true)
+  CM_API_KEY=$(cat .publish.yml | yq '.api_key // ""' || true)
+  CM_API_SECRET=$(cat .publish.yml | yq '.api_secret // ""' || true)
+  CM_COURSE_ID=$(cat .publish.yml | yq '.course_id // ""' || true)
+  CM_SCRIPT_NAME=$(cat .publish.yml | yq '.script_name // ""' || true)
 fi
 
 if [ -z "$CM_APP_HOSTNAME" ] || [ -z "$CM_API_KEY" ] || [ -z "$CM_API_SECRET" ] || [ -z "$CM_COURSE_ID" ] || [ -z "$CM_SCRIPT_NAME" ]; then
@@ -48,15 +48,17 @@ fi
 PACKAGE_NAME=$CM_SCRIPT_NAME.zip
 PACKAGE_PATH=/tmp/$PACKAGE_NAME
 SCRIPTS_URL=https://$CM_APP_HOSTNAME/api/v1/courses/$CM_COURSE_ID/scripts
-AUTHORIZATION_BASIC=$(echo -n "$CM_API_KEY:$CM_API_SECRET" | base64 -w 0)
+
+AUTHORIZATION_BASIC=$(echo -n "$CM_API_KEY:$CM_API_SECRET" | base64 -w 0 || true)
+[ -z "$AUTHORIZATION_BASIC" ] && echo "Could not create basic auth credentials! Aborting." && exit 1
 
 echo -e "\nCreating ZIP package $PACKAGE_NAME..."
 zip -r $PACKAGE_PATH * -x .publish.yml -x "utils/*" -x "lib/stub_data/*"
 
-PACKAGE_SIZE=$(wc -c $PACKAGE_PATH | awk '{print $1}')
+PACKAGE_SIZE=$(wc -c $PACKAGE_PATH | awk '{print $1}' || true)
 [ -z "$PACKAGE_SIZE" ] && echo "Could not determine package size! Aborting." && exit 1
 
-PACKAGE_MD5=($(md5sum $PACKAGE_PATH | awk '{print $1}' | xxd -r -p | base64 -w 0))
+PACKAGE_MD5=$(md5sum $PACKAGE_PATH | awk '{print $1}' | xxd -r -p | base64 -w 0 || true)
 [ -z "$PACKAGE_MD5" ] && echo "Could not determine package checksum! Aborting." && exit 1
 
 echo -e "\nCreating remote script object..."
@@ -80,10 +82,10 @@ CREATE_SCRIPT_HTTP_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /tmp/create_script_resu
 echo -e "Completed with result $CREATE_SCRIPT_HTTP_CODE"
 [ "$CREATE_SCRIPT_HTTP_CODE" != "200" ] && echo "Aborting due to an error" && exit 1
 
-UPLOAD_DEST_URL=$(cat /tmp/create_script_result.json | jq -r ".direct_upload.url || true")
+UPLOAD_DEST_URL=$(cat /tmp/create_script_result.json | jq -r ".direct_upload.url" || true)
 [ -z "$UPLOAD_DEST_URL" ] && echo "Direct upload URL not found! Aborting." && exit 1
 
-SCRIPT_ID=$(cat /tmp/create_script_result.json | jq -r ".id || true")
+SCRIPT_ID=$(cat /tmp/create_script_result.json | jq -r ".id" || true)
 [ -z "$SCRIPT_ID" ] && echo "Script ID not found! Aborting." && exit 1
 
 SCRIPT_URL=$SCRIPTS_URL/$SCRIPT_ID
