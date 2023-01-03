@@ -21,7 +21,7 @@ DOCKER=$(which podman || which docker || true)
 
 IMAGE_NAME_LINE=$(cat config.yml|grep image_name || true)
 IMAGE_NAME=$(echo ${IMAGE_NAME_LINE#*:}|xargs || true)
-[ -z "$IMAGE_NAME" ] && echo "Image name is missing not found in config.yml" && exit 1
+[ -z "$IMAGE_NAME" ] && echo "Image name not found in config.yml" && exit 1
 
 COMMAND_LINE=$(cat config.yml|grep command || true)
 COMMAND=$(echo ${COMMAND_LINE#*:}|xargs || true)
