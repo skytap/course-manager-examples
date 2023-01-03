@@ -30,13 +30,13 @@ METADATA_SERVER_IMAGE=ghcr.io/skytap/course_manager_metadata_stub_server:latest
 [ -f "$PWD/lib/stub_data/control_data.json" ] && STUB_CONTROL_DATA_MOUNT_PARAM="--mount type=bind,source=$PWD/lib/stub_data/control_data.json,target=/metadata_server/lib/stub_data/control_data.json,readonly"
 
 METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --name skytap-metadata-$RANDOM \
-  $STUB_METADATA_MOUNT_PARAM $STUB_CONTROL_DATA_MOUNT_PARAM $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE)
+  $STUB_METADATA_MOUNT_PARAM $STUB_CONTROL_DATA_MOUNT_PARAM $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE || true)
 
 [ -z "$METADATA_SERVER_CONTAINER_ID" ] && echo "Error: metadata stub server couldn't start" && exit 1
 
 HC_COUNTER=20
 until [ $HC_COUNTER -eq 0 ]; do
-  METADATA_SERVER_HEALTH=$($DOCKER inspect --format '{{ .State.Health.Status }}' $METADATA_SERVER_CONTAINER_ID)
+  METADATA_SERVER_HEALTH=$($DOCKER inspect --format '{{ .State.Health.Status }}' $METADATA_SERVER_CONTAINER_ID || true)
   [ "$METADATA_SERVER_HEALTH" = "healthy" ] && break
   HC_COUNTER=$((HC_COUNTER-1))
   sleep 0.5
@@ -46,7 +46,7 @@ done
 
 set +e
 
-METADATA_SERVER_IP=$($DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null)
+METADATA_SERVER_IP=$($DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null || true)
 
 [ -z "$METADATA_SERVER_IP" ] && echo "Error: Could not determine metadata stub server's IP address" && exit 1
 
