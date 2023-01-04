@@ -18,7 +18,4 @@ cd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/..
 
 source utils/_setup
 
-[ -f Gemfile.lock ] && rm -f Gemfile.lock
-[ -d vendor/cache ] && rm -rf vendor/cache
-
-$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME /bin/bash -c bundle package
+$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME bundle package
