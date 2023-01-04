@@ -16,7 +16,7 @@
 
 set -e
 
-DOCKER=$(which podman || which docker || true)
+[ -z "$DOCKER" ] && DOCKER=$(which docker || which podman || true)
 [ -z "$DOCKER" ] && echo "docker or podman is required" && exit 1
 
 IMAGE_NAME_LINE=$(cat config.yml|grep image_name || true)
