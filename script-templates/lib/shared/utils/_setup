@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright 2022 Skytap Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Build webhook-rb script
+set -e
 
-on:
-  workflow_dispatch:
+[ -z "$DOCKER" ] && DOCKER=$(which docker || which podman || true)
+[ -z "$DOCKER" ] && echo "docker or podman is required" && exit 1
 
-  push:
-    branches-ignore:
-      - master
-    paths:
-      - "scripts/webhook-rb/**"
+IMAGE_NAME_LINE=$(cat config.yml|grep image_name || true)
+IMAGE_NAME=$(echo ${IMAGE_NAME_LINE#*:}|xargs || true)
+[ -z "$IMAGE_NAME" ] && echo "Image name not found in config.yml" && exit 1
 
-jobs:
-  build:
-    uses: ./.github/workflows/build_ruby_script.yml
-    with:
-      script_name: webhook-rb
+COMMAND_LINE=$(cat config.yml|grep command || true)
+COMMAND=$(echo ${COMMAND_LINE#*:}|xargs || true)
+
+ARGS_LINE=$(cat config.yml|grep args || true)
+ARGS=$(echo ${ARGS_LINE#*:}|xargs || true)

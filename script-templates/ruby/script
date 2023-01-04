@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2022 Skytap Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Build webhook-rb script
+set -e
 
-on:
-  workflow_dispatch:
-
-  push:
-    branches-ignore:
-      - master
-    paths:
-      - "scripts/webhook-rb/**"
-
-jobs:
-  build:
-    uses: ./.github/workflows/build_ruby_script.yml
-    with:
-      script_name: webhook-rb
+bundle install --local --quiet
+bundle exec ruby script.rb
