@@ -21,6 +21,7 @@ class APIHelper
   def self.rest_call(url, verb, data=nil)
     uri = URI(url)
     host, port, path = uri.host, uri.port, uri.path
+    path = "/" if path == ""
 
     http = Net::HTTP.new(host, port)
     http.use_ssl = true if uri.instance_of?(URI::HTTPS)
