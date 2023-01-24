@@ -1,0 +1,3 @@
+image_name: python:3.10-slim-bullseye
+command: bash
+args: ./script

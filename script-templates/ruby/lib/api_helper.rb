@@ -22,12 +22,13 @@ class APIHelper
     uri = URI(url)
     host, port, path = uri.host, uri.port, uri.path
     path = "/" if path == ""
+    data = data.to_json if data.kind_of?(Hash)
 
     http = Net::HTTP.new(host, port)
     http.use_ssl = true if uri.instance_of?(URI::HTTPS)
     
     req = Object.const_get("Net::HTTP::#{verb.capitalize}").new(path)
-    req.body = data&.to_json
+    req.body = data
     req["Content-Type"] = "application/json"
     
     result = http.request(req)
