@@ -10,7 +10,9 @@ class SkytapMetadata:
     return cls.instance
 
   def metadata(self):
-    return requests.get(self.base_url).json()
+    if not hasattr(self, 'metadata_data'):
+      self.metadata_data = requests.get(self.base_url).json()
+    return self.metadata_data
 
   def user_data(self):
     return json.loads(self.metadata()['user_data'])
