@@ -18,4 +18,6 @@ cd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/..
 
 source utils/_setup
 
-$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME bundle package
+rm -rf vendor/cache vendor/bundle
+
+$DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $BUILD_IMAGE_NAME bash -c "bundle config deployment true && bundle package"

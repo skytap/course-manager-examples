@@ -19,12 +19,16 @@ set -e
 [ -z "$DOCKER" ] && DOCKER=$(which docker || which podman || true)
 [ -z "$DOCKER" ] && echo "docker or podman is required" && exit 1
 
-IMAGE_NAME_LINE=$(cat config.yml|grep image_name || true)
+IMAGE_NAME_LINE=$(cat config.yml|grep ^image_name || true)
 IMAGE_NAME=$(echo ${IMAGE_NAME_LINE#*:}|xargs || true)
 [ -z "$IMAGE_NAME" ] && echo "Image name not found in config.yml" && exit 1
 
-COMMAND_LINE=$(cat config.yml|grep command || true)
+BUILD_IMAGE_NAME_LINE=$(cat config.yml|grep ^build_image_name || true)
+BUILD_IMAGE_NAME=$(echo ${BUILD_IMAGE_NAME_LINE#*:}|xargs || true)
+[ -z "$BUILD_IMAGE_NAME" ] && BUILD_IMAGE_NAME=$IMAGE_NAME
+
+COMMAND_LINE=$(cat config.yml|grep ^command || true)
 COMMAND=$(echo ${COMMAND_LINE#*:}|xargs || true)
 
-ARGS_LINE=$(cat config.yml|grep args || true)
+ARGS_LINE=$(cat config.yml|grep ^args || true)
 ARGS=$(echo ${ARGS_LINE#*:}|xargs || true)

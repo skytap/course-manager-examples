@@ -16,5 +16,4 @@
 
 set -e
 
-bundle install --local --quiet
-bundle exec ruby script.rb
+bundle config deployment true && bundle exec ruby script.rb
