@@ -1,0 +1,4 @@
+image_name: python:3.10-slim-bullseye
+build_image_name: python:3.10-bullseye
+command: /bin/bash
+args: lib/template_support/localrun

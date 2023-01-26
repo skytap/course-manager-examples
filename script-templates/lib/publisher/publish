@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+# Copyright 2022 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+
+if [ ! -f .publish.yml ]; then
+  trap 'exit 1' SIGINT
+  read -p "Course Manager app hostname: " CM_APP_HOSTNAME
+  read -p "API key: " CM_API_KEY
+  read -p "API secret: " CM_API_SECRET
+  read -p "Course ID: " CM_COURSE_ID
+  read -p "Script name: " CM_SCRIPT_NAME
+  trap SIGINT
+  cat > .publish.yml <<EOF
+app_hostname: "$CM_APP_HOSTNAME"
+api_key: "$CM_API_KEY"
+api_secret: "$CM_API_SECRET"
+course_id: "$CM_COURSE_ID"
+script_name: "$CM_SCRIPT_NAME"
+EOF
+  echo Wrote settings to .publish.yml
+else
+  CM_APP_HOSTNAME=$(cat .publish.yml | yq '.app_hostname // ""' || true)
+  CM_API_KEY=$(cat .publish.yml | yq '.api_key // ""' || true)
+  CM_API_SECRET=$(cat .publish.yml | yq '.api_secret // ""' || true)
+  CM_COURSE_ID=$(cat .publish.yml | yq '.course_id // ""' || true)
+  CM_SCRIPT_NAME=$(cat .publish.yml | yq '.script_name // ""' || true)
+fi
+
+if [ -z "$CM_APP_HOSTNAME" ] || [ -z "$CM_API_KEY" ] || [ -z "$CM_API_SECRET" ] || [ -z "$CM_COURSE_ID" ] || [ -z "$CM_SCRIPT_NAME" ]; then
+  echo One or configuration options was not set. Please update .publish.yml and try again.
+  exit 1
+fi
+
+PACKAGE_NAME=$CM_SCRIPT_NAME.zip
+PACKAGE_PATH=/tmp/$PACKAGE_NAME
+SCRIPTS_URL=https://$CM_APP_HOSTNAME/api/v1/courses/$CM_COURSE_ID/scripts
+
+AUTHORIZATION_BASIC=$(echo -n "$CM_API_KEY:$CM_API_SECRET" | base64 -w 0 || true)
+[ -z "$AUTHORIZATION_BASIC" ] && echo "Could not create basic auth credentials! Aborting." && exit 1
+
+echo -e "\nCreating ZIP package $PACKAGE_NAME..."
+zip -r $PACKAGE_PATH * -x .publish.yml -x "bin/*" -x "lib/script_support/stub_data/*"
+
+PACKAGE_SIZE=$(wc -c $PACKAGE_PATH | awk '{print $1}' || true)
+[ -z "$PACKAGE_SIZE" ] && echo "Could not determine package size! Aborting." && exit 1
+
+PACKAGE_MD5=$(md5sum $PACKAGE_PATH | awk '{print $1}' | xxd -r -p | base64 -w 0 || true)
+[ -z "$PACKAGE_MD5" ] && echo "Could not determine package checksum! Aborting." && exit 1
+
+echo -e "\nCreating remote script object..."
+
+CREATE_SCRIPT_PAYLOAD=$(cat <<EOF
+{
+  "filename": "$PACKAGE_NAME",
+  "byte_size": $PACKAGE_SIZE,
+  "checksum": "$PACKAGE_MD5",
+  "content_type": "application/zip"
+}
+EOF
+)
+
+CREATE_SCRIPT_HTTP_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /tmp/create_script_result.json -w "%{http_code}" -X POST $SCRIPTS_URL \
+  --header "Authorization: Basic $AUTHORIZATION_BASIC" \
+  --header "Content-Type: application/json" \
+  --header "Accept: application/json" \
+  --data-raw "$CREATE_SCRIPT_PAYLOAD" || true)
+
+echo -e "Completed with result $CREATE_SCRIPT_HTTP_CODE"
+[ "$CREATE_SCRIPT_HTTP_CODE" != "200" ] && echo "Aborting due to an error" && exit 1
+
+UPLOAD_DEST_URL=$(cat /tmp/create_script_result.json | jq -r ".direct_upload.url" || true)
+[ -z "$UPLOAD_DEST_URL" ] && echo "Direct upload URL not found! Aborting." && exit 1
+
+SCRIPT_ID=$(cat /tmp/create_script_result.json | jq -r ".id" || true)
+[ -z "$SCRIPT_ID" ] && echo "Script ID not found! Aborting." && exit 1
+
+SCRIPT_URL=$SCRIPTS_URL/$SCRIPT_ID
+
+echo -e "\nUploading $PACKAGE_NAME to $UPLOAD_DEST_URL..."
+
+UPLOAD_HTTP_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /dev/null -w "%{http_code}" -X PUT -T "$PACKAGE_PATH" $UPLOAD_DEST_URL \
+  --header "Content-Length: $PACKAGE_SIZE" \
+  --header "Content-Type: application/zip" \
+  --header "Content-MD5: $PACKAGE_MD5" \
+  --header "Content-Disposition: inline; filename=\"$PACKAGE_NAME\"; filename*=UTF-8''$PACKAGE_NAME" || true)
+
+echo -e "Completed with result $UPLOAD_HTTP_CODE"
+[ "$UPLOAD_HTTP_CODE" != "200" ] && echo "Aborting due to an error" && exit 1
+
+echo -e "\nNotifying server that upload of $SCRIPT_URL is complete..."
+
+NOTIFY_UPLOADED_CODE=$(curl $EXTRA_CURL_OPTIONS -L -o /dev/null -w "%{http_code}" -X PUT $SCRIPT_URL \
+  --header "Authorization: Basic $AUTHORIZATION_BASIC" \
+  --header "Content-Type: application/json" \
+  --header "Accept: application/json" \
+  --data-raw "{\"uploaded\": true}" || true)
+
+echo -e "Completed with result $NOTIFY_UPLOADED_CODE"
+[ "$NOTIFY_UPLOADED_CODE" != "202" ] && echo "Aborting due to an error" && exit 1
+
+echo -e -n "Waiting for upload to be processed..."
+
+COUNTER=20
+until [ $COUNTER -eq 0 ]; do
+  NOTIFY_UPLOADED_CODE=$(curl $EXTRA_CURL_OPTIONS -L -s -o /dev/null -w "%{http_code}" -X GET $SCRIPT_URL \
+    --header "Authorization: Basic $AUTHORIZATION_BASIC" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" || true)
+  [ "$NOTIFY_UPLOADED_CODE" = "200" ] && break
+  COUNTER=$((COUNTER-1))
+  echo -n "."
+  sleep 10
+done
+
+if [ "$NOTIFY_UPLOADED_CODE" = "200" ]; then
+  echo -e "\n\nDone!\n"
+else
+  echo -e "\n\nUpload has not been processed yet. It may have failed, or may be taking longer than usual to process. Check the logs for more information\n."
+fi
