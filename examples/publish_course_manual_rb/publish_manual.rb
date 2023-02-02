@@ -101,8 +101,7 @@ class ManualPublisher
         "Accept" => "application/json",
         "Content-Type" => "application/json",
         "Authorization" => authorization
-      },
-      verify_ssl: false
+      }
     )
 
     unless r.body.blank?
