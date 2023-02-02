@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+
+gem "hashie", "~> 5.0.0"
+gem "httplog", "~> 1.6.2"
+gem "mime-types", "~> 3.4.1"
+gem "rest-client", "~> 2.0.2"
+gem "pry"
+gem "slop", "~> 4.9.3"
+gem "active_support", "~> 7.0.4"
