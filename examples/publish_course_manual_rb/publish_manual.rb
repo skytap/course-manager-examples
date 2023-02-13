@@ -68,7 +68,8 @@ class ManualPublisher
           "Accept" => "application/json",
           "Content-Type" => file_info[:content_type],
           "Content-MD5" => file_info[:checksum],
-          "Content-Length" => file_info[:byte_size]  
+          "Content-Length" => file_info[:byte_size],
+          "x-ms-blob-type" => 'BlockBlob'
         }
       )
     end
