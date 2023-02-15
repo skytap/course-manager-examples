@@ -196,6 +196,7 @@ UploadAttachments () {
                        --header "Content-Length: $(wc -c "$file_path" | awk '{print $1}')" \
                        --header "Content-Type: $(file -b --mime-type "$file_path")" \
                        --header "Content-MD5: $(MD5inBase64 "$file_path")" \
+                       --header "x-ms-blob-type: BlockBlob" \
                        --header "Content-Disposition: inline; filename=\"$(basename "$file_path")\"; filename*=UTF-8''$(basename "$file_path")")
     fi
   done
