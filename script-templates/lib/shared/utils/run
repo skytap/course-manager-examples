@@ -22,7 +22,7 @@ echo -e "\n====== Running build ======"
 bin/build
 
 echo -e "\n====== Setting up runtime environment ======"
-METADATA_SERVER_IMAGE=ghcr.io/skytap/course_manager_metadata_stub_server:latest
+METADATA_SERVER_IMAGE=skytapcmscripttools.azurecr.io/metadata_stub_server:latest
 
 [ -n "$CONTROL_URL" ] && CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
 
@@ -41,7 +41,7 @@ until [ $HC_COUNTER -eq 0 ]; do
   sleep 0.5
 done
 
-[ "$METADATA_SERVER_HEALTH" = "healthy" ] || (echo "Error: metadata stub server couldn't start" && exit 1)
+[ "$METADATA_SERVER_HEALTH" = "healthy" ] || { echo "Error: metadata stub server couldn't start" && exit 1; }
 
 set +e
 
