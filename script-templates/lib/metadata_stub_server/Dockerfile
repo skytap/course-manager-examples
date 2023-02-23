@@ -12,6 +12,7 @@ COPY . ./
 FROM ruby:3.2.0-alpine
 LABEL org.opencontainers.image.description Metadata Stub Server for Course Manager Script Templates
 WORKDIR /metadata_server
+RUN apk update && apk upgrade && apk add --no-cache curl
 COPY --from=build-env /metadata_server /metadata_server
 COPY --from=build-env /usr/local/bundle/config /usr/local/bundle/config
 EXPOSE 80
