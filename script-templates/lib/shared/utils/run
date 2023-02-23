@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Copyright 2022 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
+
+source bin/_setup
+
+echo -e "\n====== Running build ======"
+bin/build
+
+echo -e "\n====== Setting up runtime environment ======"
+METADATA_SERVER_IMAGE=skytapcmscripttools.azurecr.io/metadata_stub_server:latest
+
+[ -n "$CONTROL_URL" ] && CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
+
+[ -f "$PWD/lib/script_support/stub_data/metadata.json.erb" ] && STUB_METADATA_MOUNT_PARAM="--mount type=bind,source=$PWD/lib/script_support/stub_data/metadata.json.erb,target=/metadata_server/lib/stub_data/metadata.json.erb,readonly"
+[ -f "$PWD/lib/script_support/stub_data/control_data.json" ] && STUB_CONTROL_DATA_MOUNT_PARAM="--mount type=bind,source=$PWD/lib/script_support/stub_data/control_data.json,target=/metadata_server/lib/stub_data/control_data.json,readonly"
+
+METADATA_SERVER_CONTAINER_ID=$($DOCKER run --rm -d --name skytap-metadata-$RANDOM \
+  $STUB_METADATA_MOUNT_PARAM $STUB_CONTROL_DATA_MOUNT_PARAM $CONTROL_URL_PARAM $METADATA_SERVER_IMAGE || true)
+[ -z "$METADATA_SERVER_CONTAINER_ID" ] && echo "Error: metadata stub server couldn't start" && exit 1
+
+HC_COUNTER=20
+until [ $HC_COUNTER -eq 0 ]; do
+  METADATA_SERVER_HEALTH=$($DOCKER inspect --format '{{ .State.Health.Status }}' $METADATA_SERVER_CONTAINER_ID || true)
+  [ "$METADATA_SERVER_HEALTH" = "healthy" ] && break
+  HC_COUNTER=$((HC_COUNTER-1))
+  sleep 0.5
+done
+
+[ "$METADATA_SERVER_HEALTH" = "healthy" ] || { echo "Error: metadata stub server couldn't start" && exit 1; }
+
+set +e
+
+METADATA_SERVER_IP=$($DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}' $METADATA_SERVER_CONTAINER_ID 2>/dev/null || true)
+[ -z "$METADATA_SERVER_IP" ] && echo "Error: Could not determine metadata stub server's IP address" && exit 1
+
+echo -e "\n====== Running script ======"
+$DOCKER run --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
+
+echo -e "\n====== Cleaning up runtime environment ======"
+$DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null
+
+echo

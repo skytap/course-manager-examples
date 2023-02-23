@@ -1,0 +1,4 @@
+image_name: node:18.13.0-bullseye-slim
+build_image_name: node:18.13.0-bullseye
+command: /bin/bash
+args: lib/template_support/localrun

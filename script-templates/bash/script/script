@@ -1,0 +1,36 @@
+#!/usr/local/bin/bash
+
+# Copyright 2022 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+
+apk add curl jq > /dev/null
+
+CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
+
+CONTROL_DATA=$(curl -s $CONTROL_URL)
+
+echo "Welcome to $(echo $CONTROL_DATA | jq -r .title)!"
+
+echo "This Skytap environment is $(curl -s http://skytap-metadata/skytap|jq -r .configuration_url)"
+
+# Note: custom data attributes must be configured in Course Manager settings to be saved; see README.md
+curl -s -X PUT $CONTROL_URL --header "Content-Type: application/json" -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}' > /dev/null
+
+curl -s -X POST $(echo $CONTROL_DATA | jq -r .user_access_url)/learning_console/broadcast --header "Content-Type: application/json" -d '{"type":"refresh_content_pane"}' > /dev/null
+
+CONTROL_DATA=$(curl -s $CONTROL_URL)
+
+echo "Integration data updated to $(echo $CONTROL_DATA | jq -r .integration_data)"

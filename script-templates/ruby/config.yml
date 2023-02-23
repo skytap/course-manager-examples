@@ -1,0 +1,4 @@
+image_name: ruby:3.2.0-slim-bullseye
+build_image_name: ruby:3.2.0-bullseye
+command: /bin/bash
+args: lib/template_support/localrun
