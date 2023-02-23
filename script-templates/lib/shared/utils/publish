@@ -18,7 +18,7 @@ PUBLISHER_IMAGE_NAME=ghcr.io/skytap/course_manager_script_publisher:latest
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
-source ../lib/shared/utils/_setup
+source bin/_setup
 
 echo -e "====== Running build ======"
 bin/build

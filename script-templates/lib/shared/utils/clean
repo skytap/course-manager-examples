@@ -16,6 +16,6 @@
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
-source ../lib/shared/utils/_setup
+source bin/_setup
 
 $DOCKER run  --rm -v $PWD:/tmp/course_script -w /tmp/course_script $BUILD_IMAGE_NAME bash lib/template_support/clean
