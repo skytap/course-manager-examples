@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Compatibility for pre-v11 Script Host
-(cat /etc/hosts | grep "skytap-metadata" > /dev/null) || (echo 127.0.0.1 skytap-metadata > /etc/hosts)
+(cat /etc/hosts | grep "skytap-metadata" > /dev/null) || (echo 169.254.169.254 skytap-metadata > /etc/hosts)
 
 set -e
 
