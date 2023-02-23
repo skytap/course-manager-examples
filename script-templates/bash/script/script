@@ -27,9 +27,9 @@ echo "Welcome to $(echo $CONTROL_DATA | jq -r .title)!"
 echo "This Skytap environment is $(curl -s http://skytap-metadata/skytap|jq -r .configuration_url)"
 
 # Note: custom data attributes must be configured in Course Manager settings to be saved; see README.md
-curl -s -X PUT $CONTROL_URL -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}' > /dev/null
+curl -s -X PUT $CONTROL_URL --header "Content-Type: application/json" -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}' > /dev/null
 
-curl -s -X POST $(echo $CONTROL_DATA | jq -r .user_access_url)/learning_console/broadcast -d '{"type":"refresh_content_pane"}' > /dev/null
+curl -s -X POST $(echo $CONTROL_DATA | jq -r .user_access_url)/learning_console/broadcast --header "Content-Type: application/json" -d '{"type":"refresh_content_pane"}' > /dev/null
 
 CONTROL_DATA=$(curl -s $CONTROL_URL)
 
