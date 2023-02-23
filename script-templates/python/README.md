@@ -90,7 +90,7 @@ Please note:
 
 ### Metadata Stub Service
 
-A chellenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, copy the `../lib/metadata_stub_server/lib/script_support/stub_data` directory to `lib/script_support/stub_data` and modify the files accordingly.
+A challenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, copy the `../lib/metadata_stub_server/lib/script_support/stub_data` directory to `lib/script_support/stub_data` and modify the files accordingly.
 
 ## License
 
