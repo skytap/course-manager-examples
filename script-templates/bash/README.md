@@ -17,7 +17,8 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 * Make a copy of this directory structure and rename the directory to your desired script name.
 * The `script` directory is where your code will go. `script/script` is the entry point -- replace the sample code it contains with your own. You're welcome to add other files and directories under `script/` for use in the script.
 * To test running your script, run the `bin/run` command. This will run your code in a container, in a fashion similar to that used by the Script Host.
-* To publish your script to Course Manager, run `bin/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.
+* ~~COMING SOON: To publish your script to Course Manager, run `bin/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.~~
+* To publish your script to Course Manager, create a ZIP archive from this directory and upload it to the Scripts page. The ZIP file should be created with symlinks followed (i.e. the package should include the actual files, not symlinks) and this file should reside in the root of the archive, not nested in another directory.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
