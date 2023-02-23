@@ -16,4 +16,4 @@
 
 pushd script > /dev/null
 
-python -m pip install -r ./requirements.txt -t ./packages --upgrade --root-user-action=ignore
+python -m pip install -r ./requirements.txt -t ./packages --upgrade --root-user-action=ignore --disable-pip-version-check
