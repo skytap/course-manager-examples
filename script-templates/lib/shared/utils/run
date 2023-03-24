@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+METADATA_SERVER_IMAGE=skytapcmscripttools.azurecr.io/metadata_stub_server:latest
+INVOKER_IMAGE=skytapcmscripttools.azurecr.io/simple_script_invoker:latest
+
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
 source bin/_setup
@@ -22,7 +25,6 @@ echo -e "\n====== Running build ======"
 bin/build
 
 echo -e "\n====== Setting up runtime environment ======"
-METADATA_SERVER_IMAGE=skytapcmscripttools.azurecr.io/metadata_stub_server:latest
 
 [ -n "$CONTROL_URL" ] && CONTROL_URL_PARAM="-e CONTROL_URL=$CONTROL_URL"
 
@@ -49,7 +51,7 @@ METADATA_SERVER_IP=$($DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}'
 [ -z "$METADATA_SERVER_IP" ] && echo "Error: Could not determine metadata stub server's IP address" && exit 1
 
 echo -e "\n====== Running script ======"
-$DOCKER run --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:/tmp/course_script -w /tmp/course_script $IMAGE_NAME $COMMAND $ARGS
+$DOCKER run  --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:$PWD  -v /var/run/docker.sock:/var/run/docker.sock $INVOKER_IMAGE /invoker/bin/simple_script_invoke $PWD
 
 echo -e "\n====== Cleaning up runtime environment ======"
 $DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null
