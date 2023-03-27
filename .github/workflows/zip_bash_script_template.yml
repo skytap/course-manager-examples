@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Zip ruby script template
+name: Zip bash script template
 
 on:
   workflow_dispatch:
@@ -21,10 +21,10 @@ on:
     branches-ignore:
       - master
     paths:
-      - "script-templates/ruby/**"
+      - "script-templates/bash/**"
 
 jobs:
   build:
     uses: ./.github/workflows/zip_script_template.yml
     with:
-      script_template_name: ruby
+      script_template_name: bash
