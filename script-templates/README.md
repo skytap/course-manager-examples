@@ -2,8 +2,6 @@
 
 Each of the script templates below can be used as a starting point for developing a Course Manager Script in a supported scripting language. More details on getting started with each template is available in its respective README.
 
-| Template |          |        |
-| -------- |----------|--------|
 | Bash     | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/bash.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/bash) |
 | NodeJS   | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/node.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/node) |
 | Python   | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/python.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/python) |
