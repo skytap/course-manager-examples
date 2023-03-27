@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Zip script template
+name: Zip all script templates
 
 on:
-  workflow_call:
-    inputs:
-      script_template_name:
-        required: true
-        type: string
+  workflow_dispatch:
+
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - "script-templates/**"
 
 jobs:
   build:
@@ -28,17 +30,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create zip file
-        working-directory: ./script-templates/${{ inputs.script_template_name }}
+      - name: Create zip files
+        working-directory: ./script-templates
         run: |
-          rm -f ../${{ inputs.script_template_name }}.zip
-          zip -r ../${{ inputs.script_template_name }}.zip *
+          rm -f *.zip
+          for tmpl in ruby node python bash; do
+            pushd $tmpl && zip -r ../$tmpl.zip * && popd
+          done
 
-      - name: Push new zip file to repo
+      - name: Push new zip files to repo
         uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
         with:
           fetch: true
           default_author: github_actions
-          add: script-templates/${{ inputs.script_template_name }}.zip
-          message: Updating zip file for ${{ inputs.script_template_name }}
+          add: script-templates/*.zip
+          message: Updating script template zip files
           push: true
