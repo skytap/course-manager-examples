@@ -1,0 +1,9 @@
+=== SCORM Package Example ===
+
+This is a minimalistic example of a SCORM package that can be used to achieve an inline LMS integration using Course Manager's "legacy" lab controls.
+
+For this to work, the legacy controls need to be enabled on the backend. Contact the Course Manager team for help with this.
+
+Then, take this example and customize the settings at the top of the index.html file (note that you'll need a separately customized copy per course).
+
+To create the SCORM package, remove this readme file and then zip up the remainder of the files in this directory (note that the files need to be in the root of the directory). Then you can upload it to your LMS.
