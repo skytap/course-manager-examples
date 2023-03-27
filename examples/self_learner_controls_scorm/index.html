@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Lab</title>
+
+<script>
+  // Change these 2 variables
+  var courseIdentifier = "IntroToCourseXYZ";
+  var courseManagerSubdomain = "my-company-name";
+
+  var scormAPI = null;
+
+  function setup() {
+    var win = window;
+
+    while (true) {
+      if (scormAPI = win.API) {
+        break;
+      } else if (win == win.parent) {
+        console.log("SCORM API not found");
+        return;
+      } else {
+        win = win.parent;
+      }
+    }
+
+    scormAPI.LMSInitialize('');
+    var userIdentifier = scormAPI.LMSGetValue("cmi.core.student_id");
+
+    document.getElementById("self-learner-iframe").src = `https://${courseManagerSubdomain}.skytap-portal.com/self_learner_controls/${courseIdentifier}/${userIdentifier}`;
+  }
+
+  function teardown() {
+    if (scormAPI) {
+      scormAPI.LMSFinish('');
+    }
+  }
+
+</script>
+</head>
+<body onload="setup()" onunload="return teardown()">
+  <iframe style="border: 0; width: 400px; height: 300px" id="self-learner-iframe"></iframe>
+</body>
+</html>
