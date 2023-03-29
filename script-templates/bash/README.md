@@ -14,7 +14,10 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 
 ## Using This Template
 
-* Make a copy of this directory structure and rename the directory to your desired script name.
+* Make a copy of this template to a new directory, ensuring that symlinks are followed (e.g. using `cp -rL`). It may be most convenient to download a fresh copy using a command like:
+    ```
+    curl -LO https://github.com/skytap/course-manager-examples/raw/master/script-templates/bash.zip && unzip -d myscript bash.zip
+    ```
 * The `script` directory is where your code will go. `script/script` is the entry point -- replace the sample code it contains with your own. You're welcome to add other files and directories under `script/` for use in the script.
 * To test running your script, run the `bin/run` command. This will run your code in a container, in a fashion similar to that used by the Script Host.
 * ~~COMING SOON: To publish your script to Course Manager, run `bin/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.~~
@@ -85,7 +88,7 @@ curl -s -X POST $BROADCAST_URL -d '{"type":"refresh_lab"}'
 
 ### Metadata Stub Service
 
-A challenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, copy the `../lib/metadata_stub_server/lib/stub_data` directory to `lib/script_support/stub_data` and modify the files accordingly.
+A challenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, simply modify the files in `lib/script_support/stub_data`.
 
 **Important**: To ensure that your scripts can be run both locally and in Skytap, please take note of the following:
 
