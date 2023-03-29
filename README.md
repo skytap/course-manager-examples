@@ -2,7 +2,7 @@
 
 This repository contains example code examples for use with Course Manager by Skytap. If you are not already a Skytap customer and would like to learn more about our product, you can [find more information here](https://www.skytap.com/skytap-virtual-it-labs/)
 
-## Contenats
+## Contents
 
 - [Script Templates](script-templates/) - templates for developing new scripts for use with the Course Manager Scripts feature
 - [Sample Scripts](scripts/) - sample scripts that can be used with the Course Manager Scripts feature
