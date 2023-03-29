@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PUBLISHER_IMAGE_NAME=ghcr.io/skytap/course_manager_script_publisher:latest
+PUBLISHER_IMAGE_NAME=skytapcmscripttools.azurecr.io/script_publisher:latest
 
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
@@ -25,4 +25,4 @@ bin/build
 
 echo -e "\n====== Running publish ======"
 
-$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script -e EXTRA_CURL_OPTIONS=$EXTRA_CURL_OPTIONS $PUBLISHER_IMAGE_NAME
+$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script $PUBLISHER_IMAGE_NAME

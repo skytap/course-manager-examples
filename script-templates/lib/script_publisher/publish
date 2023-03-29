@@ -1,0 +1,28 @@
+#!/usr/bin/env -S BUNDLE_GEMFILE=/script/Gemfile bundle exec ruby
+
+require 'yaml'
+require_relative 'script_publisher'
+
+CONFIG_FILE_NAME = ".publish.yml"
+
+def prompt_for(prompt)
+  print "#{prompt}: "
+  gets.chomp
+end
+
+opts =
+  if File.exist?(CONFIG_FILE_NAME)
+    YAML.load_file(CONFIG_FILE_NAME).symbolize_keys
+  else
+    {
+      app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
+      api_key: prompt_for("Course Manager API key"),
+      api_secret: prompt_for("Course Manager API secret"),
+      course_id: prompt_for("Course ID"),
+      script_name: prompt_for("Script name")
+    }
+  end
+
+ScriptPublisher.new(**opts.to_hash).publish
+
+File.write(CONFIG_FILE_NAME, opts.stringify_keys.to_yaml)
