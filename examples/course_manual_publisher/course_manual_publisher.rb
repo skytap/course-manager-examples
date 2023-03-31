@@ -7,7 +7,7 @@ require "json"
 require "mime/types"
 require "nokogiri"
 require "rest-client"
-require "pry"
+
 class CourseManualPublisher
   class UnexpectedStateError < StandardError; end
 
