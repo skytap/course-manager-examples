@@ -1,0 +1,31 @@
+#!/usr/bin/env -S BUNDLE_GEMFILE=/script/Gemfile bundle exec ruby
+
+require 'yaml'
+require_relative 'course_manual_publisher'
+
+CONFIG_FILE_NAME = ".publish.yml"
+
+def prompt_for(prompt)
+  print "#{prompt}: "
+  gets.chomp
+end
+
+opts =
+  if File.exist?(CONFIG_FILE_NAME)
+    YAML.load_file(CONFIG_FILE_NAME).symbolize_keys
+  else
+    {
+      html_file: prompt_for("Path to HTML file (absolute path, or relative to current directory (#{Dir.pwd}))"),
+      attachment_dir: prompt_for("Attachments dir (relative path to HTML file)"),
+      app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
+      api_key: prompt_for("Course Manager API key"),
+      api_secret: prompt_for("Course Manager API secret"),
+      course_id: prompt_for("Course ID"),
+    }
+  end
+
+File.write(CONFIG_FILE_NAME, opts.stringify_keys.to_yaml)
+
+CourseManualPublisher.new(**opts.to_hash).publish
+
+File.write(CONFIG_FILE_NAME, opts.stringify_keys.to_yaml)
