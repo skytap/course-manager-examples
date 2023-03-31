@@ -1,3 +1,4 @@
 .publish.yml
 packages/
 __pycache__/
+.invoker_data
