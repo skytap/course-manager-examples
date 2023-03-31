@@ -51,7 +51,16 @@ METADATA_SERVER_IP=$($DOCKER inspect --format '{{ .NetworkSettings.IPAddress }}'
 [ -z "$METADATA_SERVER_IP" ] && echo "Error: Could not determine metadata stub server's IP address" && exit 1
 
 echo -e "\n====== Running script ======"
-$DOCKER run --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:$PWD -v /var/run/docker.sock:/var/run/docker.sock $INVOKER_IMAGE /invoker/bin/simple_script_invoke $PWD
+
+DATA_ROOT=$PWD/.invoker_data
+[ -d $DATA_ROOT ] || mkdir $DATA_ROOT
+[ -d $DATA_ROOT/logs ] || mkdir $DATA_ROOT/logs
+[ -d $DATA_ROOT/persistent ] || mkdir $DATA_ROOT/persistent
+
+RUNNER_ENV_OPTS="-e DATA_ROOT=$DATA_ROOT"
+[ -n "$LOG_STDOUT" ] && RUNNER_ENV_OPTS="$RUNNER_ENV_OPTS -e LOG_STDOUT=1"
+
+$DOCKER run --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:$PWD -v /var/run/docker.sock:/var/run/docker.sock $RUNNER_ENV_OPTS $INVOKER_IMAGE /invoker/bin/simple_script_invoke $PWD
 
 echo -e "\n====== Cleaning up runtime environment ======"
 $DOCKER rm -f $METADATA_SERVER_CONTAINER_ID > /dev/null
