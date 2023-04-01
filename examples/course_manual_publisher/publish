@@ -15,8 +15,8 @@ opts =
     YAML.load_file(CONFIG_FILE_NAME).symbolize_keys
   else
     {
-      html_file: prompt_for("Path to HTML file (absolute path, or relative to current directory (#{Dir.pwd}))"),
-      attachment_dir: prompt_for("Attachments dir (relative path to HTML file)"),
+      html_file: prompt_for("Path to HTML file"),
+      attachment_dir: prompt_for("Attachments dir (relative path to HTML file, or leave blank if none)"),
       app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
       api_key: prompt_for("Course Manager API key"),
       api_secret: prompt_for("Course Manager API secret"),
