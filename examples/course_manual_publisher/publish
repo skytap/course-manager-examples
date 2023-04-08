@@ -1,7 +1,7 @@
 #!/usr/bin/env -S BUNDLE_GEMFILE=/script/Gemfile bundle exec ruby
 
 require 'yaml'
-require_relative 'course_manual_publisher'
+require_relative 'lib/course_manual_publisher'
 
 CONFIG_FILE_NAME = ".publish.yml"
 
@@ -16,7 +16,6 @@ opts =
   else
     {
       html_file: prompt_for("Path to HTML file"),
-      attachment_dir: prompt_for("Attachments dir (relative path to HTML file, or leave blank if none)"),
       app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
       api_key: prompt_for("Course Manager API key"),
       api_secret: prompt_for("Course Manager API secret"),
