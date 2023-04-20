@@ -6,7 +6,7 @@ This is a code template that can be used as a starting point for developing a Co
 
 This template and the supporting scripts should work on Linux and macOS. 
 
-Building a script from this template requires Docker Desktop, Podman or a similar utility to run containers. The `docker` or `podman` utility should be on your system path.
+In addition, building a script from this template requires Docker to run containers. The `docker` utility should be on your system path.
 
 Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Skytap Support to have API access enabled for your account.
 
