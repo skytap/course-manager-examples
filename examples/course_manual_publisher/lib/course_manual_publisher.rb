@@ -26,6 +26,7 @@ require "nokogiri"
 require "rest-client"
 
 class CourseManualPublisher
+  class NoContentError < StandardError; end
   class UnexpectedStateError < StandardError; end
 
   POLL_SLEEP_SECS = 5
@@ -83,6 +84,8 @@ class CourseManualPublisher
     puts "Done."
   rescue UnexpectedStateError => e
     die e.message
+  rescue NoContentError
+    puts "There are no changes to publish."
   rescue RestClient::NotFound
     die "Course ID not valid"
   rescue RestClient::Unauthorized
@@ -212,6 +215,7 @@ class CourseManualPublisher
         "Authorization" => authorization
       }
     )
+    raise NoContentError if r.code == 204
 
     JSON.parse(r.body) if r.body.present?
   end
