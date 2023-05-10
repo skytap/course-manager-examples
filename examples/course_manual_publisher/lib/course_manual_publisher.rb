@@ -44,7 +44,7 @@ class CourseManualPublisher
 
     @html_file = File.expand_path(html_file)
     unless File.exist?(@html_file)
-      die("HTML file not found")
+      abort "HTML file not found"
     end
 
     @base_dir = File.dirname(@html_file)
@@ -83,15 +83,15 @@ class CourseManualPublisher
 
     puts "Done."
   rescue UnexpectedStateError => e
-    die e.message
+    abort e.message
   rescue NoContentError
     puts "There are no changes to publish."
   rescue RestClient::NotFound
-    die "Course ID not valid"
+    abort "Course ID not valid"
   rescue RestClient::Unauthorized
-    die "API credentials not valid"
+    abort "API credentials not valid"
   rescue RestClient::Locked
-    die "Manual is locked, please wait a few moments and try again"
+    abort "Manual is locked, please wait a few moments and try again"
   end
 
   private
@@ -184,7 +184,7 @@ class CourseManualPublisher
 
     desired_states_str = desired_states.map(&:humanize).map(&:downcase).join(' or ')
 
-    1.upto(MAX_POLLS) do
+    MAX_POLLS.times do
       current_state = request.try(:[], 'state') ||
                         raise(UnexpectedStateError, "No state found")
 
@@ -260,11 +260,6 @@ class CourseManualPublisher
     elsif !res_path.start_with?("/")
       File.expand_path(File.join(base_dir, res_path))
     end
-  end
-
-  def die(msg)
-    STDERR.puts msg
-    exit 1
   end
 
   def verbose?
