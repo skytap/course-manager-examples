@@ -24,16 +24,20 @@ GEM
     mime-types-data (3.2022.0105)
     minitest (5.17.0)
     netrc (0.11.0)
+    nokogiri (1.14.2-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.14.2-x86_64-linux)
+      racc (~> 1.4)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    racc (1.6.2)
     rack (3.0.4.1)
     rainbow (3.1.1)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    slop (4.9.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -41,6 +45,7 @@ GEM
     unf_ext (0.0.8.2)
 
 PLATFORMS
+  x86_64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
@@ -48,9 +53,9 @@ DEPENDENCIES
   hashie (~> 5.0.0)
   httplog (~> 1.6.2)
   mime-types (~> 3.4.1)
+  nokogiri (~> 1.14.2)
   pry
   rest-client (~> 2.0.2)
-  slop (~> 4.9.3)
 
 RUBY VERSION
    ruby 3.1.2p20

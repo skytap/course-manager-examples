@@ -70,11 +70,11 @@ class ScriptPublisher
       sleep POLL_SLEEP_SECS
     end
 
-    die "Upload not processed! Please check the logs for further information."
+    abort "Upload not processed! Please check the logs for further information."
   rescue RestClient::NotFound
-    die "Course not found"
+    abort "Course not found"
   rescue RestClient::Unauthorized
-    die "API credentials not valid"
+    abort "API credentials not valid"
   end
 
   private
@@ -124,10 +124,5 @@ class ScriptPublisher
 
   def scripts_url
     "https://#{app_hostname}/api/v1/courses/#{course_id}/scripts"
-  end
-
-  def die(msg)
-    STDERR.puts msg
-    exit 1
   end
 end
