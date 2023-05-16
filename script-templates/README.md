@@ -48,7 +48,7 @@ The following options can be configured in the `config.yml` file of your script.
 ## Managing Data during Script Invocation
 The script directory is mounted read-only by default. While this can be changed (see "Configuring the Command to Be Executed"), doing so is discouraged. This is because a script could inadvertently modify itself, which would impact subsequent executions of the same script within the same lab.
 
-If a script needs "scratch space," scripts can write files to the `/script_data` directory. Data stored in this location is persistent between script runs. However, the Script Host itself is not guaranteed to be persistent – for example, it could be redeployed as part of a re-provision operation. As such, it is recommended that data important to the operation of the lab – such as details about resources provisioned from a script that need to be re-accessed or cleaned up later – be persisted externally to the script -- for example, in Course Manager integration data.
+If a script needs "scratch space," scripts can write files to the `/script_data` directory. Data stored in this location is persistent between script runs. However, the Script Host itself is not guaranteed to be persistent – for example, it could be redeployed as part of a re-provision operation. As such, it is recommended that data important to the operation of the lab – such as details about resources provisioned from a script that need to be re-accessed or cleaned up later – be persisted externally to the script -- for example, in Course Manager custom data fields.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
