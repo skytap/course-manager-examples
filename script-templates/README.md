@@ -83,24 +83,29 @@ The following options can be configured in the `config.yml` file of your script.
 ### Specifying a Container Image
 
 #### Using a Built-In Container Image
-|runtime|String|The name of the **built-in container image** to be used. The built-in images available are currently: **debian:bullseye**, **node:18.14-bullseye**, **python:3.11-bullseye** or **ruby:3.2-bullseye**.|
+|Name|Type|Description|
+|----|----|-----------|
+|runtime|String|The name of the **built-in container image** to be used.<br/><br/>The built-in images available are currently: **debian:bullseye**, **node:18.14-bullseye**, **python:3.11-bullseye** or **ruby:3.2-bullseye**.|
 
 **OR**
 
 #### Using a Non-Built-In Container Image
-
-|image_name|String|The name or URL of the non-built-in container image in which the script should be extracted and executed. **Warning!** Docker Hub and many other container registries impose rate limits on image downloads. Because the container image will be downloaded separately into every lab where it's used, it's easy to hit such rate limits, which will result in script execution to fail. When using a non-built-in container image, we highly recommend that you self-host the image in your own registry and that image size be kept to a minimum.|
-|registry_username|String|The username to be used for authentication to the registry where the specified image resides. _optional_|
-|registry_username|String|The password to be used for authentication to the registry where the specified image resides. _optional_|
+|Name|Type|Description|
+|----|----|-----------|
+|image_name|String|The name or URL of the non-built-in container image in which the script should be extracted and executed.<br/><br/>**Warning!** Docker Hub and other popular container registries impose rate limits on image downloads. Because the container image will be downloaded separately into every lab where it's used, it's easy to hit such rate limits, which will result in script execution to fail. When using a non-built-in container image, we highly recommend that you self-host the image in your own registry and that image size be kept to a minimum.|
+|registry_username|String|The username to be used for authentication to the registry where the specified image resides, if any.|
+|registry_username|String|The password to be used for authentication to the registry where the specified image resides, if any.|
 
 ### Configuring the Command to Be Executed
-
+|Name|Type|Description|
+|----|----|-----------|
 |command|String|The command to be executed to invoke the script inside the container, provided as an array of string tokens (e.g. `["/bin/bash", "./script", "--arg1"]`) _optional_|
-|disable_entrypoint|Boolean|Specifies whether the container image's entrypoint should be blanked out. This may be necessary if you want to use a non-built-in container image that was built with an ENTRYPOINT and you want to override the command. _defaults to false_|
+|disable_entrypoint|Boolean|Specifies whether the container image's entrypoint should be blanked out. This may be necessary if you want to use a non-built-in container image that was built with an ENTRYPOINT and you want to override the command. _Defaults to false_|
 
 ### Other Configuration
-
-|script_dir_writable|Boolean|Specifies whether the script should have write access to the directory in which it will be run. Changing this setting is not recommended. Please see "Managing Data During Script Invocation" for further details. _defaults to false_|
+|Name|Type|Description|
+|----|----|-----------|
+|script_dir_writable|Boolean|Specifies whether the script should have write access to the directory in which it will be run. Changing this setting is not recommended. Please see "Managing Data During Script Invocation" for further details. _Defaults to false_|
 |env|Hash|Specifies environment variables to be exposed to the running script.|
 
 ## Managing Data during Script Invocation
