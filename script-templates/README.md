@@ -1,6 +1,10 @@
 # Course Manager Script Templates
 
-Each of the script templates below can be used as a starting point for developing a Course Manager Script in a supported scripting language. More details on getting started with each template is available in its respective README.
+## Getting Started
+
+A Course Manager script is simply a ZIP package that contains a configuration file called `config.yml` at its root. The contents of the script package are extracted and mounted into a Docker container, where they are run.
+
+While a script can be developed from scratch, we recommend using one of our script templates as a starting point for your development. Scripts can be created, tested locally, and published to Course Manager using the templates and the tools provided with them. Please see the README file provided with each template for details on getting started.
 
 | Template Name | Download | Browse |
 | -------- | -------- | ------ |
@@ -8,6 +12,101 @@ Each of the script templates below can be used as a starting point for developin
 | NodeJS   | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/node.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/node) |
 | Python   | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/python.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/python) |
 | Ruby     | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/ruby.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/ruby) |
+
+## Accessing Metadata & Control Endpoint From Your Script
+
+The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
+
+The Metadata Service and Control Endpoint can be accessed from within your scripts using HTTP API calls as described below. In addition, the Ruby, Node and Python script templates provide language-specific libraries that wrap the HTTP APIs, making it easier to consume these services. Please consult the README file for the respective template for details.
+
+### Skytap Metadata Service
+
+Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script. For example:
+
+```
+curl -s http://skytap-metadata/skytap # => { "id":"11111111", "name":"Windows Server 2019 Datacenter" ...,}
+```
+
+### Lab Control Endpoint
+
+The URL for the Lab Control Endpoint must be retrieved from the Skytap Metadata Service. For example:
+
+```
+CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
+```
+
+That URL, can then be accessed from your script:
+
+```
+curl -s $CONTROL_URL # => { "id":360, "consumed_at":null, ... }
+```
+
+
+#### Updating Custom Data
+
+```
+curl -s -X PUT $CONTROL_URL -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}'
+```
+
+Please note:
+* Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
+* Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
+
+
+#### Changing Runstate
+
+```
+curl -s -X PUT $CONTROL_URL -d '{"runstate": "running"}' # or "suspended", "halted", "stopped"
+```
+
+#### Refreshing the Content or Environment Pane (within Learning Console)
+
+To refresh either the Content or Environment pane within any open Learning Console instances for a given lab, first determine the broadcast URL. This is easiest done by appending `/learning_console/broadcast` to the user access URL as it appears in the Control Endpoint payload. This can be done with logic like:
+
+```
+CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
+CONTROL_DATA=$(curl -s $CONTROL_URL)
+BROADCAST_URL=$(echo $CONTROL_DATA | jq -r .user_access_url)/learning_console/broadcast
+```
+
+From there, try one of the following:
+
+```
+curl -s -X POST $BROADCAST_URL -d '{"type":"refresh_content_pane"}'
+curl -s -X POST $BROADCAST_URL -d '{"type":"refresh_lab"}'
+```
+
+## Script Configuration
+
+The following options can be configured in the `config.yml` file of your script.
+
+### Specifying a Container Image
+
+#### Using a Built-In Container Image
+|runtime|String|The name of the **built-in container image** to be used. The built-in images available are currently: **debian:bullseye**, **node:18.14-bullseye**, **python:3.11-bullseye** or **ruby:3.2-bullseye**.|
+
+**OR**
+
+#### Using a Non-Built-In Container Image
+
+|image_name|String|The name or URL of the non-built-in container image in which the script should be extracted and executed. **Warning!** Docker Hub and many other container registries impose rate limits on image downloads. Because the container image will be downloaded separately into every lab where it's used, it's easy to hit such rate limits, which will result in script execution to fail. When using a non-built-in container image, we highly recommend that you self-host the image in your own registry and that image size be kept to a minimum.|
+|registry_username|String|The username to be used for authentication to the registry where the specified image resides. _optional_|
+|registry_username|String|The password to be used for authentication to the registry where the specified image resides. _optional_|
+
+### Configuring the Command to Be Executed
+
+|command|String|The command to be executed to invoke the script inside the container, provided as an array of string tokens (e.g. `["/bin/bash", "./script", "--arg1"]`) _optional_|
+|disable_entrypoint|Boolean|Specifies whether the container image's entrypoint should be blanked out. This may be necessary if you want to use a non-built-in container image that was built with an ENTRYPOINT and you want to override the command. _defaults to false_|
+
+### Other Configuration
+
+|script_dir_writable|Boolean|Specifies whether the script should have write access to the directory in which it will be run. Changing this setting is not recommended. Please see "Managing Data During Script Invocation" for further details. _defaults to false_|
+|env|Hash|Specifies environment variables to be exposed to the running script.|
+
+## Managing Data during Script Invocation
+The script directory is mounted read-only by default. While this can be changed (see "Configuring the Command to Be Executed"), doing so is discouraged. This is because a script could inadvertently modify itself, which would impact subsequent executions of the same script within the same lab.
+
+If a script needs "scratch space," scripts can write files to the `/script_data` directory. Data stored in this location is persistent between script runs. However, the Script Host itself is not guaranteed to be persistent – for example, it could be redeployed as part of a re-provision operation. As such, it is recommended that data important to the operation of the lab – such as details about resources provisioned from a script that need to be re-accessed or cleaned up later – be persisted externally to the script -- for example, in Course Manager integration data.
 
 ## License
 
