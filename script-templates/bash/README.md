@@ -27,7 +27,7 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 
 The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
 
-The Metadata Service and Control Endpoint can be accessed from within your scripts using HTTP API calls. For more information, please click here](/skytap/course-manager-examples/script-templates/README.md#accessing-metadata--control-endpoint-from-your-script).
+The Metadata Service and Control Endpoint can be accessed from within your scripts using HTTP API calls. For more information, please [click here](../README.md#accessing-metadata--control-endpoint-from-your-script).
 
 ### Metadata Stub Service
 
