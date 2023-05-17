@@ -90,7 +90,7 @@ A challenge in developing scripts that interact with lab metadata is that it is 
 **Important**: To ensure that your scripts can be run both locally and in your Course Manager labs, please take note of the following:
 
 * Scripts should always access the Metadata Service via the URL **http://skytap-metadata/skytap**. This is a special URL that only works in Course Manager scripts. This should work in scripts run locally with `bin/run`, as well as from the Script Host in Course Manager-deployed labs (beginning with Script Host v10).
-* If your code accesses to the Lab Control endpoint, note that the endpoint URL used by the Metadata Stub Service will use http, but in production, the Lab Control endpoint will use https. Your code should always retrieve the Lab Control endpoint from the Metadata Service as shown above, expect that it may use either HTTP or HTTPS, and function accordingly.
+* If your code accesses the Lab Control endpoint, note that the endpoint URL used by the Metadata Stub Service will use http, but in production, the Lab Control endpoint will use https. Your code should always retrieve the Lab Control endpoint from the Metadata Service as shown above, expect that it may use either HTTP or HTTPS, and function accordingly.
 
 ## License
 

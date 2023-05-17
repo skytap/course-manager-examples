@@ -46,7 +46,7 @@ While not necessary in most cases, the following options can be configured in th
 |env|Hash|Specifies environment variables to be exposed to the running script (e.g. `{"var1":"val1","var2":"val2"}`)|
 
 ## Managing Data during Script Invocation
-The script will be extracted into its own directory from which it will be run. This directory is mounted read-only by default. While this can be changed (see "Advanced Script Configuration"), doing so is discouraged. This is because a script could inadvertently modify its own files, which could impact subsequent executions of the script within the same lab.
+The script will be extracted into its own directory from which it will be run. This directory is mounted read-only by default. While this can be changed (see "Other Configuration"), doing so is discouraged. This is because a script could inadvertently modify its own files, which could impact subsequent executions of the script within the same lab.
 
 If a script needs "scratch space," scripts can write files to the `/script_data` directory. Data stored in this location is persistent between script runs. However, the Script Host itself is not guaranteed to be persistent – for example, it could be redeployed as part of a re-provision operation. As such, it is recommended that data important to the operation of the lab – such as details about resources provisioned from a script that need to be re-accessed or cleaned up later – be persisted externally to the script (for example, in Course Manager custom data fields).
 
@@ -115,7 +115,7 @@ Please note:
 * Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
 
 #### Changing Runstate
-You can set the runstate to "running", "suspended", "halted" or "stopped" as follows:
+You can set the runstate to "running", "suspended", "halted" or "stopped" (see definitions [here](https://help.skytap.com/API_Documentation.html#Run/Stop) as follows:
 
 Request:
 ```
