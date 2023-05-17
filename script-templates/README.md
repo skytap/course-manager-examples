@@ -22,7 +22,7 @@ While not necessary in most cases, the following options can be configured in th
 #### Using a Built-In Container Image
 |Name|Type|Description|
 |----|----|-----------|
-|runtime|String|The name of the built-in container image to be used.<br/><br/>The built-in images available are currently: **debian:bullseye**, **node:18.14-bullseye**, **python:3.11-bullseye** or **ruby:3.2-bullseye**.|
+|runtime|String|The name of the built-in container image to be used.<br/><br/>The built-in images available currently include **debian:bullseye**, **node:18.14-bullseye**, **python:3.11-bullseye** and **ruby:3.2-bullseye**.|
 
 **OR**
 
@@ -42,11 +42,11 @@ While not necessary in most cases, the following options can be configured in th
 ### Other Configuration
 |Name|Type|Description|
 |----|----|-----------|
-|script_dir_writable|Boolean|Specifies whether the script should have write access to the directory in which it will be run. Changing this setting is not recommended. Please see "Managing Data During Script Invocation" for further details. _Defaults to false_|
-|env|Hash|Specifies environment variables to be exposed to the running script.|
+|script_dir_writable|Boolean|Specifies whether the script should have write access to the directory in which it will reside and from which it will be run. Changing this setting is not recommended. Please see "Managing Data During Script Invocation" for further details. _Defaults to false_|
+|env|Hash|Specifies environment variables to be exposed to the running script (e.g. `{"var1":"val1","var2":"val2"}`)|
 
 ## Managing Data during Script Invocation
-The script directory is mounted read-only by default. While this can be changed (see "Advanced Script Configuration"), doing so is discouraged. This is because a script could inadvertently modify its files, which could impact subsequent executions of the same script within the same lab.
+The script will be extracted into its own directory from which it will be run. This directory is mounted read-only by default. While this can be changed (see "Advanced Script Configuration"), doing so is discouraged. This is because a script could inadvertently modify its own files, which could impact subsequent executions of the script within the same lab.
 
 If a script needs "scratch space," scripts can write files to the `/script_data` directory. Data stored in this location is persistent between script runs. However, the Script Host itself is not guaranteed to be persistent – for example, it could be redeployed as part of a re-provision operation. As such, it is recommended that data important to the operation of the lab – such as details about resources provisioned from a script that need to be re-accessed or cleaned up later – be persisted externally to the script (for example, in Course Manager custom data fields).
 
@@ -58,14 +58,18 @@ The Metadata Service and Control Endpoint can be accessed from within your scrip
 
 ### Skytap Metadata Service
 
-Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script:
+Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script. This is a special URL that only works from within Course Manager scripts.
 
-```
+#### Getting the Skytap Metadata
+
 Request:
+```
 GET http://skytap-metadata/skytap
 Accept: application/json
+```
 
 Response:
+```
 200 OK
 
 {"id":"11111111", "name":"Windows Server 2019 Datacenter", "user_data":"{\"control_url\":\"https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...\"}", ...}
@@ -73,12 +77,12 @@ Response:
 
 ### Lab Control Endpoint
 
-The Lab Control Endpoint must be dynamically retrieved within your script. Get the Skytap metadata from the Metadata Service as described above and parse the JSON payload. Extract the "user_data" attribute, and parse the JSON string it contains. From there, you can extract the "control_url" attribute, which represents the Lab Control Endpoint.
+To use the Lab Control Endpoint, your script must first retrieve its URL from the Skytap metadata. Get the Skytap metadata from the Metadata Service as described above and parse the JSON payload. Extract the `user_data` attribute, and parse the JSON string it contains. From there, you can extract the `control_url` attribute, which represents the Lab Control Endpoint.
 
-The Control Endpoint can then be accessed from your script:
+#### Getting the Lab Control metadata
 
-```
 Request:
+```
 GET https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...
 Accept: application/json
 
@@ -90,15 +94,17 @@ Response:
 
 #### Updating Custom Data
 
-```
 Request:
+```
 PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...
 Content-Type: application/json
 Accept: application/json
 
 {"integration_data": {"AcmeDataProUsername":"user_assigned_from_script","AcmeDataProPassword":"password_assigned_from_script"}}
+```
 
 Response:
+```
 200 OK
 
 {"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
@@ -111,15 +117,17 @@ Please note:
 #### Changing Runstate
 You can set the runstate to "running", "suspended", "halted" or "stopped" as follows:
 
-```
 Request:
+```
 PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...
 Content-Type: application/json
 Accept: application/json
 
 {"runstate": "running"}
+```
 
 Response:
+```
 200 OK
 
 {"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
@@ -129,14 +137,17 @@ Response:
 
 To refresh either the Content or Environment pane within any open Learning Console instances for a given lab, first determine the broadcast URL. This is done by appending `/learning_console/broadcast` to the user access URL as it appears in the Control Endpoint payload. Then, send a message to the broadcast URL with a type of "refresh_content_pane" or "refresh_lab" as follows:
 
+Request:
 ```
 PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../learning_console/broadcast
 Content-Type: application/json
 Accept: application/json
 
 {"type": "refresh_content_pane"}
+```
 
 Response:
+```
 200 OK
 
 {"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
