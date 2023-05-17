@@ -60,7 +60,6 @@ Please note:
 * Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
 * Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
 
-
 #### Changing Runstate
 
 ```

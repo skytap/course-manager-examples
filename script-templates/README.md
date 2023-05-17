@@ -62,7 +62,7 @@ Access the Metadata Service using the URL `http://skytap-metadata/skytap` from y
 
 ```
 Request:
-GET http://skytap-metadata/skytap HTTP/1.0
+GET http://skytap-metadata/skytap
 Accept: application/json
 
 Response:
@@ -79,7 +79,7 @@ The Control Endpoint can then be accessed from your script:
 
 ```
 Request:
-GET https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/... HTTP/1.0
+GET https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...
 Accept: application/json
 
 Response:
@@ -92,7 +92,7 @@ Response:
 
 ```
 Request:
-PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/... HTTP/1.0
+PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...
 Content-Type: application/json
 Accept: application/json
 
@@ -113,7 +113,7 @@ You can set the runstate to "running", "suspended", "halted" or "stopped" as fol
 
 ```
 Request:
-PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/... HTTP/1.0
+PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...
 Content-Type: application/json
 Accept: application/json
 
@@ -130,7 +130,7 @@ Response:
 To refresh either the Content or Environment pane within any open Learning Console instances for a given lab, first determine the broadcast URL. This is done by appending `/learning_console/broadcast` to the user access URL as it appears in the Control Endpoint payload. Then, send a message to the broadcast URL with a type of "refresh_content_pane" or "refresh_lab" as follows:
 
 ```
-PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../learning_console/broadcast HTTP/1.0
+PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../learning_console/broadcast
 Content-Type: application/json
 Accept: application/json
 
