@@ -6,12 +6,12 @@ A Course Manager script is simply a ZIP package that contains a configuration fi
 
 While a script can be developed from scratch, we recommend using one of our script templates as a starting point for your development. Scripts can be created, tested locally, and published to Course Manager using the templates and the tools provided with them. Please see the README file provided with each template for details on getting started.
 
-| Template Name | Download | Browse |
-| -------- | -------- | ------ |
-| Bash     | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/bash.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/bash) |
-| NodeJS   | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/node.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/node) |
-| Python   | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/python.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/python) |
-| Ruby     | [Download](https://github.com/skytap/course-manager-examples/raw/master/script-templates/ruby.zip) | [Browse](https://github.com/skytap/course-manager-examples/tree/master/script-templates/ruby) |
+|Template Name|Download|Browse|
+|-------- | -------- | ------ |
+|Bash|[Download](bash.zip)|[Browse](bash)|
+|NodeJS|[Download](node.zip)|[Browse](node)|
+|Python|[Download](python.zip)|[Browse](python)|
+|Ruby|[Download](ruby.zip)|[Browse](ruby)|
 
 ## Advanced Script Configuration
 
