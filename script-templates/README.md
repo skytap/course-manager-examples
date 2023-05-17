@@ -58,59 +58,88 @@ The Metadata Service and Control Endpoint can be accessed from within your scrip
 
 ### Skytap Metadata Service
 
-Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script. For example:
+Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script:
 
 ```
-curl -s http://skytap-metadata/skytap # => { "id":"11111111", "name":"Windows Server 2019 Datacenter" ...,}
+Request:
+GET http://skytap-metadata/skytap HTTP/1.0
+Accept: application/json
+
+Response:
+200 OK
+
+{"id":"11111111", "name":"Windows Server 2019 Datacenter", "user_data":"{\"control_url\":\"https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/...\"}", ...}
 ```
 
 ### Lab Control Endpoint
 
-The URL for the Lab Control Endpoint must be retrieved from the Skytap Metadata Service. For example:
+The Lab Control Endpoint must be dynamically retrieved within your script. Get the Skytap metadata from the Metadata Service as described above and parse the JSON payload. Extract the "user_data" attribute, and parse the JSON string it contains. From there, you can extract the "control_url" attribute, which represents the Lab Control Endpoint.
+
+The Control Endpoint can then be accessed from your script:
 
 ```
-CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
-```
+Request:
+GET https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/... HTTP/1.0
+Accept: application/json
 
-That URL, can then be accessed from your script:
+Response:
+200 OK
 
+{"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
 ```
-curl -s $CONTROL_URL # => { "id":360, "consumed_at":null, ... }
-```
-
 
 #### Updating Custom Data
 
 ```
-curl -s -X PUT $CONTROL_URL -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}'
+Request:
+PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/... HTTP/1.0
+Content-Type: application/json
+Accept: application/json
+
+{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script","AcmeDataProPassword":"password_assigned_from_script"}}
+
+Response:
+200 OK
+
+{"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
 ```
 
 Please note:
 * Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
 * Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
 
-
 #### Changing Runstate
+You can set the runstate to "running", "suspended", "halted" or "stopped" as follows:
 
 ```
-curl -s -X PUT $CONTROL_URL -d '{"runstate": "running"}' # or "suspended", "halted", "stopped"
+Request:
+PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../control/... HTTP/1.0
+Content-Type: application/json
+Accept: application/json
+
+{"runstate": "running"}
+
+Response:
+200 OK
+
+{"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
 ```
 
 #### Refreshing the Content or Environment Pane (within Learning Console)
 
-To refresh either the Content or Environment pane within any open Learning Console instances for a given lab, first determine the broadcast URL. This is easiest done by appending `/learning_console/broadcast` to the user access URL as it appears in the Control Endpoint payload. This can be done with logic like:
+To refresh either the Content or Environment pane within any open Learning Console instances for a given lab, first determine the broadcast URL. This is done by appending `/learning_console/broadcast` to the user access URL as it appears in the Control Endpoint payload. Then, send a message to the broadcast URL with a type of "refresh_content_pane" or "refresh_lab" as follows:
 
 ```
-CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
-CONTROL_DATA=$(curl -s $CONTROL_URL)
-BROADCAST_URL=$(echo $CONTROL_DATA | jq -r .user_access_url)/learning_console/broadcast
-```
+PUT https://customername.skytap-portal.com/lab_access/self_learner/360/.../learning_console/broadcast HTTP/1.0
+Content-Type: application/json
+Accept: application/json
 
-From there, try one of the following:
+{"type": "refresh_content_pane"}
 
-```
-curl -s -X POST $BROADCAST_URL -d '{"type":"refresh_content_pane"}'
-curl -s -X POST $BROADCAST_URL -d '{"type":"refresh_lab"}'
+Response:
+200 OK
+
+{"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
 ```
 
 ## License
