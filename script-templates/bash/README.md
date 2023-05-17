@@ -21,7 +21,6 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 * The `script` directory is where your code will go. `script/script` is the entry point -- replace the sample code it contains with your own. You're welcome to add other files and directories under `script/` for use in the script.
 * To test running your script, run the `bin/run` command. This will run your code in a container, in a fashion similar to that used by the Script Host.
 * To publish your script to Course Manager, run `bin/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.
-* To publish your script to Course Manager, first run `bin/build`. Then create a ZIP archive from this directory and upload it to the Scripts page. The ZIP file should be created with symlinks followed (i.e. the package should include the actual files, not symlinks) and this file should reside in the root of the archive, not nested in another directory.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
@@ -33,11 +32,10 @@ The Metadata Service and Control Endpoint can be accessed from within your scrip
 
 A challenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, simply modify the files in `lib/script_support/stub_data`.
 
-**Important**: To ensure that your scripts can be run both locally and in Skytap, please take note of the following:
+**Important**: To ensure that your scripts can be run both locally and in your Course Manager labs, please take note of the following:
 
-* Scripts should always access the Metadata Service via the URL **http://skytap-metadata/skytap**. This is a special URL that only works in Course Manager scripts. This should work in scripts run with `bin/run`, as well as from the Script Host in Course Manager-deployed labs (beginning with Script Host v10).
+* Scripts should always access the Metadata Service via the URL **http://skytap-metadata/skytap**. This is a special URL that only works in Course Manager scripts. This should work in scripts run locally with `bin/run`, as well as from the Script Host in Course Manager-deployed labs (beginning with Script Host v10).
 * If your code accesses to the Lab Control endpoint, note that the endpoint URL used by the Metadata Stub Service will use http, but in production, the Lab Control endpoint will use https. Your code should always retrieve the Lab Control endpoint from the Metadata Service as shown above, expect that it may use either HTTP or HTTPS, and function accordingly.
-
 
 ## License
 

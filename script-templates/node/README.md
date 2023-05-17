@@ -22,7 +22,6 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 * Add any Node packages required by your script to `script/package.json` using `npm install <package-name> --save` within the `script` directory. Packages will be built in a Linux container to ensure the architecture matches the runtime environment of the Script Host.
 * To test running your script, run the `bin/run` command. This will run your code in a Linux container to match the runtime environment of the Script Host.
 * To publish your script to Course Manager, run `bin/publish`. This will build the dependencies, create a ZIP package, and push it to your Course Manager course. Upon first run, you will be prompted for the necessary details, which will be saved in a ` .publish.yml` file for subsequent runs.
-* To publish your script to Course Manager, first run `bin/build`. Then create a ZIP archive from this directory and upload it to the Scripts page. The ZIP file should be created with symlinks followed (i.e. the package should include the actual files, not symlinks) and this file should reside in the root of the archive, not nested in another directory.
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
