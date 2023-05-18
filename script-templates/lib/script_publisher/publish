@@ -7,7 +7,9 @@ CONFIG_FILE_NAME = ".publish.yml"
 
 def prompt_for(prompt)
   print "#{prompt}: "
-  gets.chomp
+  gets.chomp.tap do |val|
+    abort("#{prompt} not specified") if val.empty?
+  end
 end
 
 opts =
@@ -18,7 +20,7 @@ opts =
       app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
       api_key: prompt_for("Course Manager API key"),
       api_secret: prompt_for("Course Manager API secret"),
-      course_id: prompt_for("Course ID"),
+      course_id: prompt_for("Target course's numeric ID (from end of course URL)"),
       script_name: prompt_for("Script name")
     }
   end
