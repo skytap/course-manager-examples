@@ -9,7 +9,6 @@ GEM
     concurrent-ruby (1.2.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    hashie (5.0.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     httplog (1.6.2)
@@ -29,7 +28,6 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rubyzip (2.3.2)
-    slop (4.9.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -42,12 +40,9 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 7.0.4)
-  hashie (~> 5.0.0)
   httplog (~> 1.6.2)
-  mime-types (~> 3.4.1)
   rest-client (~> 2.0.2)
   rubyzip (~> 2.3)
-  slop (~> 4.9.3)
 
 RUBY VERSION
    ruby 3.1.2p20
