@@ -153,6 +153,18 @@ Response:
 {"id":360, "consumed_at":null, "user_identifier":"user@domain.com", "user_access_url":"https://customername.skytap-portal.com/lab_access/self_learner/360/...", ... }
 ```
 
+## Testing Your Script
+
+Several options are available for testing that your script works as expected:
+
+### Use the Script Template's `bin/run` Utility
+If you use a script template to build your script, the `bin/run` utility allows you to test the script locally. Please see the README file provided with the respective script template for details.
+
+### Test in a Live Lab
+You always have the option to test your script in a live Course Manager lab. This involves publishing the script to your course, provisioning a test lab, running the script, and observing its behavior.
+
+Please note that most scripts are downloaded only once for each lab provisioned. If, upon testing, you decide that the script needs to be modified, you will generally need to provision a new test lab to re-test once an updated script has been published. As a workaround, you can append `__draft` to the name of your script when it is published. Scripts named using this convention are re-downloaded upon every invocation, allowing a more iterative development/test cycle.
+
 ## License
 
 Copyright 2023 Skytap Inc.
