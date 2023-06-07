@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # Copyright 2023 Skytap Inc.
 
@@ -19,5 +19,10 @@
 
 set -e
 
+export PATH=$PATH:$PWD/lib
+
+mkdir -p /etc/ssl && cp -R $PWD/lib/certs /etc/ssl/certs
+
 pushd script > /dev/null
-/usr/local/bin/bash script
+
+/bin/bash script
