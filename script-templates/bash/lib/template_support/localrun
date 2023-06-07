@@ -21,7 +21,7 @@ set -e
 
 export PATH=$PATH:$PWD/lib
 
-mkdir -p /etc/ssl && cp -R $PWD/lib/certs /etc/ssl/certs
+mkdir -p /etc/ssl && ln -s $PWD/lib/certs /etc/ssl/certs
 
 pushd script > /dev/null
 
