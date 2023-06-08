@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # Copyright 2023 Skytap Inc.
 
@@ -15,8 +15,6 @@
 # limitations under the License.
 
 set -e
-
-apk add curl jq > /dev/null
 
 CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
 

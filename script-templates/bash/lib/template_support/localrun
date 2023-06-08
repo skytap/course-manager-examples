@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # Copyright 2023 Skytap Inc.
 
@@ -19,5 +19,9 @@
 
 set -e
 
+export PATH=$PATH:$PWD/lib
+export CURL_CA_BUNDLE=$PWD/lib/ca-certificates.crt
+
 pushd script > /dev/null
-/usr/local/bin/bash script
+
+/bin/bash script
