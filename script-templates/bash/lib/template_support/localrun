@@ -19,7 +19,14 @@
 
 set -e
 
-export PATH=$PATH:$PWD/lib
+SCRIPT_UTILS_DIR=/tmp/script_utils
+
+mkdir -p $SCRIPT_UTILS_DIR
+cp $PWD/lib/curl $SCRIPT_UTILS_DIR
+cp $PWD/lib/jq $SCRIPT_UTILS_DIR
+chmod +x $SCRIPT_UTILS_DIR/curl $SCRIPT_UTILS_DIR/jq
+
+export PATH=$PATH:$SCRIPT_UTILS_DIR
 export CURL_CA_BUNDLE=$PWD/lib/ca-certificates.crt
 
 pushd script > /dev/null
