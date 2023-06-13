@@ -25,4 +25,9 @@ bin/build
 
 echo -e "\n====== Running publish ======"
 
-$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script $PUBLISHER_IMAGE_NAME
+VERBOSE_PARAM=""
+if [ ! -z "$VERBOSE" ]; then
+  VERBOSE_PARAM="-e VERBOSE=1"
+fi
+
+$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script $VERBOSE_PARAM $PUBLISHER_IMAGE_NAME
