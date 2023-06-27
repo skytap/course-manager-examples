@@ -31,7 +31,7 @@ While not necessary in most cases, the following options can be configured in th
 |----|----|-----------|
 |image_name|String|The name or URL of the non-built-in container image in which the script should be extracted and executed.<br/><br/>**Warning!** Docker Hub and other popular container registries impose rate limits on image downloads. Because the container image will be downloaded into each lab where it's used, it's easy to hit such rate limits, which will result in script execution to fail. When using a non-built-in container image, we highly recommend that you self-host the image in your own registry and that image size be kept to a minimum.|
 |registry_username|String|The username to be used for authentication to the registry where the specified image resides, if any.|
-|registry_username|String|The password to be used for authentication to the registry where the specified image resides, if any.|
+|registry_password|String|The password to be used for authentication to the registry where the specified image resides, if any.|
 
 ### Configuring the Command to Be Executed
 |Name|Type|Description|
