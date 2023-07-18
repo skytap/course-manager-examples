@@ -35,13 +35,10 @@ class MetadataStubServer < Sinatra::Base
 
   put URI(settings.control_url).path do
     body = JSON.parse(request.body.read) rescue {}
-    if integration_data = body["integration_data"]
-      settings.control_data_json = JSON.parse(settings.control_data_json).tap do |h|
-        h["integration_data"] = integration_data
-      end.to_json
-    end
-
-    settings.control_data_json
+    control_data = JSON.parse(settings.control_data_json) rescue {}
+    settings.control_data_json = control_data.merge(
+      body.slice("metadata", "sensitive_metadata", "feature", "course", "user", "event")
+    ).to_json
   end
 
   post URI(settings.broadcast_url).path do

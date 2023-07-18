@@ -18,12 +18,9 @@ from skytap_metadata import SkytapMetadata
 from lab_control import LabControl
 
 print(f'Welcome to {LabControl().control_data()["title"]}')
-
 print(f'This Skytap environment is {SkytapMetadata().metadata()["configuration_url"]}')
 
-# Note: custom data attributes must be configured in Course Manager settings to be saved; see README.md
-LabControl().update_control_data({ "integration_data": { "AcmeDataProUsername": "user_assigned_from_script", "AcmeDataProPassword": "password_assigned_from_script" } })
+LabControl().update_control_data({ "metadata": { "AcmeDataProUsername": "user_assigned_from_script"}, "sensitive_metadata": { "AcmeDataProPassword": "password_assigned_from_script" } })
 
-LabControl().refresh_content_pane()
-
-print(f'Integration data updated to {LabControl().control_data()["integration_data"]}')
+print(f'Metadata updated to {LabControl().control_data()["metadata"]}')
+print(f'Sensitive metadata updated to {LabControl().control_data()["sensitive_metadata"]}')

@@ -17,11 +17,27 @@
     "custom_content": "",
     "iframe_url": "http://skytap-metadata/self_learner_iframe/1/111",
     "integration_data": {
-        "AcmeDataProUsername": "user1",
-        "AcmeDataProPassword": "password1",
         "cosmos_url": "",
         "cosmos_name": "",
         "cosmos_key": ""
+    },
+    "metadata": {},
+    "sensitive_metadata": {},
+    "feature": {
+        "metadata": {},
+        "sensitive_metadata": {}
+    },
+    "course": {
+        "metadata": {},
+        "sensitive_metadata": {}
+    },
+    "user": {
+        "metadata": {},
+        "sensitive_metadata": {}
+    },
+    "event": {
+        "metadata": {},
+        "sensitive_metadata": {}
     },
     "remaining_runtime_in_seconds": 15383,
     "request_time": "2022-12-14T02:12:52Z",
