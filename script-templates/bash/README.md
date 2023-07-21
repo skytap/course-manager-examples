@@ -62,7 +62,7 @@ Update metadata or sensitive metadata:
 curl -s -X PUT $CONTROL_URL  --header "Content-Type: application/json" -d '{ "metadata": { "AcmeDataProUsername": "user_assigned_from_script" }, "sensitive_metadata": { "AcmeDataProPassword": "password_assigned_from_script" } }'
 ```
 
-Update metadata or sensitive metadata for the associated `course`, `feature` (Events or Labs), `event` (for event participants only), or `user` (for on-demand labs provisioned on the My Labs page only):
+Update metadata or sensitive metadata for the associated `course`, `feature` (Events or Labs), `event` (for event participants only), or `user` (for on-demand labs provisioned via the [Request Portal workflow](https://help.skytap.com/course-manager-use-request-portal.html) only):
 
 ```
 curl -s -X PUT $CONTROL_URL --header "Content-Type: application/json" -d '{ "course": { "metadata": { "course_last_provisioned": "07/17/2023 17:48:32" } }, "feature": { "sensitive_metadata": { "cloud_app_password": "secret" } } }'
