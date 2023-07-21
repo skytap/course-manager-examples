@@ -24,4 +24,4 @@ puts "This Skytap environment is #{skytap_metadata.metadata['configuration_url']
 lab_control.update_control_data({ "metadata" => { "AcmeDataProUsername" => "user_assigned_from_script" }, "sensitive_metadata" => { "AcmeDataProPassword" => "password_assigned_from_script" } })
 
 puts "Metadata updated to #{lab_control.control_data['metadata']}"
-puts "Sensitive metadata updated to #{lab_control.control_data['sensitive_metadata']}"
+puts "Sensitive metadata updated to #{lab_control.control_data['sensitive_metadata']} (displayed for demo purposes only -- sensitive metadata is not normally intended for exposure to end users!)"

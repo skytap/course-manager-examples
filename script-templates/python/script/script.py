@@ -23,4 +23,4 @@ print(f'This Skytap environment is {SkytapMetadata().metadata()["configuration_u
 LabControl().update_control_data({ "metadata": { "AcmeDataProUsername": "user_assigned_from_script"}, "sensitive_metadata": { "AcmeDataProPassword": "password_assigned_from_script" } })
 
 print(f'Metadata updated to {LabControl().control_data()["metadata"]}')
-print(f'Sensitive metadata updated to {LabControl().control_data()["sensitive_metadata"]}')
+print(f'Sensitive metadata updated to {LabControl().control_data()["sensitive_metadata"]} (displayed for demo purposes only -- sensitive metadata is not normally intended for exposure to end users!)')

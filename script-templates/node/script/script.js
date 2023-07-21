@@ -25,5 +25,5 @@ const LabControl = require('labControl');
     await labControl.updateControlData({ 'metadata': { 'AcmeDataProUsername': 'user_assigned_from_script'}, 'sensitive_metadata': { 'AcmeDataProPassword': 'password_assigned_from_script' } });
 
     console.log(`Metadata updated to ${JSON.stringify((await labControl.controlData()).metadata)}`);
-    console.log(`Sensitive metadata updated to ${JSON.stringify((await labControl.controlData()).sensitive_metadata)}`);
+    console.log(`Sensitive metadata updated to ${JSON.stringify((await labControl.controlData()).sensitive_metadata)} (displayed for demo purposes only -- sensitive metadata is not normally intended for exposure to end users!)`);
 })();

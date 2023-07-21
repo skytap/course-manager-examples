@@ -45,10 +45,10 @@ const metadata = SkytapMetadata.get();
 Then, you can call methods as follows:
 
 ```
-metadata.metadata()                            # => returns Skytap metadata as a hash
-metadata.userData                              # => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
-metadata.configurationUserData()               # => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
-metadata.controlURL()                          # => returns the control endpoint URL
+metadata.metadata()                            // => returns Skytap metadata as a hash
+metadata.userData                              // => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
+metadata.configurationUserData()               // => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
+metadata.controlURL()                          // => returns the control endpoint URL
 ```
 
 ### LabControl Interface
@@ -67,10 +67,10 @@ const control = LabControl.get();
 Then, you can call methods as follows:
 
 ```
-control.controlData()                         # => returns control metadata as a hash
-control.updateControlData(data)               # => updates control data (see below)
-control.refreshContentPane()                  # => requests any open content panes for the lab to refresh
-control.refreshLab()                          # => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.controlData()                         // => returns control metadata as a hash
+control.updateControlData(data)               // => updates control data (see below)
+control.refreshContentPane()                  // => requests any open content panes for the lab to refresh
+control.refreshLab()                          // => requests any open learning consoles for the lab to refresh their Skytap environment view
 ```
 
 #### Updating Control Data
