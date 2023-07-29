@@ -22,10 +22,8 @@ const LabControl = require('labControl');
     console.log(`Welcome to ${(await labControl.controlData()).title}!`);
     console.log(`This Skytap environment is ${(await skytapMetadata.metadata()).configuration_url}`)
 
-    // Note: custom data attributes must be configured in Course Manager settings to be saved; see README.md
-    await labControl.updateControlData({'integration_data':{'AcmeDataProUsername': 'user_assigned_from_script', 'AcmeDataProPassword':'password_assigned_from_script'}});
+    await labControl.updateControlData({ 'metadata': { 'AcmeDataProUsername': 'user_assigned_from_script'}, 'sensitive_metadata': { 'AcmeDataProPassword': 'password_assigned_from_script' } });
 
-    await labControl.refreshContentPane();
-
-    console.log(`Integration data updated to ${JSON.stringify((await labControl.controlData()).integration_data)}`);
+    console.log(`Metadata updated to ${JSON.stringify((await labControl.controlData()).metadata)}`);
+    console.log(`Sensitive metadata updated to ${JSON.stringify((await labControl.controlData()).sensitive_metadata)} (displayed for demo purposes only -- sensitive metadata is not normally intended for exposure to end users!)`);
 })();

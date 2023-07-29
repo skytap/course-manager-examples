@@ -45,10 +45,10 @@ const metadata = SkytapMetadata.get();
 Then, you can call methods as follows:
 
 ```
-metadata.metadata()                            # => returns Skytap metadata as a hash
-metadata.userData                              # => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
-metadata.configurationUserData()               # => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
-metadata.controlURL()                          # => returns the control endpoint URL
+metadata.metadata()                            // => returns Skytap metadata as a hash
+metadata.userData                              // => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
+metadata.configurationUserData()               // => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
+metadata.controlURL()                          // => returns the control endpoint URL
 ```
 
 ### LabControl Interface
@@ -67,29 +67,31 @@ const control = LabControl.get();
 Then, you can call methods as follows:
 
 ```
-control.controlData()                         # => returns control metadata as a hash
-control.updateControlData(data)               # => updates control data (see below)
-control.refreshContentPane()                  # => requests any open content panes for the lab to refresh
-control.refreshLab()                          # => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.controlData()                         // => returns control metadata as a hash
+control.updateControlData(data)               // => updates control data (see below)
+control.refreshContentPane()                  // => requests any open content panes for the lab to refresh
+control.refreshLab()                          // => requests any open learning consoles for the lab to refresh their Skytap environment view
 ```
 
-#### Updating control data
+#### Updating Control Data
 
 The `updateControlData()` method can be used to achieve the following:
 
 Change runstate:
 ```
-control.update_control_data({'runstate': 'running')    # or 'suspended', 'halted', 'stopped'
+control.updateControlData({ 'runstate': 'running' })    // or 'suspended', 'halted', 'stopped'
 ```
 
-Update custom data:
+Update metadata or sensitive metadata:
 ```
-control.update_control_data({'integration_data': { 'acme_username': 'user001', 'acme_password': 'password123!' })
+control.updateControlData({ 'metadata': { 'AcmeDataProUsername': 'user_assigned_from_script' }, 'sensitive_metadata': { 'AcmeDataProPassword': 'password_assigned_from_script' } })
 ```
 
-Please note:
-* Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
-* Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
+Update metadata or sensitive metadata for the associated `course`, `feature` (Events or Labs), `event` (for event participants only), or `user` (for on-demand labs provisioned via the [Request Portal workflow](https://help.skytap.com/course-manager-use-request-portal.html) only):
+
+```
+control.updateControlData({ 'course': { 'metadata': { 'course_last_provisioned': '07/17/2023 17:48:32'} }, 'feature': { 'sensitive_metadata': { 'password': 'secret'} } })
+```
 
 ### Metadata Stub Service
 

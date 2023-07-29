@@ -44,26 +44,28 @@ The URL for the Lab Control Endpoint must be retrieved from the Skytap Metadata 
 CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
 ```
 
-That URL, can then be accessed from your script:
+That URL can then be accessed from your script:
 
 ```
 curl -s $CONTROL_URL # => { "id":360, "consumed_at":null, ... }
 ```
 
-#### Updating Custom Data
+### Updating Control Data
+
+Change runstate:
+```
+curl -s -X PUT $CONTROL_URL --header "Content-Type: application/json" -d '{ "runstate": "running"}' # or 'suspended', 'halted', 'stopped'
+```
+
+Update metadata or sensitive metadata:
+```
+curl -s -X PUT $CONTROL_URL  --header "Content-Type: application/json" -d '{ "metadata": { "AcmeDataProUsername": "user_assigned_from_script" }, "sensitive_metadata": { "AcmeDataProPassword": "password_assigned_from_script" } }'
+```
+
+Update metadata or sensitive metadata for the associated `course`, `feature` (Events or Labs), `event` (for event participants only), or `user` (for on-demand labs provisioned via the [Request Portal workflow](https://help.skytap.com/course-manager-use-request-portal.html) only):
 
 ```
-curl -s -X PUT $CONTROL_URL -d '{"integration_data": {"AcmeDataProUsername":"user_assigned_from_script", "AcmeDataProPassword":"password_assigned_from_script"}}'
-```
-
-Please note:
-* Custom data fields must be created on the Admin > Settings page (under Labs > Integrations > Custom Data) before they can be updated.
-* Updating custom data overwrites all existing integration data for the lab. If you wish to only update a subset of the integration data fields, retrieve the old integration data, merge your changes in, and then update with the result.
-
-#### Changing Runstate
-
-```
-curl -s -X PUT $CONTROL_URL -d '{"runstate": "running"}' # or "suspended", "halted", "stopped"
+curl -s -X PUT $CONTROL_URL --header "Content-Type: application/json" -d '{ "course": { "metadata": { "course_last_provisioned": "07/17/2023 17:48:32" } }, "feature": { "sensitive_metadata": { "cloud_app_password": "secret" } } }'
 ```
 
 #### Refreshing the Content or Environment Pane (within Learning Console)
