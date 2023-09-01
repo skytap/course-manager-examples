@@ -59,11 +59,10 @@ DATA_ROOT=$PWD/.invoker_data
 
 RUNNER_ENV_OPTS="-e DATA_ROOT=$DATA_ROOT"
 [ -n "$LOG_STDOUT" ] && RUNNER_ENV_OPTS="$RUNNER_ENV_OPTS -e LOG_STDOUT=1"
-RESULT="FAILED"
 
+RESULT="FAILED"
 $DOCKER run --add-host skytap-metadata:$METADATA_SERVER_IP --rm -v $PWD:$PWD -v /var/run/docker.sock:/var/run/docker.sock $RUNNER_ENV_OPTS $INVOKER_IMAGE /invoker/bin/simple_script_invoke $PWD
 [ "$?" -eq "0" ] && RESULT="SUCCEEDED"
-
 echo -e "\n====== Script result: $RESULT ======"
 
 echo -e "\n====== Cleaning up runtime environment ======"
