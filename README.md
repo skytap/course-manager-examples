@@ -6,6 +6,7 @@ This repository contains example code examples for use with Course Manager by Sk
 
 - [Script Templates](script-templates/) - templates for developing new scripts for use with the Course Manager Scripts feature
 - [Sample Scripts](scripts/) - sample scripts that can be used with the Course Manager Scripts feature
+- [Tools](tools/) - utilities for use with Course Manager
 - [Examples](examples/) - other sample code for use with Course Manager for specific use cases
 
 ## License
