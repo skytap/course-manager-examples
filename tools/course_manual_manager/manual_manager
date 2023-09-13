@@ -3,7 +3,7 @@
 require 'slop'
 require 'yaml'
 require_relative 'lib/course_manual_manager'
-require 'pry'
+
 CONFIG_FILE_NAME = ".publish.yml"
 
 def prompt_for(prompt)
