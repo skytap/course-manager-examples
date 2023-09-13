@@ -1,8 +1,9 @@
 #!/usr/bin/env -S BUNDLE_GEMFILE=/script/Gemfile bundle exec ruby
 
+require 'slop'
 require 'yaml'
-require_relative 'lib/course_manual_publisher'
-
+require_relative 'lib/course_manual_manager'
+require 'pry'
 CONFIG_FILE_NAME = ".publish.yml"
 
 def prompt_for(prompt)
@@ -25,8 +26,27 @@ opts =
     }
   end
 
-File.write(CONFIG_FILE_NAME, opts.stringify_keys.to_yaml)
+cli_opts =
+  begin
+    Slop.parse do |o|
+      o.boolean "--delete", "Delete draft"
+      o.boolean "--upload", "Upload draft (implies --delete)"
+      o.boolean "--publish", "Publish draft"
 
-CourseManualPublisher.new(**opts.to_hash).publish
+      o.on "-h", "--help" do
+        puts o.to_s
+        puts "Specifying no options implies --delete --upload --publish"
+        exit 1
+      end
+    end
+  end.to_hash.symbolize_keys
+
+cli_opts.merge!(
+  delete: true,
+  upload: true,
+  publish: true
+) unless cli_opts.any? {|k,v| v == true}
+
+CourseManualManager.new(**opts.to_hash.merge(cli_opts)).publish
 
 File.write(CONFIG_FILE_NAME, opts.stringify_keys.to_yaml)
