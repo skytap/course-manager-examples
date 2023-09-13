@@ -1,5 +1,6 @@
 #!/usr/bin/env -S BUNDLE_GEMFILE=/script/Gemfile bundle exec ruby
 
+require 'readline'
 require 'slop'
 require 'yaml'
 require_relative 'lib/course_manual_manager'
@@ -7,24 +8,11 @@ require_relative 'lib/course_manual_manager'
 CONFIG_FILE_NAME = ".publish.yml"
 
 def prompt_for(prompt)
-  print "#{prompt}: "
-  gets.chomp.tap do |val|
+  Readline.readline("#{prompt}: ").tap do |val|
+    val.rstrip!
     abort("#{prompt} not specified") if val.empty?
   end
 end
-
-opts =
-  if File.exist?(CONFIG_FILE_NAME)
-    YAML.load_file(CONFIG_FILE_NAME).symbolize_keys
-  else
-    {
-      html_file: prompt_for("Path to HTML file"),
-      app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
-      api_key: prompt_for("Course Manager API key"),
-      api_secret: prompt_for("Course Manager API secret"),
-      course_id: prompt_for("Target course's numeric ID (from end of course URL)"),
-    }
-  end
 
 cli_opts =
   begin
@@ -39,6 +27,9 @@ cli_opts =
         exit 1
       end
     end
+  rescue Slop::Error => e
+    puts "#{e.to_s} (try --help)"
+    exit 1
   end.to_hash.symbolize_keys
 
 cli_opts.merge!(
@@ -46,6 +37,20 @@ cli_opts.merge!(
   upload: true,
   publish: true
 ) unless cli_opts.any? {|k,v| v == true}
+
+opts =
+  if File.exist?(CONFIG_FILE_NAME)
+    YAML.load_file(CONFIG_FILE_NAME).symbolize_keys
+  else
+    puts "Creating configuration file in #{File.join(Dir.pwd, CONFIG_FILE_NAME)}."
+    {
+      html_file: prompt_for("Path to HTML file"),
+      app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
+      api_key: prompt_for("Course Manager API key"),
+      api_secret: prompt_for("Course Manager API secret"),
+      course_id: prompt_for("Target course's numeric ID (from end of course URL)"),
+    }
+  end
 
 CourseManualManager.new(**opts.to_hash.merge(cli_opts)).publish
 

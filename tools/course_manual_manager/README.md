@@ -1,10 +1,10 @@
-# Skytap Course Manager Course Manual Publisher
+# Skytap Course Manager Course Manual Manager
 
 ## Introduction
 
 Skytap Course Manager allows you to create rich lab experiences for your end users through the use of the [Course Manuals](https://help.skytap.com/course-manager-use-manual-in-learning-console.html) feature. Manuals can be edited directly in the embedded [Manual editor](https://help.skytap.com/course-manager-edit-manual.html) within Course Manager. However, many customers prefer to develop and maintain instructional content using an external documentation management tool, and/or to store these resources in a source code management platform like GitHub. 
 
-By using this tool -- or perhaps by developing your own, using this one as a starting point -- you can publish an HTML-based course manual directly to a Course Manager course. Embedded images and attachments linked from the content can automatically be uploaded and linked to the content. The tool can be run manually or automatically, and can even form part of a continuous delivery pipeline for your course documentation if desired.
+By using this tool, you can upload, publish or delete a HTML-based course manual directly to a Course Manager course. Embedded images and attachments linked from the content can automatically be uploaded and linked to the content. The tool can be run manually or automatically, and can even form part of a continuous delivery pipeline for your course documentation if desired.
 
 ## Developing the Manual Content
 
@@ -36,9 +36,9 @@ Note that the directory where your HTML file resides is used as the base locatio
 
 For a simple example, see the `sample/` directory.
 
-## Running the Publisher
+## Running the Manual Manager
 
-The Publisher tool can be run in 2 different ways. The easiest way is to run it from our public Docker image, using a command like:
+The Manual Manager tool can be run in 2 different ways. The easiest way is to run it from our public Docker image, using a command like:
 
 ```
 docker run -it -v $HOME:$HOME -w $PWD skytapcmscripttools.azurecr.io/course_manual_manager
@@ -46,9 +46,19 @@ docker run -it -v $HOME:$HOME -w $PWD skytapcmscripttools.azurecr.io/course_manu
 
 Note: when using the Docker image, it's important to mount as a volume the directory structure that contains your manual content so it's available to the Publisher.
 
-Alternatively, you can install Ruby 3.1+ with RubyGems and Bundler, check the code out and run it with a command like `bundle install && bundle exec ruby publish`.
+Alternatively, you can install Ruby 3.1+ with RubyGems and Bundler, check the code out and run it with a command like `bundle install && bundle exec ruby course_manual_manager`.
 
-The tool will prompt you for the following details to publish your Manual:
+### Supported command line arguments
+**--delete**: Deletes the current manual draft, if any.
+
+**--upload**: Uploads a manual and associated attachments (implies **--delete**). When run without **--publish**, this option allows you to a preview your manual without publishing it to end users.
+
+**--publish**: Publishes the uploaded manual. This can be a manual uploaded previously with the **--upload** option, or can be used along with **--upload** to upload and publish in one step.
+
+If no command line arguments are specified, **--delete --upload --publish** is assumed.
+
+### Interactive configuration
+The first time you run the tool in a particular directory, it will prompt you for the following details to publish your Manual:
 
 * Path to your Manual HTML file
 * Your organization's Course Manager hostname (e.g. customername.skytap-portal.com)

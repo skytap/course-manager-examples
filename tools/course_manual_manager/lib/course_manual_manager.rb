@@ -53,7 +53,7 @@ class CourseManualManager
 
     @html_file = File.expand_path(html_file)
     unless File.exist?(@html_file)
-      abort "HTML file not found"
+      abort "HTML file '#{@html_file}' not found"
     end
 
     @base_dir = File.dirname(@html_file)

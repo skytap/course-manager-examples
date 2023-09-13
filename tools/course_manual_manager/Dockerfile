@@ -12,6 +12,6 @@ LABEL org.opencontainers.image.description Course Manager Course Manual Manager
 WORKDIR /script
 COPY --from=build-env /script /script
 COPY --from=build-env /usr/local/bundle/config /usr/local/bundle/config
-COPY manual_manager /script/
+COPY course_manual_manager /script/
 COPY lib/* /script/lib/
-ENTRYPOINT ["/script/manual_manager"]
+ENTRYPOINT ["/script/course_manual_manager"]
