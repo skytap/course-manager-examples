@@ -41,7 +41,7 @@ For a simple example, see the `sample/` directory.
 The Publisher tool can be run in 2 different ways. The easiest way is to run it from our public Docker image, using a command like:
 
 ```
-docker run -it -v $HOME:$HOME -w $PWD skytapcmscripttools.azurecr.io/course_manual_publisher
+docker run -it -v $HOME:$HOME -w $PWD skytapcmscripttools.azurecr.io/course_manual_manager
 ```
 
 Note: when using the Docker image, it's important to mount as a volume the directory structure that contains your manual content so it's available to the Publisher.
