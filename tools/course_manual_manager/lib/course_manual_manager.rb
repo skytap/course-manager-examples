@@ -107,7 +107,7 @@ class CourseManualManager
 
         1. Visit https://#{app_hostname}/courses/#{course_id}
         2. Click Course options dropdown > Preview
-        3. Select 'Latest from editor' as manual content source
+        3. Select 'Latest draft' as manual content source
 
       EOF
     end
