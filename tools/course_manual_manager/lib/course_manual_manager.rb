@@ -25,7 +25,7 @@ require "mime/types"
 require "nokogiri"
 require "rest-client"
 
-class CourseManualPublisher
+class CourseManualManager
   class NoContentError < StandardError; end
   class UnexpectedStateError < StandardError; end
 
@@ -33,18 +33,27 @@ class CourseManualPublisher
   MAX_POLLS = 20
 
   attr_reader :course_id, :html_file, :app_hostname, :api_key, :api_secret, :base_dir,
-              :doc, :resolved_paths, :resolved_path_aliases, 
+              :deleting, :uploading, :publishing,
+              :doc, :resolved_paths, :resolved_path_aliases,
               :initial_attachment_upload_data, :processed_html
 
-  def initialize(course_id:, html_file:, app_hostname:, api_key:, api_secret:)
+  alias_method :publishing?, :publishing
+  alias_method :uploading?, :uploading
+  alias_method :deleting?, :deleting
+
+  def initialize( course_id:, html_file:, app_hostname:, api_key:, api_secret:,
+                  delete: true, upload: true, publish: true )
     @course_id = course_id
     @app_hostname = app_hostname
     @api_key = api_key
     @api_secret = api_secret
+    @publishing = publish
+    @deleting = delete || upload
+    @uploading = upload
 
     @html_file = File.expand_path(html_file)
     unless File.exist?(@html_file)
-      abort "HTML file not found"
+      abort "HTML file '#{@html_file}' not found"
     end
 
     @base_dir = File.dirname(@html_file)
@@ -53,33 +62,55 @@ class CourseManualPublisher
   end
 
   def publish
-    puts "Deleting old draft..."
-    request(method: :delete)
-
-    parse_doc!
-
-    puts "Analyzing HTML to resolve links..."
-    resolve_local_paths!
-
-    puts "Processing HTML..."
-    process_html!
-
-    puts "Uploading content..."
-    upload_content
-
-    if initial_attachment_upload_data.any?
-      poll_for_state "needs_attachments", "draft"
-
-      puts "Uploading attachments..."
-      upload_attachments
-
-      request(method: :put, payload: { status: "ready_to_process" })
+    if deleting?
+      puts "Deleting old draft if any..."
+      request(method: :delete, payload: { notify_draft_changed: false })
     end
 
-    poll_for_state "ready_to_publish", ["needs_attachments", "draft"]
+    if uploading?
+      puts "Parsing HTML..."
+      parse_doc!
 
-    puts "Marking as published..."
-    request(method: :put, payload: { status: "published" })
+      puts "Analyzing HTML to resolve links..."
+      resolve_local_paths!
+
+      puts "Processing HTML..."
+      process_html!
+
+      puts "Uploading content..."
+      upload_content
+
+      if initial_attachment_upload_data.any?
+        poll_for_state "needs_attachments", "draft"
+
+        puts "Uploading attachments..."
+        upload_attachments
+
+        request(method: :put, payload: { status: "ready_to_process" })
+      end
+
+      poll_for_state "ready_to_publish", ["needs_attachments", "draft"]
+    end
+
+    if publishing?
+      puts "Marking draft as published..."
+      begin
+        request(method: :put, payload: { status: "published" })
+      rescue RestClient::UnprocessableEntity
+        abort "No draft to publish!"
+      end
+    end
+
+    if uploading? && !publishing?
+      puts <<~EOF
+        To preview content:
+
+        1. Visit https://#{app_hostname}/courses/#{course_id}
+        2. Click Course options dropdown > Preview
+        3. Select 'Latest draft' as manual content source
+
+      EOF
+    end
 
     puts "Done."
   rescue UnexpectedStateError => e
