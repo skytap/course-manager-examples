@@ -16,6 +16,8 @@
 
 PUBLISHER_IMAGE_NAME=skytapcmscripttools.azurecr.io/script_publisher:latest
 
+if [ -z "$IGNORE_SSL_ERRORS" ]; then IGNORE_SSL_ERRORS=0; fi
+
 pushd $(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/.. > /dev/null
 
 source bin/_setup
@@ -30,4 +32,4 @@ if [ ! -z "$VERBOSE" ]; then
   VERBOSE_PARAM="-e VERBOSE=1"
 fi
 
-$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script $VERBOSE_PARAM $PUBLISHER_IMAGE_NAME
+$DOCKER run -it -v $PWD:/tmp/course_script -w /tmp/course_script -e IGNORE_SSL_ERRORS=$IGNORE_SSL_ERRORS $VERBOSE_PARAM $PUBLISHER_IMAGE_NAME
