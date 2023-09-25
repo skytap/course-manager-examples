@@ -38,6 +38,19 @@ class LabControl
     lab_broadcast :refresh_lab
   end
 
+  def find_metadata_attr(key, within = nil)
+    collections = within ? [within] : ['metadata', 'sensitive_metadata']
+    collections.each do |collection|
+      [nil, 'event', 'course', 'user', 'feature'].each do |obj|
+        if this_level_value = control_data.dig(*[obj, collection, key].compact)
+          return this_level_value
+        end
+      end
+    end
+
+    nil
+  end
+
   private
 
   def initialize(control_url)
