@@ -67,10 +67,13 @@ const control = LabControl.get();
 Then, you can call methods as follows:
 
 ```
-control.controlData()                         // => returns control metadata as a hash
-control.updateControlData(data)               // => updates control data (see below)
-control.refreshContentPane()                  // => requests any open content panes for the lab to refresh
-control.refreshLab()                          // => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.controlData()                                            // => returns control metadata as a hash
+control.updateControlData(data)                                  // => updates control data (see below)
+control.refreshContentPane()                                     // => requests any open content panes for the lab to refresh
+control.refreshLab()                                             // => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.findMetadataAttr('myMetadataKey')                        // => finds and returns a standard or sensitive metadata attribute with the specified name on the lab / event participant, event, course, user, or feature, in that order
+control.findMetadataAttr('myMetadataKey', 'metadata')            // => same as above but limited to standard metadata
+control.findMetadataAttr('myMetadataKey', 'sensitive_metadata')  // => same as above but limited to sensitive metadata
 ```
 
 #### Updating Control Data

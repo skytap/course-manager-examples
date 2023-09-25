@@ -66,10 +66,13 @@ control = LabControl()
 Then, you can call methods as follows:
 
 ```
-control.control_data()                            # => returns control metadata as a hash
-control.update_control_data(data)                 # => updates control data (see below)
-control.refresh_content_pane()                    # => requests any open content panes for the lab to refresh
-control.refresh_lab()                             # => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.control_data()                                             # => returns control metadata as a hash
+control.update_control_data(data)                                  # => updates control data (see below)
+control.refresh_content_pane()                                     # => requests any open content panes for the lab to refresh
+control.refresh_lab()                                              # => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.find_metadata_attr('myMetadataKey')                        # => finds and returns a standard or sensitive metadata attribute with the specified name on the lab / event participant, event, course, user, or feature, in that order
+control.find_metadata_attr('myMetadataKey', 'metadata')            # => same as above but limited to standard metadata
+control.find_metadata_attr('myMetadataKey', 'sensitive_metadata')  # => same as above but limited to sensitive metadata
 ```
 
 #### Updating Control Data

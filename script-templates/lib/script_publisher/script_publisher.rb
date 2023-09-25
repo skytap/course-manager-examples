@@ -88,7 +88,8 @@ class ScriptPublisher
         "Accept" => "application/json",
         "Content-Type" => "application/json",
         "Authorization" => authorization
-      }
+      },
+      verify_ssl: (ENV['IGNORE_SSL_ERRORS'] != '1')
     )
 
     JSON.parse(res.body) rescue nil

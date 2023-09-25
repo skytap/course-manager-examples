@@ -8,7 +8,7 @@ RUN bundle config deployment true \
     && find vendor/bundle/ruby/3.2.0/gems/ -name "*.o" -delete
 
 FROM ruby:3.2.0-slim-bullseye
-LABEL org.opencontainers.image.description Course Manager Course Manual Manager
+LABEL org.opencontainers.image.description Course Manager - Course Manual Manager
 WORKDIR /script
 COPY --from=build-env /script /script
 COPY --from=build-env /usr/local/bundle/config /usr/local/bundle/config

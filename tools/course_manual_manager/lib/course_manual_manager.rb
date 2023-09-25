@@ -64,7 +64,7 @@ class CourseManualManager
   def publish
     if deleting?
       puts "Deleting old draft if any..."
-      request(method: :delete, payload: { notify_draft_changed: false })
+      request(method: :delete, payload: { notify_draft_changed: (!uploading? && !publishing?) })
     end
 
     if uploading?
@@ -244,7 +244,8 @@ class CourseManualManager
         "Accept" => "application/json",
         "Content-Type" => "application/json",
         "Authorization" => authorization
-      }
+      },
+      verify_ssl: (ENV['IGNORE_SSL_ERRORS'] != '1')
     )
     raise NoContentError if r.code == 204
 

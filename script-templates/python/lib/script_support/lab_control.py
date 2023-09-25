@@ -30,6 +30,22 @@ class LabControl:
       self.control_data_data = requests.get(self.control_url).json()
     return self.control_data_data
 
+  def find_metadata_attr(self, key, within = None):
+    collections = []
+    if within != None:
+      collections.append(within)
+    else:
+      collections.append('metadata')
+      collections.append('sensitive_metadata')
+    for collection in collections:
+      for k in [None, 'event', 'course', 'user', 'feature']:
+        data = self.control_data()
+        if (data != None) and (k in data):
+          data = data[k]
+        if (collection in data) and (key in data[collection]):
+          return data[collection][key]
+    return None
+
   def update_control_data(self, data):
     if (type(data) == dict):
       data = json.dumps(data)

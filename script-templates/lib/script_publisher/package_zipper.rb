@@ -3,7 +3,7 @@ require "zip"
 
 # largely taken from https://raw.githubusercontent.com/rubyzip/rubyzip/9d891f7353e66052283562d3e252fe380bb4b199/samples/example_recursive.rb
 class PackageZipper
-  EXCLUDE_LIST = %w[. .. .publish.yml .invoker_data]
+  EXCLUDE_LIST = %w[. .. .publish.yml .invoker_data stub_data]
   attr_reader :source_dir, :package_path
 
   def initialize(source_dir:, package_path:)

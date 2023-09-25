@@ -1,4 +1,4 @@
-# Skytap Course Manager Course Manual Manager
+# Skytap Course Manager - Course Manual Manager
 
 ## Introduction
 
@@ -8,18 +8,7 @@ By using this tool, you can upload, publish or delete a HTML-based course manual
 
 ## Developing the Manual Content
 
-A Course Manager Manual is a single HTML file. Many familiar HTML tags are supported, as are a number of "custom" tags that drive proprietary Course Manager Manual features such as:
-
-* Scripts
-* Commands
-* Virtual Browser
-* Callouts
-* Copyable text
-* Pagination
-
-Documentation of our custom tags for use in manually developed HTML content will be released in the future. In the meantime, to learn how to use these features, we recommend using the web-based editor to create sample content, and then clicking over to the Code View within the editor to capture the resulting markup.
-
-Only HTML tags supported by the web-based editor are supported. Unsupported tags are stripped out as part of the publishing process.
+To learn more about developing Manual content in HTML, please see the [Course Manual HTML guide](course_manual_html_guide.md).
 
 ### Images and attachments
 
