@@ -37,6 +37,7 @@ skytap_pip_interface_hostname = lab_control.find_metadata_attr('skytap_pip_inter
 
 lab_uuid = lab_control.find_metadata_attr('lab_uuid')
 
+
 configuration_url = skytap_metadata.metadata['configuration_url']
 
 unless lab_uuid
@@ -52,7 +53,7 @@ skytap_environment = skytap_client.get(configuration_url)
 
 interface = nil
 
-skytap_environment['vms'].each do |vm|
+skytap_environment['vms']&.each do |vm|
   vm['interfaces'].each do |nic|
     if nic['hostname'] == skytap_pip_interface_hostname
       interface = nic
@@ -61,18 +62,20 @@ skytap_environment['vms'].each do |vm|
   end
 end
 
-raise "VM network interface not found with hostname: #{ skytap_pip_interface_hostname }" unless interface
+if interface
+  pip = interface['public_ip_attachments'].detect { |ip| ip['connect_type'] == 'dynamic' }
 
-pip = interface['public_ip_attachments'].detect { |ip| ip['connect_type'] == 'dynamic' }
+  unless pip
+    update_url = [configuration_url, 'vms', interface['vm_id'], 'interfaces', interface['id'], 'dynamic_public_ips.json'].join('/')
+    pip = skytap_client.post(update_url, {}).first
+  end
 
-unless pip
-  update_url = [configuration_url, 'vms', interface['vm_id'], 'interfaces', interface['id'], 'dynamic_public_ips.json'].join('/')
-  pip = skytap_client.post(update_url, {}).first
+  lab_fqdn = pip['dns_name']
+
+  lab_control.update_control_data({ "metadata" => { "lab_fqdn" => lab_fqdn }})
+else
+  puts 'Network interface not found in Skytap'
 end
-
-lab_fqdn = pip['dns_name']
-
-lab_control.update_control_data({ "metadata" => { "lab_fqdn" => lab_fqdn }})
 
 puts 'Provisioning course resources...'
 
