@@ -42,6 +42,8 @@ Alternatively, you can install Ruby 3.1+ with RubyGems and Bundler, check the co
 
 **--upload**: Uploads a manual and associated attachments (implies **--delete**). When run without **--publish**, this option allows you to a preview your manual without publishing it to end users.
 
+Please note that when the manual is uploaded without being published, the draft content is not visible on the Course Manual page and it cannot be edited on the Edit Manual page. You can view the uploaded content using the Course Preview feature.
+
 **--publish**: Publishes the uploaded manual. This can be a manual uploaded previously with the **--upload** option, or can be used along with **--upload** to upload and publish in one step.
 
 If no command line arguments are specified, **--delete --upload --publish** is assumed.
