@@ -20,7 +20,12 @@ output "db_name" {
   value = postgresql_database.db.name
 }
 
-output "mastodon_password" {
-  value = random_password.mastodon_password.result
+output "mastodon_svc_password" {
+  value = random_password.mastodon_svc_password.result
+  sensitive = true
+}
+
+output "mastodon_admin_password" {
+  value = random_password.mastodon_admin_password.result
   sensitive = true
 }

@@ -6,3 +6,4 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 gem "ruby-terraform", "~> 1.7"
 gem "fileutils"
+gem "httplog"

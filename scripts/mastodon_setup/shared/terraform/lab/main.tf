@@ -52,7 +52,11 @@ resource "random_password" "db_password" {
   length = 16
 }
 
-resource "random_password" "mastodon_password" {
+resource "random_password" "mastodon_svc_password" {
+  length = 16
+}
+
+resource "random_password" "mastodon_admin_password" {
   length = 16
 }
 

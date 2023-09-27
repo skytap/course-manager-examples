@@ -33,20 +33,28 @@ class SkytapClient
     call(url, Net::HTTP::Post, data)
   end
 
+  def put(url, data)
+    call(url, Net::HTTP::Put, data)
+  end
+
+  def delete(url)
+    call(url, Net::HTTP::Delete)
+  end
+
   private
 
   def call(url, request_class, data = nil)
     uri = URI(url)
     path = uri.path
     path = "/" if path == ""
-    data = data.to_json if data.kind_of?(Hash)
+    data = data.to_json unless data.kind_of?(String)
 
     req = request_class.new(uri)
     req['Accept'] = 'application/json'
     req['Content-Type'] = 'application/json'
     req['Authorization'] = @auth_header
 
-    response = @http.request(req)
+    response = @http.request(req, data)
     JSON.parse(response.body)
   end
 end
