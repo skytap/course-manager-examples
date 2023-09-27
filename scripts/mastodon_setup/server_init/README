@@ -1,0 +1,9 @@
+Mastodon Server Setup Process
+
+1) Start with a clean Linux Ubuntu Server VM and scp these files to it
+2) If you want Mastodon to run at boot, uncomment the systemd stuff in the 2 init scripts.
+3) Run `sudo ./template_init.sh`` from the VM console (NOT over ssh)
+4) Now, shut down and save as a template if desired
+5) If you are building the shared Mastodon server plus relay -- as opposed to an ephemeral instance -- open `/opt/mastodon/init/mast_init.sh` and follow the instructions to comment/uncomment the correct sections.
+6) When ready to configure Mastodon, run `sudo /opt/mastodon/init/mast_init.sh`.
+7) If starting the init script from a command, use `sudo /opt/mastodon/init/mast_init_wrapper.sh`
