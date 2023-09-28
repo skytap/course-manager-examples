@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Copyright 2023 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Compatibility for pre-v11 Script Host
+(cat /etc/hosts | grep "skytap-metadata" > /dev/null) || (echo 169.254.169.254 skytap-metadata > /etc/hosts)
+
+set -e
+
+export RUBYLIB=$RUBYLIB:$PWD/lib/script_support
+export SCRIPT_UTILS_DIR=/tmp/script_utils
+
+# export TF_PLUGIN_CACHE_DIR=/script_data/terraform_cache
+export TF_CLI_CONFIG_FILE=/script/lib/terraform.tfrc
+
+mkdir -p $SCRIPT_UTILS_DIR
+cp $PWD/lib/terraform $SCRIPT_UTILS_DIR
+chmod +x $SCRIPT_UTILS_DIR/terraform
+
+# mkdir -p $TF_PLUGIN_CACHE_DIR
+
+pushd script > /dev/null
+bundle config deployment true
+bundle exec ruby script.rb
