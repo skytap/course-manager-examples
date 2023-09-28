@@ -1,3 +1,0 @@
-image_name: ruby:3.2-bullseye
-command: /bin/bash
-args: lib/template_support/localrun

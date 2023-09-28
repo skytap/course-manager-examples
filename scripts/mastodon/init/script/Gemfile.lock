@@ -4,8 +4,13 @@ GEM
     concurrent-ruby (1.2.2)
     faker (3.2.1)
       i18n (>= 1.8.11, < 2)
+    httplog (1.6.2)
+      rack (>= 2.0)
+      rainbow (>= 2.0.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    rack (3.0.8)
+    rainbow (3.1.1)
     sshkey (3.0.0)
 
 PLATFORMS
@@ -13,6 +18,7 @@ PLATFORMS
 
 DEPENDENCIES
   faker
+  httplog
   sshkey
 
 BUNDLED WITH
