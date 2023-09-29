@@ -34,63 +34,46 @@ provider "postgresql" {
   superuser = false
 }
 
+resource "postgresql_role" "user" {
+  name = var.lab_id
+  login = true
+  create_database = true
+  password = random_password.db_password.result
+}
+
 provider "sendgrid" {
   api_key = var.sendgrid_key
 }
 
-resource "random_string" "db_user" {
-  length = 16
-  special = false
-}
-
-resource "random_string" "db_name" {
-  length = 16
-  special = false
-}
-
 resource "random_password" "db_password" {
   length = 16
+  special = false
 }
 
-resource "random_password" "mastodon_svc_password" {
+resource "random_password" "mastodon_password" {
   length = 16
-}
-
-resource "random_password" "mastodon_admin_password" {
-  length = 16
+  special = false
 }
 
 resource "sendgrid_api_key" "api" {
-  name = var.lab_uuid
+  name = var.lab_id
   scopes = [ "mail.send" ]
 }
 
-resource "postgresql_database" "db" {
-  name = random_string.db_name.result
-}
-
-resource "postgresql_role" "user" {
-  name = random_string.db_user.result
-  login = true
-  password = random_password.db_password.result
-}
-
-resource "postgresql_grant" "grant" {
-  role = postgresql_role.user.name
-  database = postgresql_database.db.name
-  object_type = "database"
-  privileges = [
-    "CONNECT", "CREATE", "TEMPORARY"
-  ]
+module "user_db" {
+  source = "./userdb"
+  db_fqdn = data.terraform_remote_state.shared.outputs.db_fqdn
+  db_name = var.lab_id
+  pg_user = postgresql_role.user.name
+  pg_password = postgresql_role.user.password
 }
 
 resource "postgresql_grant" "schema_grant" {
   role = postgresql_role.user.name
-  database = postgresql_database.db.name
+  database = module.user_db.db_name
   object_type = "schema"
   schema = "public"
   privileges = [
     "CREATE", "USAGE"
   ]
 }
-

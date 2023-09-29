@@ -39,7 +39,7 @@ client_secret = lab_control.find_metadata_attr('azure_client_secret')
 storage_account = lab_control.find_metadata_attr('azure_storage_account')
 container = lab_control.find_metadata_attr('azure_container')
 resource_group = lab_control.find_metadata_attr('azure_resource_group')
-lab_uuid = lab_control.find_metadata_attr('lab_uuid')
+lab_id = lab_control.find_metadata_attr('lab_id')
 sendgrid_key = lab_control.find_metadata_attr('sendgrid_key')
 instructor_email = lab_control.find_metadata_attr('instructor_email')
 lti_data = lab_control.find_metadata_attr('lti_data')
@@ -121,14 +121,14 @@ TerraformHelper.new(
       storage_account_name: storage_account,
       container_name: container,
       resource_group_name: resource_group,
-      key: "#{ lab_uuid }.tfstate",
+      key: "#{ lab_id }.tfstate",
       use_azuread_auth: true
     },
     vars: {
       resource_group: resource_group,
       storage_account: storage_account,
       container: container,
-      lab_uuid: lab_uuid,
+      lab_id: lab_id,
       sendgrid_key: sendgrid_key
     }
   }

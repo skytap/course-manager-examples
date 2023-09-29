@@ -8,6 +8,8 @@ RubyTerraform.configure do |config|
 end   
 
 class TerraformHelper
+  class ExecutionError < StandardError; end
+
   def initialize(dir:, env: {}, opts: {}, output_attribute: nil)
     @output_attribute = output_attribute
 
@@ -42,19 +44,32 @@ class TerraformHelper
   end
 
   def apply(write_output: false)
-    RubyTerraform::Commands::Init.new(**@config_opts).execute(@opts, @invocation_options)
-    RubyTerraform::Commands::Apply.new(**@config_opts).execute({**@opts, auto_approve: true}, @invocation_options)
-    write_output_to_metadata if write_output
-    finalize
+    run_terraform_command do
+      RubyTerraform::Commands::Init.new(**@config_opts).execute(@opts, @invocation_options)
+      RubyTerraform::Commands::Apply.new(**@config_opts).execute({**@opts, auto_approve: true}, @invocation_options)
+      write_output_to_metadata if write_output
+    end
   end
 
   def destroy()
-    RubyTerraform::Commands::Init.new(**@config_opts).execute(@opts, @invocation_options)
-    RubyTerraform::Commands::Destroy.new(**@config_opts).execute({**@opts, auto_approve: true}, @invocation_options)
-    finalize
+    run_terraform_command do
+      RubyTerraform::Commands::Init.new(**@config_opts).execute(@opts, @invocation_options)
+      RubyTerraform::Commands::Destroy.new(**@config_opts).execute({**@opts, auto_approve: true}, @invocation_options)
+    end
   end
 
   private
+
+  def run_terraform_command(&block)
+    begin
+      yield
+      finalize
+    rescue RubyTerraform::Errors::ExecutionError
+      puts @output_stream.string if @output_attribute
+      finalize
+      abort 'The terraform action failed'
+    end
+  end
 
   def write_output_to_metadata()
     @lab_control.update_control_data({ "metadata" =>

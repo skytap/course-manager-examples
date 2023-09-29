@@ -17,15 +17,10 @@ output "db_password" {
 }
 
 output "db_name" {
-  value = postgresql_database.db.name
-}
-
-output "mastodon_svc_password" {
-  value = random_password.mastodon_svc_password.result
-  sensitive = true
+  value = module.user_db.db_name
 }
 
 output "mastodon_admin_password" {
-  value = random_password.mastodon_admin_password.result
+  value = random_password.mastodon_password.result
   sensitive = true
 }

@@ -48,12 +48,13 @@ priv_key = key.private_key
 puts "Updating metadata with SSH key and FQDN..."
 lab_control.update_control_data(
   'metadata' => {
+    'lab_id' => subdomain,
+    'lab_fqdn' => fqdn,
     'mastodon_ssh_public_key' => pub_key,
-    'lab_fqdn' => fqdn
+    'virtual_browser_ssh_key' => priv_key
   },
   'sensitive_metadata' => {
-     'mastodon_ssh_private_key' => priv_key,
-     'virtual_browser_ssh_key' => priv_key
+     'mastodon_ssh_private_key' => priv_key
   }
 )
 

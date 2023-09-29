@@ -30,6 +30,7 @@ if lab_control.find_metadata_attr('http_debug') == '1'
 end
 
 mastodon_admin_email = lab_control.control_data['user_identifier'].chomp(" (preview)")
+lab_control.update_control_data({ "metadata" => { "mastodon_admin_email" => mastodon_admin_email }})
 
 subscription_id = lab_control.find_metadata_attr('azure_subscription_id')
 tenant_id = lab_control.find_metadata_attr('azure_tenant_id')
@@ -43,17 +44,12 @@ sendgrid_key = lab_control.find_metadata_attr('sendgrid_key')
 skytap_username = lab_control.find_metadata_attr('skytap_username')
 skytap_token = lab_control.find_metadata_attr('skytap_token')
 skytap_mastodon_server_template_id = lab_control.find_metadata_attr('skytap_mastodon_server_template_id')
-lab_uuid = lab_control.find_metadata_attr('lab_uuid')
+lab_id = lab_control.find_metadata_attr('lab_id')
 mastodon_server_ip = lab_control.find_metadata_attr('mastodon_server_ip')
 lab_fqdn = lab_control.find_metadata_attr('lab_fqdn')
 lab_hostname = lab_fqdn.split('.').first
 
 configuration_url = skytap_metadata.metadata['configuration_url']
-
-unless lab_uuid
-  lab_uuid = SecureRandom.uuid
-  lab_control.update_control_data({ "metadata" => { "lab_uuid" => lab_uuid }})
-end
 
 skytap_client = SkytapClient.new(skytap_username, skytap_token)
 skytap_environment = skytap_client.get(configuration_url)
@@ -162,14 +158,14 @@ TerraformHelper.new(
       storage_account_name: storage_account,
       container_name: container,
       resource_group_name: resource_group,
-      key: "#{ lab_uuid }.tfstate",
+      key: "#{ lab_id }.tfstate",
       use_azuread_auth: true
     },
     vars: {
       resource_group: resource_group,
       storage_account: storage_account,
       container: container,
-      lab_uuid: lab_uuid,
+      lab_id: lab_id,
       sendgrid_key: sendgrid_key
     }
   }
