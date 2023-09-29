@@ -1,0 +1,5 @@
+Ruby script to configure hosts file on Ubuntu and Windows.
+
+On Ubuntu 22, install ruby package, upload files, and run the template_init script to install as service.
+
+On Windows, install ruby from rubyinstall.org, upload files, and configure the configure_hosts_file script to run as a startup script in Group Policy.
