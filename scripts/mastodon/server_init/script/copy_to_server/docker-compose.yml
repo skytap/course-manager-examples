@@ -1,0 +1,210 @@
+version: '3'
+services:
+  proxy:
+    restart: always
+    image: openresty/openresty:bullseye
+    container_name: proxy
+    networks:
+      - external_network
+      - internal_network
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./data/nginx/tmp:/var/run/openresty
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt/:/etc/letsencrypt/
+      - ./data/nginx/lebase:/lebase
+    depends_on:
+      - web
+    healthcheck:
+      test: ["CMD", "service", "openresty", "status"]
+
+  # db:
+  #   restart: always
+  #   image: postgres:14-alpine
+  #   container_name: postgres
+  #   shm_size: 256mb
+  #   networks:
+  #     - internal_network
+  #   healthcheck:
+  #     test: ['CMD', 'pg_isready', '-U', 'postgres']
+  #   volumes:
+  #     - ./data/postgres14:/var/lib/postgresql/data
+  #   environment:
+  #     - 'POSTGRES_HOST_AUTH_METHOD=trust'
+
+  redis:
+    restart: always
+    image: redis:7-alpine
+    container_name: redis
+    networks:
+      - internal_network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+    volumes:
+      - ./data/redis:/data
+
+  relay-redis:
+    restart: always
+    image: redis:7-alpine
+    container_name: relay-redis
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+    volumes:
+      - "./data/relay-redis:/data"
+
+  relay-worker:
+    image: yukimochi/activity-relay:v2.0.3
+    container_name: relay-worker
+    networks:
+      - internal_network
+      - external_network
+    working_dir: /var/lib/relay
+    restart: always
+    command: relay worker
+    volumes:
+      - "./data/relay/actor.pem:/var/lib/relay/actor.pem"
+      - "./data/relay/config.yml:/var/lib/relay/config.yml"
+    depends_on:
+      - relay-redis
+
+  relay-server:
+    image: yukimochi/activity-relay:v2.0.3
+    container_name: relay-server
+    networks:
+      - internal_network
+      - external_network
+    working_dir: /var/lib/relay
+    restart: always
+    command: relay server
+    volumes:
+      - "./data/relay/actor.pem:/var/lib/relay/actor.pem"
+      - "./data/relay/config.yml:/var/lib/relay/config.yml"
+    depends_on:
+      - relay-redis
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+
+  # TODO healthchecks for relay
+
+  # TODO I ran into an issue trying to enable ElasticSearch. We don't need it for our use case, so I'm not pursuing it.
+  # Error message - "max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]"
+  
+  # es:
+  #   restart: always
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+  #   container_name: es
+  #   environment:
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.enforce.bootstrap.checks=true"
+  #     - "xpack.license.self_generated.type=basic"
+  #     - "xpack.security.enabled=false"
+  #     - "xpack.watcher.enabled=false"
+  #     - "xpack.graph.enabled=false"
+  #     - "xpack.ml.enabled=false"
+  #     - "bootstrap.memory_lock=true"
+  #     - "cluster.name=es-mastodon"
+  #     - "discovery.type=single-node"
+  #     - "thread_pool.write.queue_size=1000"
+  #     - "node.store.allow_mmap=false"
+  #   networks:
+  #      - external_network
+  #      - internal_network
+  #   healthcheck:
+  #      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+  #   volumes:
+  #      - ./elasticsearch:/var/lib/elasticsearch/data
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   ports:
+  #     - '127.0.0.1:9200:9200'
+
+  web:
+    #build: .
+    image: ghcr.io/mastodon/mastodon:v4.1.6
+    container_name: web
+    restart: always
+    env_file: .env.production
+    command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"
+    networks:
+      - external_network
+      - internal_network
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      # - db
+      - redis
+      # - es
+    volumes:
+      - ./data/mastodon/public/system:/mastodon/public/system
+
+  streaming:
+    #build: .
+    image: ghcr.io/mastodon/mastodon:v4.1.6
+    container_name: streaming
+    restart: always
+    env_file: .env.production
+    command: node ./streaming
+    networks:
+      - external_network
+      - internal_network
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
+    ports:
+      - '127.0.0.1:4000:4000'
+    depends_on:
+      # - db
+      - redis
+
+  sidekiq:
+    #build: .
+    image: ghcr.io/mastodon/mastodon:v4.1.6
+    container_name: sidekiq
+    restart: always
+    env_file: .env.production
+    command: bundle exec sidekiq
+    depends_on:
+      # - db
+      - redis
+    networks:
+      - external_network
+      - internal_network
+    volumes:
+      - ./data/mastodon/public/system:/mastodon/public/system
+    healthcheck:
+      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+
+  ## Uncomment to enable federation with tor instances along with adding the following ENV variables
+  ## http_proxy=http://privoxy:8118
+  ## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
+  # tor:
+  #   image: sirboops/tor
+  #   networks:
+  #      - external_network
+  #      - internal_network
+  #
+  # privoxy:
+  #   image: sirboops/privoxy
+  #   volumes:
+  #     - ./priv-config:/opt/config
+  #   networks:
+  #     - external_network
+  #     - internal_network
+
+networks:
+  external_network:
+  internal_network:
+    internal: true

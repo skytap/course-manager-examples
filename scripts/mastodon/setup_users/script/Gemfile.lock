@@ -1,0 +1,50 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.8.5)
+      public_suffix (>= 2.0.2, < 6.0)
+    concurrent-ruby (1.2.2)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    faker (3.2.1)
+      i18n (>= 1.8.11, < 2)
+    ffi (1.16.2)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
+    http (5.1.1)
+      addressable (~> 2.8)
+      http-cookie (~> 1.0)
+      http-form_data (~> 2.2)
+      llhttp-ffi (~> 0.4.0)
+    http-cookie (1.0.5)
+      domain_name (~> 0.5)
+    http-form_data (2.3.0)
+    httplog (1.6.2)
+      rack (>= 2.0)
+      rainbow (>= 2.0.0)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
+    llhttp-ffi (0.4.0)
+      ffi-compiler (~> 1.0)
+      rake (~> 13.0)
+    net-ssh (7.2.0)
+    public_suffix (5.0.3)
+    rack (3.0.8)
+    rainbow (3.1.1)
+    rake (13.0.6)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  faker
+  http
+  httplog
+  net-ssh
+
+BUNDLED WITH
+   2.4.20
