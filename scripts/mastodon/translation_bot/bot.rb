@@ -21,11 +21,8 @@ class TranslationBot
   SKYTAP_METADATA_URI = 'http://169.254.169.254/skytap'
 
   def initialize()
-    @mast_fqdn = ENV['MAST_DOMAIN']
+    @mast_fqdn = ENV['MAST_FQDN']
     @mast_token = ENV['MAST_TOKEN'].strip
-    # @translator_token = ENV['TRANSLATOR_TOKEN']
-    @translator_region = ENV['TRANSLATOR_REGION']
-    @stream_name = ENV['STREAM_NAME']
     refresh_token
   end
 
