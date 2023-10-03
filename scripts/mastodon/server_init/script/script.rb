@@ -21,19 +21,22 @@ require 'httplog'
 # require 'json'
 # require 'rest-client'
 
-# HttpLog.configure do |config|
-#   config.log_headers = true
-# end
+HttpLog.configure { |config| config.enabled = false }
 
 skytap_metadata = SkytapMetadata.get
 lab_control = LabControl.get
 control_data = lab_control.control_data
+
+if lab_control.find_metadata_attr('http_debug') == '1'
+  HttpLog.configure { |config| config.enabled = true }
+end
 
 mast_ip = lab_control.find_metadata_attr('mastodon_server_ip')
 mast_user = lab_control.find_metadata_attr('mastodon_server_username')
 mast_pass = lab_control.find_metadata_attr('mastodon_server_password')
 mast_fqdn = lab_control.find_metadata_attr('lab_fqdn')
 mast_status_endpoint = "https://#{ mast_fqdn }/api/v1/statuses"
+ssh_public_key = lab_control.find_metadata_attr('mastodon_ssh_public_key')
 hosts_file = '/etc/hosts'
 
 new_line = "#{mast_ip} #{mast_fqdn}\n"
@@ -54,6 +57,10 @@ init_command = <<~EOF
   sudo chmod +x $INIT_DIR/mast_init.sh
   sudo chmod +x $INIT_DIR/mast_init_wrapper.sh
   sudo $INIT_DIR/mast_init.sh
+  mkdir -p ~/.ssh
+  chmod 700 ~/.ssh
+  echo "#{ ssh_public_key }" >> ~/.ssh/authorized_keys
+  chmod 644 ~/.ssh/authorized_keys
 EOF
 
 output = mast_manager.run(init_command)

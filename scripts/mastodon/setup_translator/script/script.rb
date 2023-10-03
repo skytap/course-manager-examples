@@ -19,9 +19,18 @@ require 'json'
 require 'net/http'
 require 'uri'
 require 'securerandom'
+require 'httplog'
+
+HttpLog.configure { |config| config.enabled = false }
+
+lab_control = LabControl.get
+control_data = lab_control.control_data
+
+if lab_control.find_metadata_attr('http_debug') == '1'
+  HttpLog.configure { |config| config.enabled = true }
+end
 
 uri = URI('https://eastus.api.cognitive.microsoft.com/sts/v1.0/issueToken')
-lab_control = LabControl.get
 translation_key = lab_control.find_metadata_attr('translation_key')
 host = lab_control.find_metadata_attr('mastodon_server_ip')
 user = lab_control.find_metadata_attr('mastodon_server_username')

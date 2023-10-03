@@ -3,6 +3,10 @@ require 'http'
 require 'json'
 
 HOSTS_FILE = '/etc/hosts'.freeze
+TOOT_SUFFIXES = {
+  en: ' #MadeByBing'.freeze,
+  es: ' #HechoPorBing'.freeze
+}.freeze
 
 class Tooter
   def initialize(content_types: %{ en es esbot })
@@ -36,8 +40,9 @@ class Tooter
 
   def toot
     ctype = @content_types.sample
-    post = content[ctype].shift
     user = users[ctype].sample
+    post = "#{content[ctype].shift}#{ TOOT_SUFFIXES[ctype.to_sym] }"
+    
     response = HTTP.headers(
       Authorization: "Bearer #{ user['token'] }"
     ).post("https://#{ @mast_fqdn }/api/v1/statuses", 

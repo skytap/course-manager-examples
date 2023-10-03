@@ -32,17 +32,28 @@ class MastodonServerManager
     @password = password
   end
 
-  def setup_user_and_token(username:, email:, password:, display_name:)
-    rails_run(
+  def setup_user_and_token(username:, email:, password:, display_name:, is_admin: false)
+    new_attribute_json = rails_run(
       "user = User.find_or_initialize_by(email: '#{ email }') do |new_user|",
       "new_user.password = '#{ password }'",
       "new_user.account_attributes = { username: '#{ username }', display_name: '#{ display_name }'}",
       "new_user.bypass_invite_request_check = true",
       "new_user.confirmed_at = Time.now.utc",
+      is_admin ? "new_user.role = UserRole.find_by(name: 'Owner')" : "",
       "new_user.save(validate: false); end",
       "app = user.applications.find_or_create_by!(name: '#{ username }', redirect_uri: Doorkeeper.configuration.native_redirect_uri, scopes: 'read write follow')",
-      "puts user.token_for_app(app).token"
+      "token = user.token_for_app(app).token",
+      "new_attributes = { token: token, account_id: user.account.id }",
+      "puts new_attributes.to_json",
     ).strip.split("\n").last
+    new_attributes = JSON.parse(new_attribute_json)
+    
+    {
+      'username' => username,
+      'password' => password,
+      'display_name' => display_name,
+      'email' => email
+    }.merge(new_attributes)
   end
 
   def setup_user(username:, email:, password:, display_name:)

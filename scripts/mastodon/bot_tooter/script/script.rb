@@ -23,4 +23,6 @@
 
 require 'tooter'
 
-Tooter.new(content_types: ['esbot']).toot
+10.times do
+  Tooter.new(content_types: ['esbot']).toot
+end
