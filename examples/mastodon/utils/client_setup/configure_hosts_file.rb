@@ -9,7 +9,7 @@ skytap_metadata = JSON.parse(Net::HTTP.get(URI("http://gw/skytap")))
 user_data = JSON.parse(skytap_metadata['configuration_user_data'])
 metadata_url = user_data['metadata_url']
 metadata = JSON.parse(Net::HTTP.get(URI(metadata_url)))
-ip = metadata.dig('course', 'metadata', 'mastodon_server_ip')
+ip = metadata.dig('metadata', 'mastodon_server_ip')
 fqdn = metadata.dig('metadata', 'lab_fqdn')
 exit 1 unless ip && fqdn
 

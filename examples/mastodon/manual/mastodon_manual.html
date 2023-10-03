@@ -429,7 +429,7 @@
 <p>Most Mastodon administrative functions are performed through the web UI. However, there is also an admin CLI you can run on the Mastodon server, called <strong>tootctl</strong></p>
 <p>To use tootctl, you'll need to connect to the Mastodon server with SSH.</p>
 <p><x-command 
-  data-command='launch AdminSSH "sshterm root@%{course_metadata:mastodon_server_ip}"'
+  data-command='launch AdminSSH "sshterm user@%{metadata:mastodon_server_ip}"'
   data-guid="5c720c9c-bb86-4b2b-aa66-082d27ee4db7"
   data-command-type="interactive"
   data-description="Launch SSH session"
