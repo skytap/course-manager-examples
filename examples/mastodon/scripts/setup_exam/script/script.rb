@@ -35,22 +35,22 @@ configuration_url = skytap_metadata.metadata['configuration_url']
 skytap_username = lab_control.find_metadata_attr('skytap_username')
 skytap_token = lab_control.find_metadata_attr('skytap_token')
 skytap_client = SkytapClient.new(skytap_username, skytap_token)
-config = skytap_client.get(configuration_url)
-virtual_browser_vm_id = config['vms'].detect {|vm| vm['name'].include?('Virtual Browser')}['id']
-skytap_client.put("https://cloud.skytap.com/vms/#{virtual_browser_vm_id}", runstate: 'reset')
+# config = skytap_client.get(configuration_url)
+# virtual_browser_vm_id = config['vms'].detect {|vm| vm['name'].include?('Virtual Browser')}['id']
+# skytap_client.put("https://cloud.skytap.com/vms/#{virtual_browser_vm_id}", runstate: 'reset')
 
 mastodon_users = JSON.parse(lab_control.find_metadata_attr('mastodon_users'))
 
 user_factory = UserFactory.new
-exam_user = user_factory.create_user(is_admin: true)
+# exam_user = user_factory.create_user(is_admin: true)
 bot_user = user_factory.create_user
 
 mastodon_users['esbot'] = [bot_user]
 
 lab_control.update_control_data('metadata' => {
   'mastodon_users' => mastodon_users.to_json,
-  'exam_user_email' => exam_user['email'],
-  'exam_user_password' => exam_user['password'],
+  # 'exam_user_email' => exam_user['email'],
+  # 'exam_user_password' => exam_user['password'],
   'troll_username' => bot_user['username']
 })
 

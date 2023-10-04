@@ -34,11 +34,9 @@ if mastodon_users = lab_control.find_metadata_attr('mastodon_users')
 else
   factory = UserFactory.new
   # mast_manager = MastodonServerManager.new(mast_ip, 'user', 'Password1!')
-  en_users = []
-  es_users = []
   
-  3.times do 
-    en_users << factory.create_user
+  # 3.times do 
+  en_user = factory.create_user
     # display_name = "#{ Faker::Name.first_name } #{ Faker::Name.last_name }"
     # user_attributes = { 
     #   username: Faker::Internet.username(specifier: display_name, separators: ['_']),
@@ -49,34 +47,32 @@ else
 
     # user_token = mast_manager.setup_user_and_token(**user_attributes)
     # new_users << { **user_attributes, 'token' => user_token }
-  end
+  # end
 
-  3.times do
-    es_users << factory.create_user
-  end
+  # 3.times do
+  es_user = factory.create_user
+  # end
 
 
   troll_user = factory.create_user
 
   mastodon_users = {
-    'en' => en_users,
-    'es' => es_users,
+    'en' => [en_user],
+    'es' => [es_user],
     'esbot' => [ troll_user ],
   }
 
-  windows_user = en_users.first
+  # windows_user = en_users.first
   
-  android_user = en_users.last
+  # android_user = en_users.last
   # mastodon_users['esbot'] = [ new_users.shift ]
   # mastodon_users['en'] = new_users.shift(3)
   # mastodon_users['es'] = new_users
 
   lab_control.update_control_data('metadata' => {
     'mastodon_users' => mastodon_users.to_json,
-    'windows_user_email' => windows_user['email'],
-    'windows_user_password' => windows_user['password'],
-    'android_user_email' => android_user['email'],
-    'android_user_password' => android_user['password'],
+    'windows_user_email' => en_user['email'],
+    'windows_user_password' => en_user['password'],
     'troll_username' => troll_user['username']
   })
 end

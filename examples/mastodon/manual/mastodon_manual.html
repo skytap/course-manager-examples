@@ -225,7 +225,7 @@
 <h4>Installing Whalebird</h4>
 <p>Please do the following to install Whalebird on Windows:</p>
 <ol>
-  <li>Click the icon in the image below and switch to the VM called <strong>Windows Desktop</strong><br /><img src="images/switch_to_vm.png" /></li>
+  <li>Click the lightning bolt at the top right corner of this page, and then click <strong>Windows VM</strong><br /><img src="images/switch_to_vm2.png" /></li>
   <li>Log in with the saved credentials<br /><img src="images/windows_login.png" /></li>
   <li>Once you have logged in, you will see the Whalebird executable on the desktop. Double click the Whalebird executable and click through the prompts to install it. Use the default selections for each prompt.<br /><img src="images/windows_install.png" /></li>
   <li>After the installation completes, launch the application<br /><img src="images/launch_whalebird.png" /></li>
@@ -380,7 +380,7 @@
 <p>Mastodon provides both REST and streaming APIs that can be used to develop a variety of bots or integrations.</p>
 <p>In this exercise, you will use these APIs, along with a translation API from Azure, to run a bot that will translate Spanish posts to English and vice versa.</p>
 <h4>Exercise setup</h4>
-<p>First, you'll need to log into the dev VM. Use the sharing portal options to switch to the VM and log in:<br /><img src="images/switch_to_dev.png" /></p>
+<p>Click the lightning bolt at the top right corner of this page, and then <strong>Dev VM</strong>. Log in with the saved credentials.<br /><img src="images/switch_to_dev2.png" /></p>
 <p>Next, click the button to set up a user account for our bot and an API token to use with Azure's translation services.</p>
 <x-block data-callout data-callout-warning class="alert alert-danger"><p>This script generates a translation token for your lab that's valid for 10 minutes. You can run the script again to regenerate the token if it expires.</p></x-block>
 <p><x-command 
@@ -637,18 +637,20 @@ and verify that it no longer exists.</p>
 <h4>Section 1: Toots</h4>
 <p>Next, complete the following steps</p>
 <ol>
-  <li>Log in to Mastodon with these credentials:<br /><table style="width: 100%;">
-    <tbody>
-      <tr>
-        <td>Username</td>
-        <td><x-copy-text>%{metadata:exam_user_email}</x-copy-text></td>
-      </tr>
-      <tr>
-        <td>Password</td>
-        <td><x-copy-text>%{metadata:exam_user_password}</x-copy-text></td>
-      </tr>
-    </tbody>
-  </table></li>
+  <li>Log in to Mastodon with these credentials:<br />
+    <table style="width: 100%;">
+      <tbody>
+        <tr>
+          <td>Username</td>
+          <td><x-copy-text>%{metadata:mastodon_admin_email}</x-copy-text></td>
+        </tr>
+        <tr>
+          <td>Password</td>
+          <td><x-copy-text>%{metadata:mastodon_admin_password}</x-copy-text></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
   <li>Create a toot</li>
   <li>Reply to a toot</li>
 </ol>
@@ -681,7 +683,6 @@ and verify that it no longer exists.</p>
 </x-question>
 
 <hr data-page-break />
-
 <h2>Feedback</h2>
 <p>Thank you for taking our course! We would appreciate it if you'd take a moment to answer these optional questions about the training</p>
 <x-question 
@@ -706,3 +707,17 @@ and verify that it no longer exists.</p>
   data-question-type="short-answer-exact"
 ><x-prompt class="panel-heading">Please include any comments you have about the course here</x-prompt>
 </x-question>
+
+<hr data-page-break />
+<h2>Grade Your Exam</h2>
+<p>Your exam will be graded automatically and your score will be sent to you by email after you end the lab. To get your score now, click the button below:</p>
+<p><x-command 
+  data-command="invoke setup_exam"
+  data-guid="c2af42b4-cd3f-4561-8d00-06a1b659002e"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Prepare for the practical exam"
+  data-spinner="spin"
+  data-attempts="success"
+  data-target="%{script_vm_host}"
+>Grade my exam</x-command></p>
