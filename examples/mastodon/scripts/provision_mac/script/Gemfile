@@ -11,3 +11,5 @@ gem 'nokogiri'
 gem 'httplog'
 
 gem 'net-ssh'
+
+gem 'net-scp'
