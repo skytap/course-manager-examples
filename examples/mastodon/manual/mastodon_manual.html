@@ -30,8 +30,8 @@
 </x-question>
 <h4>Mastodon architecture</h4>
 <ul>
-  <li>Mastodon is a Ruby on Rails application, like Course Manager</li>
-  <li>Mastodon can run on standalone servers or a containerized platform like docker or kubernetes</li>
+  <li>Mastodon is a Ruby on Rails application</li>
+  <li>Mastodon can run on standalone servers or a containerized platform like Docker or Kubernetes</li>
   <li>Mastodon data is stored in a PostgreSQL database</li>
 </ul>
 
@@ -40,7 +40,7 @@
 <ul>
   <li>Azure service principal for creating Azure resources</li>
   <li>Azure PostgreSQL flexible server</li>
-  <li>Azure storage account (for terraform state)</li>
+  <li>Azure storage account (for Terraform state)</li>
   <li>Azure translation account</li>
   <li>Sendgrid API token with permissions to create additional user tokens</li>
 </ul>
@@ -351,6 +351,7 @@
   <li>In the interface, choose <strong>Violates rules</strong> as the reason for reporting the user.<br /><img src="images/violates_rules.png" /></li>
 </ol>
 <h4>Blocking a user from posting</h4>
+<p>Now we'll put on our admin hat and deal with the abuse report that was just submitted.</p>
 <p>Mastodon provides a few options for preventing a user from posting. For now, we will freeze the user so their posts are still visible but they can't make new posts.</p>
 <p>To freeze the user's account, do the following:</p>
 <ol>
@@ -410,7 +411,7 @@
   <li>In the file, paste the following value into the line starting with <strong>MAST_FQDN</strong><br /><x-copy-text>%{metadata:lab_fqdn}</x-copy-text></li>
 </ol>
 <h4>Generate an API token</h4>
-<p>Click the button to launch firefox and open your Mastodon instance:<br />
+<p>Click the button to launch Firefox and open your Mastodon instance:<br />
 <p><x-command 
   data-command='firefox -url "https://%{metadata:lab_fqdn}/auth/sign_in"'
   data-guid="914a297b-11e9-4c3b-8159-749f16cdd0ff"
@@ -438,14 +439,14 @@
   <li>After you have signed in, click <strong>Preferences</strong>, then <strong>Development</strong>, then <strong>New application</strong></li>
   <li>Enter anything you like for application name, leave the other settings unchanged, and click <strong>Submit</strong></li>
   <li>Copy the token listed under <strong>Your access token</strong><br /><img src="images/api_token.png" /></li>
-  <li>Paste the token into the <strong>.env</strong> file in the line starting with <strong>MAST_TOKEN</strong></li>
+  <li>Click back to VSCode. Paste the token into the <strong>.env</strong> file in the line starting with <strong>MAST_TOKEN</strong></li>
   <li>When you have completed the previous steps, your <strong>.env</strong> file should look something like this:<br /><img src="images/code_env_file.png" /></li>
 </ol>
 
 <h4>Run the bot</h4>
 <p>Now that we have configured the bot, it's time to run it.</p>
 <x-block data-callout data-callout-warning class="alert alert-danger"><p>If this were a real instance of Mastodon, you would want to run the bot as a service or a managed container so it stays up. Since we're just testing it out, we'll run it in a terminal window.</p></x-block>
-<p>In your vscode terminal, paste the following command:</p>
+<p>In your VSCode terminal, paste the following command:</p>
 <pre><x-copy-text>bundle exec ruby bot.rb</x-copy-text></pre>
 <p>If we configured everything correctly, the bot will connect to Mastodon and begin to listen for toots.</p>
 
@@ -507,9 +508,9 @@
 <p>Mastodon's web UI allows you to freeze or suspend a user, but it does not permit you to permanently delete a user from the database.</p>
 <p>To delete our troll user's account entirely, type the following command into the SSH terminal:</p>
 <p><pre><x-copy-text>docker exec web bundle exec tootctl account delete %{metadata:troll_username}</x-copy-text></pre></p>
-<p>After you have run the command, click back to the user's profile and refresh. You should now see an error message</p>
+<p>After you have run the command, 
 <x-command 
-  data-command='launch MastodonModeration "browser https://%{metadata:lab_fqdn}/@%{troll_username}"'
+  data-command='launch MastodonTrollVerifySuspended "browser https://%{metadata:lab_fqdn}/@%{troll_username}"'
   data-guid="dadabcfb-172c-45e3-839e-5e862bcc3663"
   data-command-type="interactive"
   data-description="Visit Mastodon in the Virtual Browser"
@@ -517,7 +518,9 @@
   data-spinner="spin"
   data-target="%{browser_vm_host}"
   data-display="inline"
->Launch Mastodon</x-command>
+  class="inline"
+>try to visit the troll's profile</x-command>
+and verify that it no longer exists.</p>
 
 <hr data-page-break />
 
@@ -620,7 +623,7 @@
 <hr data-page-break />
 
 <h2>Practical Exam</h2>
-<p>Click here to launch Mastodon and start the practical portion of your exam:</p>
+<p>When the exam is ready, the button below will become available. Click it to launch Mastodon and start the practical portion of your exam:</p>
 <p><x-command 
   data-command='launch ExamPart2 "browser https://%{metadata:lab_fqdn}/public/local"'
   data-guid="9d8c6c23-612e-4bf2-82ef-e3d0124c7c2b"
@@ -656,7 +659,7 @@
   data-guid="ebc1a81d-3ac3-4d6c-bea9-cd53a8b5c4ed"
   data-metadata-attribute="exam_q_reply_user"
   data-question-type="short-answer-exact"
-><x-prompt class="panel-heading">What user's post did you reply to?</x-prompt>
+><x-prompt class="panel-heading">What is the username of the user whose post you replied to?</x-prompt>
 </x-question>
 
 <h4>Section 2: Moderation</h4>
