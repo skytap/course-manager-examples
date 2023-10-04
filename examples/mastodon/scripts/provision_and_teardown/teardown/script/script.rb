@@ -19,6 +19,7 @@ require "terraform_helper"
 require "assessment"
 require "sendgrid-ruby"
 require "httplog"
+require 'exam_grader'
 
 include SendGrid
 
@@ -51,8 +52,11 @@ lab_score = lab_control.find_metadata_attr('lab_score')
 if lab_score
   puts "The lab has already been graded. Skipping grading."
 else
+  grader_result = ExamGrader.new.grade_exam
+
   max_score = 100
-  user_score = 100
+  
+  user_score = grader_result[:total_score]
 
   puts "The user's score is #{user_score} out of #{max_score}"
   
@@ -72,11 +76,13 @@ else
 
     Thanks for taking our course!
 
-    Your score is #{ user_score }.
+    Your score is #{ user_score }/#{ max_score }
     
-    The maximum possible score is #{ max_score }.
+    Your score details are below.
 
     If you have any questions, please contact your instructor at #{ instructor_email }
+
+    #{ grader_result[:summary] }
   EMAIL
   )
 

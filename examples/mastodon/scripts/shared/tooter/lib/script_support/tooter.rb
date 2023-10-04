@@ -38,7 +38,7 @@ class Tooter
     @users ||= JSON.parse(@users_json)
   end
 
-  def toot
+  def toot(expect_failure: false)
     ctype = @content_types.sample
     user = users[ctype].sample
     post = "#{content[ctype].shift}#{ TOOT_SUFFIXES[ctype.to_sym] }"
@@ -52,9 +52,10 @@ class Tooter
       }
     )
 
-    unless response.status.success?
-      puts response.body.to_s
-      abort 'The status could not be created' 
+    if response.status.success?
+      abort 'The status was created successfully' if expect_failure
+    else
+      abort 'The status could not be created' unless expect_failure
     end
   end
 end

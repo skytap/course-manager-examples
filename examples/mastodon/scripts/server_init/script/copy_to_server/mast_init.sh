@@ -181,6 +181,9 @@ if [ ! -z "$_RELAY_HOSTNAME" ]; then
 fi
 unset _SERVER_HOSTNAME
 
+echo "=== Add user to docker group"
+usermod -aG docker user
+
 echo "=== Start docker compose to create containers"
 docker compose up -d
 

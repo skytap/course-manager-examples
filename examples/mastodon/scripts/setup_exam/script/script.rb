@@ -56,6 +56,6 @@ lab_control.update_control_data('metadata' => {
 
 tooter = Tooter.new(content_types: %w{ esbot })
 
-10.times do
+5.times do
   tooter.toot
 end

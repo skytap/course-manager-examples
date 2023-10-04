@@ -34,7 +34,6 @@ end
 mastodon_admin_email = lab_control.control_data['user_identifier'].chomp(" (preview)")
 skytap_username = lab_control.find_metadata_attr('skytap_username')
 skytap_token = lab_control.find_metadata_attr('skytap_token')
-# mastodon_server_ip = lab_control.find_metadata_attr('mastodon_server_ip')
 base_dns_name = lab_control.find_metadata_attr('base_dns_name')
 
 configuration_url = skytap_metadata.metadata['configuration_url']
@@ -73,16 +72,38 @@ unless priv_key = lab_control.find_metadata_attr('virtual_browser_ssh_key')
   )
 end
 
-skytap_mastodon_clients_template_id = lab_control.find_metadata_attr('skytap_mastodon_clients_template_id')
+skytap_mastodon_server_template_id = lab_control.find_metadata_attr('skytap_mastodon_server_template_id')
 mastodon_server_ip = lab_control.find_metadata_attr('mastodon_server_ip')
 
 configuration_url = skytap_metadata.metadata['configuration_url']
-
 skytap_client = SkytapClient.new(skytap_username, skytap_token)
 skytap_environment = skytap_client.get(configuration_url)
-originally_running = skytap_environment['vms'].any? {|vm| vm['runstate'] == 'running'}
 
-# This assumes the mastodon VM is already in the environment
+mastodon_server_vm_id = nil
+mastodon_server_vm = skytap_environment['vms'].detect {|vm| vm['name'].include?('Mastodon')}
+
+if mastodon_server_vm
+  mastodon_server_vm_id = mastodon_server_vm['id']
+else
+  puts "Adding Mastodon server to environment..."
+  original_skytap_environment = skytap_environment
+  skytap_environment = skytap_client.put(configuration_url, template_id: skytap_mastodon_server_template_id)
+  mastodon_server_vm_id = skytap_environment['vms'].detect {|vm| vm['name'].include?('Mastodon')}['id']
+  skytap_client.wait_until_not_busy(configuration_url)
+
+  # Assumes there is a single sharing portal (the CM-provisioned one)
+  puts "Adding Mastodon server to sharing portal..."
+  publish_set = skytap_environment['publish_sets'].first
+  publish_set_vms = publish_set['vms'].map {|vm| vm.slice('vm_ref', 'access')}
+  publish_set_vms << {
+    vm_ref: "https://cloud.skytap.com/vms/#{mastodon_server_vm_id}",
+    access: 'run_and_use'
+  }
+  skytap_client.put(publish_set['url'], vms: publish_set_vms)
+end
+
+skytap_environment = skytap_client.get(configuration_url)
+
 mastodon_server_vm = skytap_environment['vms'].detect {|vm| vm['name'].include?('Mastodon')}
 mastodon_server_vm_id = mastodon_server_vm['id']
 mastodon_server_interface = skytap_environment['vms']
@@ -91,38 +112,19 @@ mastodon_server_interface = skytap_environment['vms']
 
 mastodon_server_ip = mastodon_server_interface['ip']
 
-virtual_browser_vm_id = nil
-virtual_browser_vm = skytap_environment['vms'].detect {|vm| vm['name'].include?('Virtual Browser')}
+skytap_client.wait_until_not_busy(configuration_url)
 
-# Avoid re-adding the Mastodon clients on repeated runs
-if virtual_browser_vm
-  virtual_browser_vm_id = virtual_browser_vm['id']
-else
-  puts "Adding client VMs to environment..."
-  original_skytap_environment = skytap_environment
-  skytap_environment = skytap_client.put(configuration_url, template_id: skytap_mastodon_clients_template_id)
-
-  new_vm_ids = skytap_environment['vms'].map { |vm| vm['id']} - original_skytap_environment['vms'].map { |vm| vm['id'] }
-  skytap_client.wait_until_not_busy(configuration_url)
-  
-  puts "Adding client VMs to sharing portal..."
-  publish_set = skytap_environment['publish_sets'].first
-  publish_set_vms = publish_set['vms'].map {|vm| vm.slice('vm_ref', 'access')}
-
-  new_vm_ids.each do |vm_id|
-    publish_set_vms << {
-      vm_ref: "https://cloud.skytap.com/vms/#{vm_id}",
-      access: 'run_and_use'
-    }
-  end
-
-  skytap_client.put(publish_set['url'], vms: publish_set_vms)
-end
+# Assumes there is a single network interface with a single dynamic public IP attached
+puts "Updating hostname for public IP..."
+pip = mastodon_server_interface['public_ip_attachments'].detect { |ip| ip['connect_type'] == 'dynamic' }
+pip_key = pip['public_ip_attachment_key']
+pip_url = [configuration_url, 'vms', mastodon_server_interface['vm_id'], 'interfaces', mastodon_server_interface['id'], 'dynamic_public_ips', pip_key].join('/')
+skytap_client.put(pip_url, hostname: subdomain)
 
 puts "Updating Virtual Browser hosts file..."
-config = skytap_client.get(configuration_url)
+skytap_client.wait_until_not_busy(configuration_url)
 
-virtual_browser_vm_id = config['vms'].detect {|vm| vm['name'].include?('Virtual Browser')}['id']
+virtual_browser_vm_id = skytap_environment['vms'].detect {|vm| vm['name'].include?('Virtual Browser')}['id']
 
 hosts_file_text = <<~EOF
   127.0.0.1       localhost
@@ -157,6 +159,19 @@ pip_key = pip['public_ip_attachment_key']
 pip_url = [configuration_url, 'vms', mastodon_server_interface['vm_id'], 'interfaces', mastodon_server_interface['id'], 'dynamic_public_ips', pip_key].join('/')
 skytap_client.put(pip_url, hostname: subdomain)
 
+# Removing sequence from environment
+puts "Configuring all VMs to start..."
+skytap_client.wait_until_not_busy(configuration_url)
+
+vm_ids = skytap_environment['vms'].map { |vm| vm['id'] }
+
+skytap_client.put([configuration_url, 'stages', '3'].join('/'), {
+  'stage' => {
+    'delay_after_finish_seconds' => 0,
+    'vm_ids' => vm_ids
+  }
+})
+
 puts "Updating metadata..."
 lab_control.update_control_data('metadata' => { 'mastodon_server_ip' => mastodon_server_ip })
 
@@ -164,95 +179,8 @@ lab_control.update_control_data('metadata' => { 'mastodon_server_ip' => mastodon
 puts "Refreshing lab in console..."
 lab_control.refresh_lab
 
-
 puts "Starting environment..."
 lab_control.update_control_data(runstate: "running") 
-
-# mastodon_server_vm_id = nil
-
-# # mastodon_server_vm = skytap_environment['vms'].detect {|vm| vm['name'].include?('Mastodon')}
-
-# if mastodon_server_vm
-#   mastodon_server_vm_id = mastodon_server_vm['id']
-# else
-#   puts "Adding Mastodon server to environment..."
-#   original_skytap_environment = skytap_environment
-#   skytap_environment = skytap_client.put(configuration_url, template_id: skytap_mastodon_server_template_id)
-#   mastodon_server_vm_id =
-#     (skytap_environment['vms'].map {|vm| vm['id']} -
-#     original_skytap_environment['vms'].map {|vm| vm['id']}).first
-
-#   skytap_client.wait_until_not_busy(configuration_url)
-# end
-
-# puts "Updating LAN IP address..."
-# interface = skytap_environment['vms']
-#               .detect {|vm| vm['id'] == mastodon_server_vm_id }['interfaces']
-#               .first
-# interface_url = [configuration_url, 'vms', interface['vm_id'], 'interfaces', interface['id']].join('/')
-
-# # This will fail if we did it in a previous attempt and started the VM, so check first
-# if skytap_client.get(interface_url)['ip'] != mastodon_server_ip
-#   skytap_client.put(interface_url, {'ip' => mastodon_server_ip})
-# end
-
-# skytap_client.wait_until_not_busy(configuration_url)
-
-# # Assumes there is a single sharing portal (the CM-provisioned one)
-# puts "Adding Mastodon server to sharing portal..."
-# publish_set = skytap_environment['publish_sets'].first
-# publish_set_vms = publish_set['vms'].map {|vm| vm.slice('vm_ref', 'access')}
-# publish_set_vms << {
-#   vm_ref: "https://cloud.skytap.com/vms/#{mastodon_server_vm_id}",
-#   access: 'run_and_use'
-# }
-# skytap_client.put(publish_set['url'], vms: publish_set_vms)
-
-# # If the lab was already running, run the Mastodon server too
-# if originally_running
-#   puts "Starting Mastodon server..."
-#   skytap_client.put(
-#     configuration_url,
-#     runstate: 'running',
-#     multiselect: [ mastodon_server_vm_id ]
-#   )
-
-#   skytap_client.wait_until_not_busy(configuration_url)
-# end
-
-
-# Assumes the Virtual Browser is actually in the lab
-# puts "Updating Virtual Browser hosts file..."
-
-# skytap_client = SkytapClient.new(skytap_username, skytap_token)
-
-# config = skytap_client.get(configuration_url)
-# virtual_browser_vm_id = config['vms'].detect {|vm| vm['name'].include?('Virtual Browser')}['id']
-# hosts_file_text = <<~EOF
-#   127.0.0.1       localhost
-#   127.0.1.1       kiosk
-#   169.254.169.254 skytap-metadata
-#   ::1     ip6-localhost ip6-loopback
-#   fe00::0 ip6-localnet
-#   ff00::0 ip6-mcastprefix
-#   ff02::1 ip6-allnodes
-#   ff02::2 ip6-allrouters
-#   #{mastodon_server_ip} #{fqdn}
-#   EOF
-
-# skytap_client.put(
-#   "https://cloud.skytap.com/vms/#{virtual_browser_vm_id}/user_data",
-#   contents: {
-#     'files' => [
-#       {
-#         'path' => '/etc/hosts',
-#         'text' => hosts_file_text,
-#         'overwrite' => true
-#       }
-#     ]
-#   }.to_json
-# )
-
 
 subscription_id = lab_control.find_metadata_attr('azure_subscription_id')
 tenant_id = lab_control.find_metadata_attr('azure_tenant_id')
@@ -323,3 +251,8 @@ TerraformHelper.new(
     }
   }
 ).apply(write_output: true)
+
+lab_control.refresh_content_pane
+
+puts "Wait until not environment is ready..."
+skytap_client.wait_until_not_busy(configuration_url)
