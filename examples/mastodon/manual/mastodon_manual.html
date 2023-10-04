@@ -271,36 +271,42 @@
 >Check my work</x-command></p>
 <hr data-page-break />
 
-<h2>Mobile Clients</h2>
-<p>There are several Mastodon mobile clients available for iOS and Android. In this section, you'll use Tusky, an Android app, running on Linux.</p>
-<h4>Connecting Tusky to Mastodon</h4>
-<ol>
-  <li>Click the icon in the image below and switch to the VM called <strong>Windows Desktop</strong><br /><img src="images/switch_to_vm.png" /></li>
-  <li>Sign in with the saved credentials<br /><img src="images/linux_credentials.png" /></li>
-  <li>Click the Android icon in the left bar (shown in the screenshot) to open Anbox Application Manager<br /><img src="images/open_anbox.png" /></li>
-  <li>Click <strong>Tusky</strong> to open the application<br /><img src="images/open_tusky.png" /></li>
-  <li>You will be asked to enter your Mastodon hostname. Paste the following into the application:<br /><x-copy-text>%{metadata:lab_fqdn}</x-copy-text></li>
-  <li>Now you will be asked to log in. Paste the following credentials into Tusky:<br /><table style="width: 100%;">
-    <tbody>
-      <tr>
-        <td>Email address</td>
-        <td><x-copy-text>%{metadata:android_user_email}</x-copy-text></td>
-      </tr>
-      <tr>
-        <td>Password</td>
-        <td><x-copy-text>%{metadata:android_user_password}</x-copy-text></td>
-      </tr>
-    </tbody>
-  </table></li>
-  <li>Click Authorize to connect your account to Tusky:<br /><img src="images/tusky_authorize.png" /></li>
-</ol>
+<h2>Another Desktop Client: Sengi for Mac (optional)</h2>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>This is an optional topic. Click to the next page to skip it.</p>
+</x-block>
 
-<h4>Using Tusky</h4>
-<p>Now that you've logged in, do the following to create a post:</p>
-<ol>
-  <li>Click the pencil icon to create a post:<br /><img src="images/androidhome.png" /></li>
-  <li>Enter some text and then click <strong>TOOT</strong><br /><img src="images/tusky_post.png" /></li>
-</ol>
+<p>
+	Sengi is another desktop client in the Mastodon ecosystem. It's available on a variety of platforms. Just for fun, this time we'll try a Mac.
+</p>
+
+<p>
+  To create the Mac, click on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "provision_mac"' data-command-type="system" data-description="Provision Mac" data-guid="6e5916cc-018d-4b7b-a4d3-04edd6af109a" data-spinner="spin" data-target="%{script_vm_host}" data-timeout="0" data-display="inline" title="Provision Mac">Provision Mac</x-command>. This will take a few minutes; please wait for the spinner to stop and the green checkmark to appear before continuing.
+</p>
+
+<p>Once the Mac is provisioned, you can access it by clicking on <x-command class="inline" data-display="inline" data-activate="true" data-command='launch mac "vnc %{course_metadata:mac_vnc_password}@localhost:5900 %{course_metadata:mac_user}@%{metadata:mac_dns_name}"' data-command-type="interactive" data-description="Access Mac" data-guid="8f3e7129-8762-4591-a105-d1d16fe5b075" data-target="%{browser_vm_host}" title="Access Mac">Access Mac</x-command>.</p>
+
+<p>We've taken the liberty of installing Sengi for you. Launch it from the Finder > Applications and log in with your credentials:</p>
+
+<table style="width: 100%;">
+  <tr>
+    <td>URL:</td>
+    <td>https://%{metadata:lab_fqdn}</td>
+  </tr>
+  <tr>
+    <td>Username:</td>
+    <td>%{metadata:mastodon_admin_email}</td>
+  </tr>
+  <tr>
+    <td>Password:</td>
+    <td>%{metadata:mastodon_admin_password}</td>
+  </tr>
+</table>
+
+<br>
+<p>Click around and explore the very different look and feel of this desktop client.</p>
+
+<p>When you're all set, clean up the Mac by clicking on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "teardown_mac"' data-command-type="system" data-description="Teardown Mac" data-guid="1362a4ae-947d-4cfe-82ec-a510c3e275f0" data-spinner="spin" data-target="%{script_vm_host}" data-timeout="0" title="Teardown Mac">Teardown Mac</x-command>.
 
 <hr data-page-break />
 
@@ -495,10 +501,6 @@
 >Click here to start an SSH session</x-command></p>
 <p>The basic format of a tootctl command is <strong>tootctl COMMAND</strong>, where COMMAND is one or more words that represent the action you are taking.</p>
 <p>In our lab, Mastodon is running in docker, so we'll need to prefix our commands with <strong>docker exec</strong>, the name of the container, and <strong>bundle exec</strong>, which loads the runtime dependencies.</p>
-<h4>Disabling registrations</h4>
-<p>One use case for tootctl is to prevent new users from self-registering at the site</p>
-<p>To disable registrations, type the following command into the SSH terminal:</p>
-<p><pre><x-copy-text>docker exec web bundle exec tootctl settings registrations close</x-copy-text></pre></p>
 <h4>Permanently deleting a user</h4>
 <p>Mastodon's web UI allows you to freeze or suspend a user, but it does not permit you to permanently delete a user from the database.</p>
 <p>To delete our troll user's account entirely, type the following command into the SSH terminal:</p>
