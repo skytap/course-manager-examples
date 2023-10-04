@@ -501,10 +501,6 @@
 >Click here to start an SSH session</x-command></p>
 <p>The basic format of a tootctl command is <strong>tootctl COMMAND</strong>, where COMMAND is one or more words that represent the action you are taking.</p>
 <p>In our lab, Mastodon is running in docker, so we'll need to prefix our commands with <strong>docker exec</strong>, the name of the container, and <strong>bundle exec</strong>, which loads the runtime dependencies.</p>
-<h4>Disabling registrations</h4>
-<p>One use case for tootctl is to prevent new users from self-registering at the site</p>
-<p>To disable registrations, type the following command into the SSH terminal:</p>
-<p><pre><x-copy-text>docker exec web bundle exec tootctl settings registrations close</x-copy-text></pre></p>
 <h4>Permanently deleting a user</h4>
 <p>Mastodon's web UI allows you to freeze or suspend a user, but it does not permit you to permanently delete a user from the database.</p>
 <p>To delete our troll user's account entirely, type the following command into the SSH terminal:</p>
