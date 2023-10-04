@@ -66,7 +66,7 @@ If you use a script template to build your script, the `bin/run` utility allows 
 ### Test in a Live Lab
 You always have the option to test your script in a live Course Manager lab. This involves publishing the script to your course, provisioning a test lab, running the script, and observing its behavior.
 
-Please note that most scripts are downloaded only once for each lab provisioned. If, upon testing, you decide that the script needs to be modified, you will generally need to provision a new test lab to re-test once an updated script has been published. As a workaround, you can append `__draft` to the name of your script when it is published. Scripts named using this convention are re-downloaded upon every invocation, allowing a more iterative development/test cycle.
+Whenever a script is invoked within a lab, the latest version is used. This allows for an iterative development/test process in which you can provision a single test lab, and upload, test, re-upload, and re-test your scripts as many times as you need.
 
 ## License
 
