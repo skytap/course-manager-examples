@@ -23,4 +23,4 @@
 
 require 'tooter'
 
-Tooter.new(content_types: ['esbot'], expect_failure: true).toot
+Tooter.new(content_types: ['esbot']).toot(expect_failure: true)

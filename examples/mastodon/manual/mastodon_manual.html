@@ -105,11 +105,11 @@
   <li>By default, Mastodon runs as part of the public "fediverse". Community members may run their own instances with their own rules, and users of one instance may interact with users on other instances.</li>
 </ul>
 <h4>Limited federation mode</h4>
-<p>For this training, you will be interacting with your own ephemeral instance of Mastodon. The lab instance will run in <a href="https://docs.joinmastodon.org/admin/config/#limited_federation_mode" target="_blank">limited federation mode</a>, which means it is isolated other Mastodon instances.</p>
+<p>For this training, you will be interacting with your own ephemeral instance of Mastodon. The lab instance will run in <a href="https://docs.joinmastodon.org/admin/config/#limited_federation_mode" target="_blank">limited federation mode</a>, which means it is isolated from other Mastodon instances.</p>
 <p>Here is some more information about limited federation mode:</p>
 <ul>
   <li>According to Mastodon, limited federation is contrary to their mission of decentralization, but it is available as an installation setting and is widely used.</li>
-  <li>Limited federation mode allows you to run a Mastodon instance on the public internet without exposing your user content to unauthorized users.</li>
+  <li>Limited federation mode allows you to run a Mastodon instance on the public internet without exposing your content to unauthorized users.</li>
   <li>Limited federation mode can also be used to run Mastodon in an internal network for a company or academic institution.</li>
 </ul>
 <x-question class="panel panel-default"
@@ -227,7 +227,7 @@
 <ol>
   <li>Click the icon in the image below and switch to the VM called <strong>Windows Desktop</strong><br /><img src="images/switch_to_vm.png" /></li>
   <li>Log in with the saved credentials<br /><img src="images/windows_login.png" /></li>
-  <li>Once you have logged in, you will see the Whalebird executable on the desktop. Double click the Whalebird executible and click through the prompts to install it. Use the default selections for each prompt.<br /><img src="images/windows_install.png" /></li>
+  <li>Once you have logged in, you will see the Whalebird executable on the desktop. Double click the Whalebird executable and click through the prompts to install it. Use the default selections for each prompt.<br /><img src="images/windows_install.png" /></li>
   <li>After the installation completes, launch the application<br /><img src="images/launch_whalebird.png" /></li>
 </ol>
 
@@ -237,7 +237,7 @@
 </x-block>
 <ol>
   <li>When you first open Whalebird, you'll be prompted to enter your Mastodon instance URL. Paste the following URL: and then click <strong>Search</strong><br /><x-copy-text>%{metadata:lab_fqdn}</x-copy-text><br /><img src="images/whalebird_domain.png" /></li>
-  <li>Click Login and you will be redirected to a browser to log in. Log in with the following credentials:<br /><table style="width: 100%;">
+  <li>Click <strong>Login</strong> and you will be redirected to a browser to log in. Log in with the following credentials:<br /><table style="width: 100%;">
     <tbody>
       <tr>
         <td>Email address</td>
@@ -321,7 +321,7 @@
   data-target="%{script_vm_host}"
   data-display="inline"
 >Generate troll content</x-command></p>
-<p>Next, click the button to view the troll's profile and view their content</p>
+<p>Next, click the button to visit the troll's profile and view their posts</p>
 <p><x-command 
   data-command='launch MastodonModeration "browser https://%{metadata:lab_fqdn}/@%{metadata:troll_username}"'
   data-guid="ae29f414-2886-49df-9f34-87a95617452c"
@@ -351,9 +351,9 @@
   <li>Scroll down and click <strong>Custom</strong>, then <strong>Freeze</strong>. Optionally, add additional information about why you are reporting the user<br /><img src="images/freeze_user.png" /></li>
   <li>Click <strong>Perform action</strong></li>
 </ol>
-<p>Now that the user's account is frozen, they should not be able to post. Click the button to simulate the troll posting again. If you froze them successfully, the command will fail and an X will apear next to the button.</p>
+<p>Now that the user's account is frozen, they should not be able to post. Click the button to simulate the troll posting again. If you froze them successfully, the script will succeed.</p>
 <p><x-command 
-  data-command="invoke bot_tooter"
+  data-command="invoke check_bot_frozen"
   data-guid="b2955af4-8724-4fa5-b210-5d11f1b28460"
   data-blocking="success"
   data-command-type="system"
