@@ -39,7 +39,7 @@ class ExamGrader
       score = user_answer == val['answer'] ? 10 : 0
       
       summary << <<~EOF
-        Question #{ index }: #{ val['text'] }
+        Question #{ index + 1 }: #{ val['text'] }
         Correct answer: #{ val['answer'] }
         Your answer: #{ user_answer }
         Your score: #{ score }/10
