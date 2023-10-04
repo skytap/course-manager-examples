@@ -225,7 +225,7 @@
 <h4>Installing Whalebird</h4>
 <p>Please do the following to install Whalebird on Windows:</p>
 <ol>
-  <li>Click the icon in the image below and switch to the VM called <strong>Windows Desktop</strong><br /><img src="images/switch_to_vm.png" /></li>
+  <li>Switch to the Windows VM by clicking the lightning bolt icon in the upper right and selecting <strong>Windows VM</strong></li>
   <li>Log in with the saved credentials<br /><img src="images/windows_login.png" /></li>
   <li>Once you have logged in, you will see the Whalebird executable on the desktop. Double click the Whalebird executable and click through the prompts to install it. Use the default selections for each prompt.<br /><img src="images/windows_install.png" /></li>
   <li>After the installation completes, launch the application<br /><img src="images/launch_whalebird.png" /></li>
@@ -281,7 +281,7 @@
 </p>
 
 <p>
-  To create the Mac, click on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "provision_mac"' data-command-type="system" data-description="Provision Mac" data-guid="6e5916cc-018d-4b7b-a4d3-04edd6af109a" data-spinner="spin" data-target="%{script_vm_host}" data-timeout="0" data-display="inline" title="Provision Mac">Provision Mac</x-command>. This will take a few minutes; please wait for the spinner to stop and the green checkmark to appear before continuing. Feel free to move on to the next page and check back.
+  To create the Mac, click on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "provision_mac"' data-command-type="system" data-description="Provision Mac" data-guid="6e5916cc-018d-4b7b-a4d3-04edd6af109a" data-spinner="all" data-target="%{script_vm_host}" data-timeout="0" data-display="inline" title="Provision Mac">Provision Mac</x-command>. This will take a few minutes; please wait for the spinner to stop and the green checkmark to appear before continuing. Feel free to move on to the next page and come back.
 </p>
 
 <p>Once the Mac is provisioned, you can access it by clicking on <x-command class="inline" data-display="inline" data-activate="true" data-command='launch mac "vnc %{course_metadata:mac_vnc_password}@localhost:5900 %{course_metadata:mac_user}@%{metadata:mac_dns_name}"' data-command-type="interactive" data-description="Access Mac" data-guid="8f3e7129-8762-4591-a105-d1d16fe5b075" data-target="%{browser_vm_host}" title="Access Mac">Access Mac</x-command>.</p>
@@ -308,7 +308,7 @@
 <br>
 <p>Click around and explore the very different look and feel of this desktop client.</p>
 
-<p>When you're all set, clean up the Mac by clicking on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "teardown_mac"' data-command-type="system" data-description="Teardown Mac" data-guid="1362a4ae-947d-4cfe-82ec-a510c3e275f0" data-spinner="spin" data-target="%{script_vm_host}" data-timeout="0" title="Teardown Mac">Teardown Mac</x-command>.
+<p>When you're all set, clean up the Mac by clicking on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "teardown_mac"' data-command-type="system" data-description="Teardown Mac" data-guid="1362a4ae-947d-4cfe-82ec-a510c3e275f0" data-spinner="all" data-target="%{script_vm_host}" data-timeout="0" title="Teardown Mac">Teardown Mac</x-command>.
 
 <hr data-page-break />
 
@@ -380,7 +380,7 @@
 <p>Mastodon provides both REST and streaming APIs that can be used to develop a variety of bots or integrations.</p>
 <p>In this exercise, you will use these APIs, along with a translation API from Azure, to run a bot that will translate Spanish posts to English and vice versa.</p>
 <h4>Exercise setup</h4>
-<p>First, you'll need to log into the dev VM. Use the sharing portal options to switch to the VM and log in:<br /><img src="images/switch_to_dev.png" /></p>
+<p>First, you'll need to log into the dev VM. Click the lightning bolt icon in the upper right of the screen and choose <strong>Dev VM</strong>.</p>
 <p>Next, click the button to set up a user account for our bot and an API token to use with Azure's translation services.</p>
 <x-block data-callout data-callout-warning class="alert alert-danger"><p>This script generates a translation token for your lab that's valid for 10 minutes. You can run the script again to regenerate the token if it expires.</p></x-block>
 <p><x-command 
