@@ -9,5 +9,3 @@ gem 'aws-sdk-ec2'
 gem 'nokogiri'
 
 gem 'httplog'
-
-gem 'net-ssh'

@@ -16,10 +16,15 @@ require "skytap_metadata"
 require "lab_control"
 require 'aws-sdk-ec2'
 require 'httplog'
-require 'net/ssh'
+
+HttpLog.configure { |config| config.enabled = false }
 
 skytap_metadata = SkytapMetadata.get
 lab_control = LabControl.get
+
+if lab_control.find_metadata_attr('http_debug') == '1'
+  HttpLog.configure { |config| config.enabled = true }
+end
 
 # AWS creds
 ENV['AWS_ACCESS_KEY_ID'] = lab_control.find_metadata_attr('aws_access_key_id')
@@ -33,3 +38,5 @@ client = Aws::EC2::Client.new
 
 client.terminate_instances(instance_ids: [instance_id])
 #client.release_hosts(host_ids: [host_id])
+
+puts "The Mac will begin its teardown process shortly."
