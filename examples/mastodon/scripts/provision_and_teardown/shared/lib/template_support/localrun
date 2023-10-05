@@ -22,14 +22,11 @@ set -e
 export RUBYLIB=$RUBYLIB:$PWD/lib/script_support
 export SCRIPT_UTILS_DIR=/tmp/script_utils
 
-# export TF_PLUGIN_CACHE_DIR=/script_data/terraform_cache
 export TF_CLI_CONFIG_FILE=/script/lib/terraform.tfrc
 
 mkdir -p $SCRIPT_UTILS_DIR
 cp $PWD/lib/terraform $SCRIPT_UTILS_DIR
 chmod +x $SCRIPT_UTILS_DIR/terraform
-
-# mkdir -p $TF_PLUGIN_CACHE_DIR
 
 pushd script > /dev/null
 bundle config deployment true

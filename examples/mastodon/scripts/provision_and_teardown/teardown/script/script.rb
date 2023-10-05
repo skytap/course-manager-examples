@@ -58,7 +58,7 @@ else
   
   user_score = grader_result[:total_score]
 
-  puts "The user's score is #{user_score} out of #{max_score}"
+  puts "The user's score is #{user_score} out of #{max_score}."
   
   puts "Sending score to user and instructor..."
 
@@ -106,8 +106,9 @@ else
       lis_result_sourcedid: sourcedid,
       lis_outcome_service_url: service_url
     )
-    
-    assessment.set_value(user_score / max_score)
+    fractional_score = user_score.to_f / max_score.to_f
+
+    assessment.set_value(fractional_score)
   end
 end
 

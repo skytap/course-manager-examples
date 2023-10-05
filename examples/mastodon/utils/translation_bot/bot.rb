@@ -1,5 +1,16 @@
-# require 'mastodon'
-# require 'websocket-client-simple'
+# Copyright 2023 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 require 'faye/websocket'
 require 'eventmachine'
@@ -18,7 +29,7 @@ class TranslationBot
   }.freeze
 
   TRANSLATOR_URI = 'https://api.cognitive.microsofttranslator.com/translate'.freeze
-  SKYTAP_METADATA_URI = 'http://169.254.169.254/skytap'
+  SKYTAP_METADATA_URI = 'http://169.254.169.254/skytap'.freeze
 
   def initialize()
     @mast_fqdn = ENV['MAST_FQDN']
@@ -84,8 +95,6 @@ class TranslationBot
   def translate(text, from, to)  
     response = HTTP.headers(
       Authorization: "Bearer #{ @translation_token }"
-    # 'Ocp-Apim-Subscription-Key': @translator_token, 
-      # 'Ocp-Apim-Subscription-Region' => @translator_region
     ).post(TRANSLATOR_URI, 
       params: {
         'api-version' => '3.0',

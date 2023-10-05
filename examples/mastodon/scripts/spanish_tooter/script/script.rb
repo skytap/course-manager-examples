@@ -12,15 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# require "skytap_metadata"
-# require "lab_control"
-# require 'server_tools'
-# require 'http'
-# require 'faker'
-# require 'httplog'
-# require 'json'
-# require 'rest-client'
-
 require 'tooter'
 
 Tooter.new(content_types: ['es']).toot

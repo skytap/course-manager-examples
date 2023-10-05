@@ -14,9 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ./lib/terraform -chdir="terraform/course" providers mirror -platform=linux_386 $PWD/terraform_plugins
-# ./lib/terraform -chdir="terraform/lab" providers mirror -platform=linux_386 $PWD/terraform_plugins
-
 set -e
 
 export TF_PLUGIN_CACHE_DIR=$PWD/terraform_cache

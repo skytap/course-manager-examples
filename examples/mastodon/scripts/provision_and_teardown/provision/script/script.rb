@@ -191,14 +191,6 @@ container = lab_control.find_metadata_attr('azure_container')
 resource_group = lab_control.find_metadata_attr('azure_resource_group')
 
 sendgrid_key = lab_control.find_metadata_attr('sendgrid_key')
-# skytap_mastodon_server_template_id = lab_control.find_metadata_attr('skytap_mastodon_server_template_id')
-# The Mastodon server should now be visible in sharing portal, so refresh
-# puts "Refreshing lab in console..."
-# lab_control.refresh_lab
-
-
-# puts "Starting environment..."
-# lab_control.update_control_data(runstate: "running") 
 
 puts "Provisioning course resources..."
 TerraformHelper.new(

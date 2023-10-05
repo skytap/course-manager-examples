@@ -15,11 +15,7 @@
 require "skytap_metadata"
 require "lab_control"
 require 'server_tools'
-# require 'http'
-# require 'faker'
 require 'httplog'
-# require 'json'
-# require 'rest-client'
 
 HttpLog.configure { |config| config.enabled = false }
 

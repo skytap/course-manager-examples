@@ -1,4 +1,19 @@
 #!/bin/bash
+
+# Copyright 2023 Skytap Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 set -e
 
 if [ "$EUID" -ne 0 ]; then
@@ -80,23 +95,5 @@ dpkg-reconfigure initramfs-tools
 echo "=== Setup init"
 mkdir -p $MAST_ROOT/init
 cp $PWD/* $MAST_ROOT/init
-
-# Commenting out automatic running of mast_init via systemd because we decided to have the user initiate through a button press instead.
-# cat > /etc/systemd/system/mast_init.service <<EOF
-# [Unit]
-# Description=Mastodon init
-# After=docker.service
-# Requires=docker.service
-# Before=getty@tty1.service getty@tty2.service getty@tty3.service getty@tty4.service getty@tty5.service getty@tty6.service
-
-# [Service]
-# ExecStart=$MAST_ROOT/init/mast_init.sh
-# Type=oneshot
-
-# [Install]
-# WantedBy=multi-user.target
-# EOF
-
-# systemctl enable mast_init.service
 
 echo "=== Done!"
