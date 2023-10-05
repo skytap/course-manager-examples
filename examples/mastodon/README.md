@@ -50,10 +50,11 @@ The scripts include:
 
 Some scripts use composition to copy shared code, located at `scripts/shared`, into a `.build` directory which is then deployed to Skytap.
 
-Some scripts post example user content to Mastodon. This content is not owned by Skytap. It was created from the following sources:
-`scripts/shared/tooter/lib/script_support/toots/en.txt` - created by Microsoft's Bing chatbot on 9/30/2023
-`scripts/shared/tooter/lib/script_support/toots/es.txt` - created by Microsoft's Bing chatbot on 9/30/2023
-`scripts/shared/tooter/lib/script_support/toots/esbot.txt` - contains exerpts from Don Quijote by Miguel de Cervantes Saavendra, sourced from https://www.gutenberg.org/ebooks/2000
+Some scripts post example user content to Mastodon. This content was was not created by Skytap, and was retrieved from the following sources:
+
+- `scripts/shared/tooter/lib/script_support/toots/en.txt` - created by Microsoft's Bing chatbot on 9/30/2023
+- `scripts/shared/tooter/lib/script_support/toots/es.txt` - created by Microsoft's Bing chatbot on 9/30/2023
+- `scripts/shared/tooter/lib/script_support/toots/esbot.txt` - contains exerpts from Don Quijote by Miguel de Cervantes Saavendra, sourced from https://www.gutenberg.org/ebooks/2000
 
 ## Metadata Requirements
 
