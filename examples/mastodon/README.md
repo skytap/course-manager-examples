@@ -33,15 +33,14 @@ The scripts include:
 - [setup_users](scripts/setup_translator/script/script.rb) - creates the initial Mastodon users and initial posts
 - [spanish_tooter](scripts/setup_translator/script/script.rb) - creates a Mastodon post in Spanish
 - [teardown_mac](scripts/teardown_mac/script/script.rb) - destroys the Mac instance created in
-- bot_tooter](scripts/bot_tooter/script/script.rb) - creates Mastodon posts as the bot user
-- [check_bot_frozen](scripts/check_bot_frozen/script/script.rb) - attempts to post as the bot user, fails if the post is successful
+- [check_bot_frozen](scripts/check_bot_frozen/script/script.rb) - attempts to post as the troll user, fails if the post is successful
 - [english_tooter](scripts/english_tooter/script/script.rb) - creates a Mastodon post in English
 
 Some scripts post example user content to Mastodon. This content was retrieved from the following sources:
 
-- `scripts/shared/tooter/lib/script_support/toots/en.txt` - created by Microsoft's Bing chatbot on 9/30/2023
-- `scripts/shared/tooter/lib/script_support/toots/es.txt` - created by Microsoft's Bing chatbot on 9/30/2023
-- `scripts/shared/tooter/lib/script_support/toots/esbot.txt` - contains exerpts from Don Quijote by Miguel de Cervantes Saavendra, sourced from https://www.gutenberg.org/ebooks/2000
+- [English example content](scripts/shared/tooter/lib/script_support/toots/en.txt) - created by Microsoft's Bing chatbot on 9/30/2023
+- [Spanish example content](scripts/shared/tooter/lib/script_support/toots/es.txt) - created by Microsoft's Bing chatbot on 9/30/2023
+- [Troll content](scripts/shared/tooter/lib/script_support/toots/esbot.txt) - contains public domain text from https://www.gutenberg.org/ebooks/2000
 
 ## Metadata Requirements
 
