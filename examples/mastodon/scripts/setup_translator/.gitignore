@@ -1,0 +1,5 @@
+**/vendor/bundle/
+**/vendor/cache/
+.publish.yml
+.invoker_data
+.build

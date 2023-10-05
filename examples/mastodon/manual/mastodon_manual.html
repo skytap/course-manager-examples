@@ -1,0 +1,722 @@
+<h2>Mastodon on Course Manager by Skytap</h2>
+<p>In this course, you will learn how to use Mastodon, a free and open source media platform.</p>
+<p>First, we need to provision some infrastructure so we can set up your personal instance of Mastodon. It will take a few minutes, so click here to kick off the setup process before you read on.</p>
+<x-command 
+  data-command="invoke mastodon_provision"
+  data-guid="4694ac9e-5cdb-4a4a-a6dc-4bd602801e14"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Set up your Mastodon infrastructure"
+  data-spinner="spin"
+  data-attempts="success"
+  data-target="%{script_vm_host}"
+>Provision infrastructure</x-command>
+<p></p>
+<h4>Disclaimers</h4>
+<p>We selected <a href="https://joinmastodon.org/" target="_blank">Mastodon</a> for this training demo because it's free and open source, has a variety of community developed software clients, and is cool to play with. But there are a few things you should keep in mind:</p>
+<ul>
+  <li>Mastodon is a registered trademark of Mastodon gGmbH.</li>
+  <li>Skytap has no affiliation with Mastodon, and does not endorse Mastodon or its products.</li>
+  <li>You will be interacting with your own ephemeral training instance of Mastodon. At the end of the training, the instance will be destroyed.</li>
+  <li>This training is designed to demonstrate Course Manager's features. In no way is it a comprehensive overview of Mastodon. Some Mastodon features are not available.</li>
+</ul>
+<x-question 
+  class="panel panel-default"
+  data-blocking="invoke"
+  data-guid="0835a948-a89d-4add-890a-f5bbb07c756a"
+  data-metadata-attribute="user_inits_disclaimer"
+  data-question-type="short-answer-exact"
+><x-prompt class="panel-heading">Enter your initials here to confirm you have read and understand the disclaimers</x-prompt>
+</x-question>
+<h4>Mastodon architecture</h4>
+<ul>
+  <li>Mastodon is a Ruby on Rails application</li>
+  <li>Mastodon can run on standalone servers or a containerized platform like Docker or Kubernetes</li>
+  <li>Mastodon data is stored in a PostgreSQL database</li>
+</ul>
+
+<h4>Lab architecture</h4>
+<p>The following <strong>course resources</strong> are shared with other labs in this course:</p>
+<ul>
+  <li>Azure service principal for creating Azure resources</li>
+  <li>Azure PostgreSQL flexible server</li>
+  <li>Azure storage account (for Terraform state)</li>
+  <li>Azure translation account</li>
+  <li>Sendgrid API token with permissions to create additional user tokens</li>
+</ul>
+<p>The following <strong>lab resources</strong> are specific to this lab:</p>
+<ul>
+  <li>Skytap environment running Mastodon server and client apps in VMs</li>
+  <li>PostgreSQL database and user account (on shared Azure server)</li>
+  <li>Sendgrid API token with ability to send mail</li>
+  <li>Temporary token for Azure translation API</li>
+</ul>
+<h4>Lab setup process</h4>
+<p>At the top of this page, you ran a script to provision the infrastructure required for Mastodon. The provision script does the following:</p>
+<ol>
+  <li>Verifies the course's shared database server is set up in Azure or provisions a new one if necessary</li>
+  <li>Provisions this lab's Mastodon database and DB user account</li>
+  <li>Creates a Sendgrid API key so that emails can be sent from the application</li>
+  <li>Generates random identifiers for this instance of Mastodon</li>
+  <li>Adds the Mastodon server VM to the lab</li>
+  <li>Configures and runs the Skytap VMs used by this lab</li>
+</ol>
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="362d855d-e59d-422e-9648-59e88937619b"
+  data-blocking="success"
+  data-answer="2">
+  <x-prompt class="panel-heading">Why did Skytap select Mastodon for this training demo?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>Skytap is a social media company</x-multiple-choice-option>
+    <x-multiple-choice-option>Mastodon and Skytap are business affiliates</x-multiple-choice-option>
+    <x-multiple-choice-option>Mastodon is free and open source software</x-multiple-choice-option>
+    <x-multiple-choice-option>All of the above</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<hr data-page-break />
+<h2>Mastodon Installation</h2>
+<p>In the previous step, we provisioned the infrastructure for your Mastodon instance. Now we need to set up the application.</p>
+<p>Click the link to set up the application, and then read on.</p>
+<p><x-command 
+  data-command="invoke server_init"
+  data-guid="0f7b1cee-9716-4be1-800d-3c1f070ba32d"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Install and configure Mastodon"
+  data-spinner="spin"
+  data-attempts="success"
+  data-target="%{script_vm_host}"
+>Install application</x-command></p>
+<p>The installation script does the following:</p>
+<ol>
+  <li>Configures the Mastodon server settings based on the results of the previous step</li>
+  <li>Creates the tables and other database objects required for Mastodon</li>
+  <li>Creates and runs the Mastodon server containers</li>
+  <li>Creates the initial Mastodon user accounts</li>
+</ol>
+
+<h4>Introduction to Mastodon</h4>
+<p>Mastodon is a social media platform similar to others you may have used. Here's some background information about Mastodon to review while we finish getting things set up:</p>
+<ul>
+  <li>In Mastodon, a post is called a toot, or you can also call it a post or status</li>
+  <li>A toot can have a maximum of 500 characters</li>
+  <li>By default, Mastodon runs as part of the public "fediverse". Community members may run their own instances with their own rules, and users of one instance may interact with users on other instances.</li>
+</ul>
+<h4>Limited federation mode</h4>
+<p>For this training, you will be interacting with your own ephemeral instance of Mastodon. The lab instance will run in <a href="https://docs.joinmastodon.org/admin/config/#limited_federation_mode" target="_blank">limited federation mode</a>, which means it is isolated from other Mastodon instances.</p>
+<p>Here is some more information about limited federation mode:</p>
+<ul>
+  <li>According to Mastodon, limited federation is contrary to their mission of decentralization, but it is available as an installation setting and is widely used.</li>
+  <li>Limited federation mode allows you to run a Mastodon instance on the public internet without exposing your content to unauthorized users.</li>
+  <li>Limited federation mode can also be used to run Mastodon in an internal network for a company or academic institution.</li>
+</ul>
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="c8ce5bc4-c400-47e9-8e60-2be6957456df"
+  data-blocking="success"
+  data-answer="1">
+  <x-prompt class="panel-heading">What is the application framework used to build Mastodon?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>Django</x-multiple-choice-option>
+    <x-multiple-choice-option>Ruby on Rails</x-multiple-choice-option>
+    <x-multiple-choice-option>ASP.Net</x-multiple-choice-option>
+    <x-multiple-choice-option>PHP</x-multiple-choice-option>
+    <x-multiple-choice-option>None of the above</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<hr data-page-break />
+
+<h2>Mastodon Basics</h2>
+
+<p>Our server is ready to go! Click the button to access your Mastodon instance.</p>
+<p><x-command 
+  data-command='launch mastlaunch1 "browser https://%{metadata:lab_fqdn}/public/local"'
+  data-guid="1a543f53-2e34-4bd1-b71d-e2e6375fb185"
+  data-command-type="interactive"
+  data-description="Visit Mastodon in the Virtual Browser"
+  data-activate="true"
+  data-spinner="spin"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>Launch Mastodon</x-command></p>
+<h4>Sign in to Mastodon</h4>
+<p>Click the <strong>Sign in</strong> button and enter your user credentials:</p>
+<table style="width: 100%;">
+  <tbody>
+    <tr>
+      <td>Username</td>
+      <td><x-copy-text>%{metadata:mastodon_admin_email}</x-copy-text></td>
+    </tr>
+    <tr>
+      <td>Password</td>
+      <td><x-copy-text>%{metadata:mastodon_admin_password}</x-copy-text></td>
+    </tr>
+  </tbody>
+</table>
+<p><br /></p>
+
+<h4>Generate content</h4>
+<p>It's lonely here on this empty instance. Click the button to generate some sample content:</p>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>You'll notice that some toots in English and others are in Spanish. If you don't speak Spanish, that's OK! Later in the training you'll set up a bot to translate the content into your language.</p>
+</x-block>
+<p><x-command 
+  data-command="invoke setup_users"
+  data-guid="54f4b390-9fcc-4341-9302-24c3fafd8146"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Create users and generate content"
+  data-spinner="spin"
+  data-target="%{script_vm_host}"
+  data-display="inline"
+>Generate content</x-command></p>
+<h4>Configure server rules</h4>
+<p>While the content is being generated, click here to open the server rules interface:</p>
+<p><x-command 
+  data-command='launch mastlaunch2 "browser https://%{metadata:lab_fqdn}/admin/rules"'
+  data-guid="03cb6a07-76d1-4f20-93e1-87c32157d217"
+  data-command-type="interactive"
+  data-description="Visit Mastodon in the Virtual Browser"
+  data-activate="true"
+  data-spinner="spin"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>View server rules</x-command></p>
+<p>Follow these instructions to create a rule:</p>
+<ul>
+  <li>Paste the following rule into the server rule box:<br /><x-copy-text>Content must be written by the poster OR attributed to the author. AI content is allowed if it clearly indicates its source and has been reviewed by a human.</x-copy-text>
+  <li>Click <strong>Add rule</strong><br /><img src="images/add_server_rule.png" /></li>
+</ul>
+<p></p>
+<h4>Make your first toot</h4>
+<p>First, click here to get back to the main local feed:</p>
+<p><x-command 
+  data-command='launch mastlaunch3 "browser https://%{metadata:lab_fqdn}/public/local"'
+  data-guid="80c4a579-311d-4af3-b72e-028971ab3d5d"
+  data-command-type="interactive"
+  data-description="Visit Mastodon in the Virtual Browser"
+  data-activate="true"
+  data-spinner="spin"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>View main feed</x-command></p>
+<p>Do the following to create your first toot:</p>
+<ol>
+  <li>Type some text into the box at the upper left</li>
+  <li>Click <strong>Publish</strong><br /><img src="images/first_toot.png" /></li>
+</ol>
+
+<h4>Reply to a toot</h4>
+
+<p>Perform the following steps to reply to a toot:</p>
+<ol>
+  <li>Click the "Local" link to view the recent toots on this instance.</li>
+  <li>Choose a toot and click the arrow icon to reply<br /><img src="images/reply.png" /></li>
+  <li>Type your reply and click "Publish"<br /><img src="images/write_reply.png" /></li>
+</ol>
+
+<hr data-page-break />
+
+<h2>Desktop Clients</h2>
+<p>Mastodon has a number of community developed desktop clients. In this section, you'll install and use Whalebird, a client for Windows.</p>
+<h4>Installing Whalebird</h4>
+<p>Please do the following to install Whalebird on Windows:</p>
+<ol>
+  <li>Click the lightning bolt at the top right corner of this page, and then select <strong>Windows VM</strong><br /><img src="images/switch_to_vm_lab_actions.png" /></li>
+  <li>Log in with the saved credentials<br /><img src="images/windows_login.png" /></li>
+  <li>Once you have logged in, you will see the Whalebird executable on the desktop. Double click the Whalebird executable and click through the prompts to install it. Use the default selections for each prompt.<br /><img src="images/windows_install.png" /></li>
+  <li>After the installation completes, launch the application<br /><img src="images/launch_whalebird.png" /></li>
+</ol>
+
+<h4>Connect your account to Whalebird</h4>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>You'll use a different user account for this section than you did in the previous page.</p>
+</x-block>
+<ol>
+  <li>When you first open Whalebird, you'll be prompted to enter your Mastodon instance URL. Paste the following URL: and then click <strong>Search</strong><br /><x-copy-text>%{metadata:lab_fqdn}</x-copy-text><br /><img src="images/whalebird_domain.png" /></li>
+  <li>Click <strong>Login</strong> and you will be redirected to a browser to log in. Log in with the following credentials:<br /><table style="width: 100%;">
+    <tbody>
+      <tr>
+        <td>Email address</td>
+        <td><x-copy-text>%{metadata:windows_user_email}</x-copy-text></td>
+      </tr>
+      <tr>
+        <td>Password</td>
+        <td><x-copy-text>%{metadata:windows_user_password}</x-copy-text></td>
+      </tr>
+    </tbody>
+  </table></li>
+  <li>After you have logged in, click <strong>Authorize</strong> to connect your account to Whalebird<br /><img src="images/whalebird_authorize.png" /></li>
+  <li>You will be provided with an authorization code, which you will paste into Whalebird<br /><img src="images/whalebird_authorization.png" /></li>
+</ol>
+<h4>Using Whalebird</h4>
+<ol>
+  <li>Now that you've logged in, you should see some content. You'll see that Whalebird provides a similar interface to Mastodon's website with many of the same functions.</li>
+  <li>Type something into the "What's on your mind" box and click <strong>Post</strong> to create a toot<br /><img src="images/whalebird_post.png" /></li>
+</ol>
+<p>When you are done, click the button to check your work:</p>
+<p><x-command 
+  data-command='powershell if(Test-Path C:\Users\Administrator\AppData\Local\Programs\Whalebird) { echo "OK" } else { echo "Failed"; exit 1 }'
+  data-guid="8f03af73-fb40-496a-8c40-516a9a20e5eb"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Check my work (Whalebird)"
+  data-spinner="spin"
+  data-attempts="success"
+  data-target="Windows Desktop"
+  data-display="inline"
+>Check my work</x-command></p>
+<hr data-page-break />
+
+<h2>Another Desktop Client: Sengi for Mac (optional)</h2>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>This is an optional topic. Click to the next page to skip it.</p>
+</x-block>
+
+<p>
+	Sengi is another desktop client in the Mastodon ecosystem. It's available on a variety of platforms. Just for fun, this time we'll try a Mac.
+</p>
+
+<p>
+  To create the Mac, click on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "provision_mac"' data-command-type="system" data-description="Provision Mac" data-guid="6e5916cc-018d-4b7b-a4d3-04edd6af109a" data-spinner="all" data-target="%{script_vm_host}" data-timeout="0" data-display="inline" title="Provision Mac">Provision Mac</x-command>. This will take a few minutes; please wait for the spinner to stop and the green checkmark to appear before continuing. Feel free to move on to the next page and come back.
+</p>
+
+<p>Once the Mac is provisioned, you can access it by clicking on <x-command class="inline" data-display="inline" data-activate="true" data-command='launch mac "vnc %{course_metadata:mac_vnc_password}@localhost:5900 %{course_metadata:mac_user}@%{metadata:mac_dns_name}"' data-command-type="interactive" data-description="Access Mac" data-guid="8f3e7129-8762-4591-a105-d1d16fe5b075" data-target="%{browser_vm_host}" title="Access Mac">Access Mac</x-command>.</p>
+
+<p>Log in as <strong>ec2-user</strong> with password of <strong>Password1!</strong></p>
+
+<p>We've taken the liberty of installing Sengi for you. Launch it from the Finder > Applications and log in with your credentials:</p>
+
+<table style="width: 100%;">
+  <tr>
+    <td>URL:</td>
+    <td>https://%{metadata:lab_fqdn}</td>
+  </tr>
+  <tr>
+    <td>Username:</td>
+    <td>%{metadata:mastodon_admin_email}</td>
+  </tr>
+  <tr>
+    <td>Password:</td>
+    <td>%{metadata:mastodon_admin_password}</td>
+  </tr>
+</table>
+
+<br>
+<p>Click around and explore the very different look and feel of this desktop client.</p>
+
+<p>When you're all set, clean up the Mac by clicking on <x-command class="inline" data-display="inline" data-activate="false" data-attempts="" data-blocking="" data-command='invoke "teardown_mac"' data-command-type="system" data-description="Teardown Mac" data-guid="1362a4ae-947d-4cfe-82ec-a510c3e275f0" data-spinner="all" data-target="%{script_vm_host}" data-timeout="0" title="Teardown Mac">Teardown Mac</x-command>.
+
+<hr data-page-break />
+
+<h2>Moderation</h2>
+<p>To ensure a safe and rewarding experience for everyone, we need to moderate the content users post to our Mastodon server.</p>
+<p>Let's see what happens when a user makes posts outside the guidelines.</p>
+
+<h4>Troll simulation</h4>
+<p>First, click the button to set up our "troll" user and have them make some posts.</p>
+<p><x-command 
+  data-command="invoke bot_tooter"
+  data-guid="729e22ba-175a-4c38-bf59-a195f5e9afdb"
+  data-blocking="invoke"
+  data-command-type="system"
+  data-description="Generate troll content"
+  data-spinner="spin"
+  data-attempts="success"
+  data-target="%{script_vm_host}"
+  data-display="inline"
+>Generate troll content</x-command></p>
+<p>Next, click the button to visit the troll's profile and view their posts</p>
+<p><x-command 
+  data-command='launch MastodonModeration "browser https://%{metadata:lab_fqdn}/@%{metadata:troll_username}"'
+  data-guid="ae29f414-2886-49df-9f34-87a95617452c"
+  data-command-type="interactive"
+  data-description="Visit Mastodon in the Virtual Browser"
+  data-activate="true"
+  data-spinner="spin"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>View troll user</x-command></p>
+<h4>Reporting a user</h4>
+<p>The troll user is posting excerpts from Don Quijote by Miguel de Cervantes Saavedra, without attribution to the author. That goes against the terms of service for our site, so let's keep them from posting.</p>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>In our example, we are both reporting a user and taking a moderation action against them. In real life, there would typically be a regular user that reports a post, and a separate admin user that performs the moderation action</p>
+</x-block>
+<p>First, we'll report the user for violating the rules:</p>
+<ol>
+  <li>Under the user's post to the right, click the three dots to expand the context menu, then click <strong>Report @%{metadata:troll_username}</strong><br /><img src="images/report_user1.png" /></li>
+  <li>In the interface, choose <strong>Violates rules</strong> as the reason for reporting the user.<br /><img src="images/violates_rules.png" /></li>
+</ol>
+<h4>Blocking a user from posting</h4>
+<p>Now we'll put on our admin hat and deal with the abuse report that was just submitted.</p>
+<p>Mastodon provides a few options for preventing a user from posting. For now, we will freeze the user so their posts are still visible but they can't make new posts.</p>
+<p>To freeze the user's account, do the following:</p>
+<ol>
+  <li>Click <strong>Preferences</strong>, then <strong>Moderation</strong></li>
+  <li>In the Moderation menu, you will see a list of users that have been reported. Click below the username to read the report.<br /><img src="images/reported_users.png" /></li>
+  <li>Scroll down and click <strong>Custom</strong>, then <strong>Freeze</strong>. Optionally, add additional information about why you are reporting the user<br /><img src="images/freeze_user.png" /></li>
+  <li>Click <strong>Perform action</strong></li>
+</ol>
+<p>Now that the user's account is frozen, they should not be able to post. Click the button to simulate the troll posting again. If you froze them successfully, the script will succeed.</p>
+<p><x-command 
+  data-command="invoke check_bot_frozen"
+  data-guid="b2955af4-8724-4fa5-b210-5d11f1b28460"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Verify troll account is frozen"
+  data-spinner="spin"
+  data-target="%{script_vm_host}"
+  data-display="inline">Check your work</x-command>
+</p>
+<hr data-page-break />
+
+<h2>Advanced Topics: Translation Bot</h2>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>This is an optional advanced topic. Click to the next page to skip it.</p>
+</x-block>
+<p>Mastodon provides both REST and streaming APIs that can be used to develop a variety of bots or integrations.</p>
+<p>In this exercise, you will use these APIs, along with a translation API from Azure, to run a bot that will translate Spanish posts to English and vice versa.</p>
+<h4>Exercise setup</h4>
+<p>Click the lightning bolt at the top right corner of this page, and then <strong>Dev VM</strong>. Log in with the saved credentials.<br /><img src="images/switch_to_vm_lab_actions.png" /></p>
+<p>Next, click the button to set up a user account for our bot and an API token to use with Azure's translation services.</p>
+<x-block data-callout data-callout-warning class="alert alert-danger"><p>This script generates a translation token for your lab that's valid for 10 minutes. You can run the script again to regenerate the token if it expires.</p></x-block>
+<p><x-command 
+  data-command="invoke setup_translator"
+  data-guid="154885b2-4e06-4478-bb6b-5701e6f1d525"
+  data-command-type="system"
+  data-description="Setup translator accounts"
+  data-spinner="spin"
+  data-target="%{script_vm_host}"
+  data-display="inline"
+>Setup Translator</x-command></p>
+<h4>Write your bot</h4>
+<p>Now we'll switch to our dev VM. Click the button to switch to the VM and launch Visual Studio Code.</p>
+<p><x-command 
+  data-command="code /home/user/course-manager-examples/examples/mastodon/utils/translation_bot"
+  data-guid="1f6ae1f3-b223-48b8-92fb-caf5d82f42bb"
+  data-command-type="interactive"
+  data-description="Launch vscode"
+  data-spinner="none"
+  data-target="Ubuntu Desktop (Dev VM)"
+  data-activate="true"
+  data-display="inline"
+>Launch Visual Studio Code</x-command></p>
+<ol>
+  <li>In the left panel of the code editor, you will see the directory structure.</li>
+  <li>In this directory, you will see a file called <strong>bot.rb</strong>, which contains the ruby code that will run our bot.</li>
+  <li>Open the file called <strong>.env</strong>, which contains the environment variables used to run the bot.</li>
+  <li>In the file, paste the following value into the line starting with <strong>MAST_FQDN</strong><br /><x-copy-text>%{metadata:lab_fqdn}</x-copy-text></li>
+</ol>
+<h4>Generate an API token</h4>
+<p>Click the button to launch Firefox and open your Mastodon instance:<br />
+<p><x-command 
+  data-command='firefox -url "https://%{metadata:lab_fqdn}/auth/sign_in"'
+  data-guid="914a297b-11e9-4c3b-8159-749f16cdd0ff"
+  data-command-type="interactive"
+  data-description="Open Firefox"
+  data-spinner="none"
+  data-target="Ubuntu Desktop (Dev VM)"
+  data-activate="true"
+  data-display="inline"
+>Launch Firefox</x-command></p>
+<p>To generate an API token for use with your bot, do the following:</p>
+<ol>
+  <li>Enter the credentials for the translator account:<br /><table style="width: 100%;">
+    <tbody>
+      <tr>
+        <td>Username</td>
+        <td><x-copy-text>translator@bot.fake</x-copy-text></td>
+      </tr>
+      <tr>
+        <td>Password</td>
+        <td><x-copy-text>%{metadata:translator_password}</x-copy-text></td>
+      </tr>
+    </tbody>
+  </table></li>
+  <li>After you have signed in, click <strong>Preferences</strong>, then <strong>Development</strong>, then <strong>New application</strong></li>
+  <li>Enter anything you like for application name, leave the other settings unchanged, and click <strong>Submit</strong></li>
+  <li>Copy the token listed under <strong>Your access token</strong><br /><img src="images/api_token.png" /></li>
+  <li>Click back to VSCode. Paste the token into the <strong>.env</strong> file in the line starting with <strong>MAST_TOKEN</strong></li>
+  <li>When you have completed the previous steps, your <strong>.env</strong> file should look something like this:<br /><img src="images/code_env_file.png" /></li>
+</ol>
+
+<h4>Run the bot</h4>
+<p>Now that we have configured the bot, it's time to run it.</p>
+<x-block data-callout data-callout-warning class="alert alert-danger"><p>If this were a real instance of Mastodon, you would want to run the bot as a service or a managed container so it stays up. Since we're just testing it out, we'll run it in a terminal window.</p></x-block>
+<p>In your VSCode terminal, paste the following command:</p>
+<pre><x-copy-text>bundle exec ruby bot.rb</x-copy-text></pre>
+<p>If we configured everything correctly, the bot will connect to Mastodon and begin to listen for toots.</p>
+
+<h4>Test the bot</h4>
+<p>Click the button to switch back to your browser to test your bot:</p>
+<p><x-command 
+  data-command='launch InitialMastodonLaunch "browser https://%{metadata:lab_fqdn}/public/local"'
+  data-guid="3ae1cb89-9c0f-41fa-ac27-0629270bbfab"
+  data-command-type="interactive"
+  data-description="Visit Mastodon in the Virtual Browser"
+  data-spinner="spin"
+  data-activate="true"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>Launch Mastodon</x-command></p>
+<p>You can use the following buttons to toot in English and in Spanish</p>
+<p><x-command 
+  data-command="invoke spanish_tooter"
+  data-guid="5339b88e-cbb6-4e0d-8c9d-6d1c708fccd6"
+  data-command-type="system"
+  data-description="Toot in Spanish"
+  data-spinner="spin"
+  data-target="%{script_vm_host}"
+  data-display="inline"
+>Toot in Spanish</x-command></p>
+<p><x-command 
+  data-command="invoke english_tooter"
+  data-guid="9a047449-480a-40e5-896d-f37efaf12582"
+  data-command-type="system"
+  data-description="Toot in English"
+  data-spinner="spin"
+  data-target="%{script_vm_host}"
+  data-display="inline"
+>Toot in English</x-command></p>
+<p>On your <strong>Local</strong> feed, you should see the toot appear within a few seconds. If you click on the toot, you should see the translation appear.</p>
+<p>You can also make a toot of your own, and see a reply come in with the translation.</p>
+
+<hr data-page-break />
+
+<h2>Advanced Topics: Admin CLI</h2>
+<x-block data-callout data-callout-info class="alert alert-warning">
+  <p>This is an optional advanced topic. Click to the next page to skip it.</p>
+</x-block>
+<p>Most Mastodon administrative functions are performed through the web UI. However, there is also an admin CLI you can run on the Mastodon server, called <strong>tootctl</strong></p>
+<p>To use tootctl, you'll need to connect to the Mastodon server with SSH.</p>
+<p><x-command 
+  data-command='launch AdminSSH "sshterm user@%{metadata:mastodon_server_ip}"'
+  data-guid="5c720c9c-bb86-4b2b-aa66-082d27ee4db7"
+  data-command-type="interactive"
+  data-description="Launch SSH session"
+  data-spinner="spin"
+  data-activate="true"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>Click here to start an SSH session</x-command></p>
+<p>The basic format of a tootctl command is <strong>tootctl COMMAND</strong>, where COMMAND is one or more words that represent the action you are taking.</p>
+<p>In our lab, Mastodon is running in docker, so we'll need to prefix our commands with <strong>docker exec</strong>, the name of the container, and <strong>bundle exec</strong>, which loads the runtime dependencies.</p>
+<h4>Permanently deleting a user</h4>
+<p>Mastodon's web UI allows you to freeze or suspend a user, but it does not permit you to permanently delete a user from the database.</p>
+<p>To delete our troll user's account entirely, type the following command into the SSH terminal:</p>
+<p><pre><x-copy-text>docker exec web bundle exec tootctl account delete %{metadata:troll_username}</x-copy-text></pre></p>
+<p>After you have run the command, 
+<x-command 
+  data-command='launch MastodonTrollVerifySuspended "browser https://%{metadata:lab_fqdn}/@%{troll_username}"'
+  data-guid="dadabcfb-172c-45e3-839e-5e862bcc3663"
+  data-command-type="interactive"
+  data-description="Visit Mastodon in the Virtual Browser"
+  data-activate="true"
+  data-spinner="spin"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+  class="inline"
+>try to visit the troll's profile</x-command>
+and verify that it no longer exists.</p>
+
+<hr data-page-break />
+
+<h2>Written exam</h2>
+<p>Now that you've completed the training, it's time for the exam. The exam will consist of 5 multiple choice questions and a practical exercise.</p>
+<h4>Exam setup</h4>
+<p>Click the button to set up the practical exam, and continue on to complete the multiple choice section.</p>
+<x-command 
+  data-command="invoke setup_exam"
+  data-guid="600e5c26-bb75-493a-884d-83e997c44e8b"
+  data-blocking="success"
+  data-command-type="system"
+  data-description="Prepare for the practical exam"
+  data-spinner="spin"
+  data-attempts="success"
+  data-target="%{script_vm_host}"
+>Practical exam setup</x-command><p><br /></p>
+<h4>Multiple choice questions</h4>
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="acb15aac-82d7-4fc5-a1bb-cc8fba8110ce"
+  data-blocking="invoke"
+  data-metadata-attribute="exam_q_post_name"
+  >
+  <x-prompt class="panel-heading">What is a post called in Mastodon?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>Tweet</x-multiple-choice-option>
+    <x-multiple-choice-option>Groan</x-multiple-choice-option>
+    <x-multiple-choice-option>Roar</x-multiple-choice-option>
+    <x-multiple-choice-option>Any of the above</x-multiple-choice-option>
+    <x-multiple-choice-option>None of the above</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="37b25d31-c4fa-4a9b-9594-999e8cb52368"
+  data-blocking="invoke"
+  data-metadata-attribute="exam_q_freeze"
+  >
+  <x-prompt class="panel-heading">What does it mean to "freeze" a user account in Mastodon?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>The account is permanently deleted</x-multiple-choice-option>
+    <x-multiple-choice-option>The account and all its associated content are hidden from view</x-multiple-choice-option>
+    <x-multiple-choice-option>The account cannot create new content</x-multiple-choice-option>
+    <x-multiple-choice-option>The user receives a shipment of dry ice to their home</x-multiple-choice-option>
+    <x-multiple-choice-option>None of the above</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="b2b5adb9-58f9-4b55-a84a-e2402ef15127"
+  data-blocking="invoke"
+  data-metadata-attribute="exam_q_windows_client"
+  >
+  <x-prompt class="panel-heading">What is the name of the Windows client you installed earlier?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>Windbird</x-multiple-choice-option>
+    <x-multiple-choice-option>Sailbird</x-multiple-choice-option>
+    <x-multiple-choice-option>Whaley</x-multiple-choice-option>
+    <x-multiple-choice-option>Whalebird</x-multiple-choice-option>
+    <x-multiple-choice-option>None of the above</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="f8287fd7-6d07-474b-8809-6f6a5db41330"
+  data-blocking="invoke"
+  data-metadata-attribute="exam_q_max_post_length"
+  >
+  <x-prompt class="panel-heading">What is the maximum length of a post on Mastodon?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>100 words</x-multiple-choice-option>
+    <x-multiple-choice-option>250 characters</x-multiple-choice-option>
+    <x-multiple-choice-option>500 characters</x-multiple-choice-option>
+    <x-multiple-choice-option>1000 characters</x-multiple-choice-option>
+    <x-multiple-choice-option>There is no limit</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<x-question class="panel panel-default"
+  data-question-type="multiple-choice"
+  data-guid="3952eaa8-6b9d-40b8-baa0-95a93336b8cf"
+  data-blocking="invoke"
+  data-metadata-attribute="exam_q_entity_name"
+  >
+  <x-prompt class="panel-heading">What is the name of the organization that maintains Mastodon?</x-prompt>
+  <x-multiple-choice-options>
+    <x-multiple-choice-option>Mastodon SARL</x-multiple-choice-option>
+    <x-multiple-choice-option>Mastodon LLC</x-multiple-choice-option>
+    <x-multiple-choice-option>Meta Platforms, Inc.</x-multiple-choice-option>
+    <x-multiple-choice-option>Mastodon gGmbH</x-multiple-choice-option>
+    <x-multiple-choice-option>Mastodon Inc.</x-multiple-choice-option>
+    <x-multiple-choice-option>None of the above</x-multiple-choice-option>
+  </x-multiple-choice-options>
+</x-question>
+
+<hr data-page-break />
+
+<h2>Practical Exam</h2>
+<p>When the exam is ready, the button below will become available. Click it to launch Mastodon and start the practical portion of your exam:</p>
+<p><x-command 
+  data-command='launch ExamPart2 "browser https://%{metadata:lab_fqdn}/public/local"'
+  data-guid="9d8c6c23-612e-4bf2-82ef-e3d0124c7c2b"
+  data-command-type="interactive"
+  data-description="Launch Mastodon for exam part 2"
+  data-activate="true"
+  data-spinner="spin"
+  data-target="%{browser_vm_host}"
+  data-display="inline"
+>Launch Mastodon</x-command></p>
+<h4>Section 1: Toots</h4>
+<p>Next, complete the following steps</p>
+<ol>
+  <li>If you are not already logged in to Mastodon, log in with your saved credentials:<br />
+    <table style="width: 100%;">
+      <tbody>
+        <tr>
+          <td>Username</td>
+          <td><x-copy-text>%{metadata:mastodon_admin_email}</x-copy-text></td>
+        </tr>
+        <tr>
+          <td>Password</td>
+          <td><x-copy-text>%{metadata:mastodon_admin_password}</x-copy-text></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>Create a toot</li>
+  <li>Reply to a toot</li>
+</ol>
+
+<x-question 
+  class="panel panel-default"
+  data-blocking="invoke"
+  data-guid="ebc1a81d-3ac3-4d6c-bea9-cd53a8b5c4ed"
+  data-metadata-attribute="exam_q_reply_user"
+  data-question-type="short-answer-exact"
+><x-prompt class="panel-heading">What is the username of the user whose post you replied to?</x-prompt>
+</x-question>
+
+<h4>Section 2: Moderation</h4>
+<p>It appears our troll has logged in with a new username. For this part of the exam, you will need to do the following:</p>
+<ol>
+  <li>Find the troll's new username</li>
+  <li>Report the user for posting spam</li>
+  <li><strong>Suspend</strong> the user's account</li>
+</ol>
+
+
+<x-question 
+  class="panel panel-default"
+  data-blocking="invoke"
+  data-guid="ebfbbdbe-1ad0-453a-8f24-326f96023265"
+  data-metadata-attribute="exam_q_troll_user"
+  data-question-type="short-answer-exact"
+><x-prompt class="panel-heading">Enter the username of the troll you suspended</x-prompt>
+</x-question>
+
+<hr data-page-break />
+<h2>Feedback</h2>
+<p>Thank you for taking our course! We would appreciate it if you'd take a moment to answer these optional questions about the training</p>
+<x-question 
+  class="panel panel-default"
+  data-guid="56a120db-69f2-4c9f-8e2c-b152da74c05b"
+  data-metadata-attribute="feedback_rating"
+  data-question-type="multiple-choice"
+><x-prompt class="panel-heading">On a scale of 1 to 5, 5 being the highest, how would you rate this course?</x-prompt>
+<x-multiple-choice-options>
+  <x-multiple-choice-option>5</x-multiple-choice-option>
+  <x-multiple-choice-option>4</x-multiple-choice-option>
+  <x-multiple-choice-option>3</x-multiple-choice-option>
+  <x-multiple-choice-option>2</x-multiple-choice-option>
+  <x-multiple-choice-option>1</x-multiple-choice-option>
+</x-multiple-choice-options>
+</x-question>
+
+<x-question 
+  class="panel panel-default"
+  data-guid="dac56444-17b4-4d69-a8c3-30b509e5fafa"
+  data-metadata-attribute="feedback_text"
+  data-question-type="short-answer-exact"
+><x-prompt class="panel-heading">Please include any comments you have about the course here</x-prompt>
+</x-question>
+
+<hr data-page-break />
+<h2>Grade Your Exam</h2>
+<p>After you end your lab, your exam will be graded automatically and your score will be sent to you by email. To get your score now, click the button below. This will also delete your Azure lab resources and disable your Mastodon instance.</p>
+<p><x-command 
+  data-command="invoke mastodon_teardown"
+  data-guid="c2af42b4-cd3f-4561-8d00-06a1b659002e"
+  data-command-type="system"
+  data-description="Grade my exam"
+  data-spinner="all"
+  data-attempts="success"
+  data-target="%{script_vm_host}"
+>Grade my exam</x-command></p>
