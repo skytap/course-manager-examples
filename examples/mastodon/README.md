@@ -1,56 +1,43 @@
-# Course Manager Example Course: Mastodon
+# Course Manager Lab Concept: Mastodon
 
-This directory contains the course manual, scripts and utilities used to build the "Intro to Mastodon" training course in Course Manager by Skytap. The goal of this course is to provide a working example of a hybrid cloud lab, orchestrated with Course Manager. 
+This directory contains the Course Manual, Scripts and utilities used to create the [Intro to Mastodon](manual/mastodon_manual.html) concept training lab on Course Manager by Skytap. Used together, they build an integrated hybrid cloud lab environment in Skytap using services from Microsoft Azure, Amazon Web Servies and Twilio Sendgrid. The lab uses synthetic data to train the user on an ephemeral instance of Mastodon. 
 
-The examples demonstrate the following:
-
-- Using metadata and sensitve metadata to store lab credentials and context
-- Using Terraform in scripts to provision and tear down course and lab resources
-- Using the Skytap API to customize labs provisioned by Course Manager
-- Integrating scripts and metadata with Course Manager Manuals
-- Using LTI basic outcomes to report grades to an LTI-compliant LMS
-- Provisioning resources in Microsoft Azure and Amazon Web Services
-
-For more information, please contact your Skytap Customer Success Manager.
+If you are not a Skytap customer and would like to learn more, please [contact us and request a demo](https://www.skytap.com/contact-us/).
 
 ## Dependencies
 
-The course manual, scripts and utilities are mutually dependent, and also have several external dependencies. Individual scripts or utilities may not work outside of a properly configured Course Manager course. 
-
-The course also has several external dependencies, including:
-
 - Skytap templates for the Mastodon server and clients
 - Microsoft Azure subscription and service principal
-- Azure storage account (for Terraform state)
-- Azure translation account (for translation bot exercise and associated scripts)
-- Sendgrid account and API token
-- Amazon Web Services access key
+- Microsoft Azure storage account (for Terraform state)
+- Microsoft Azure Translation API account (for translation bot exercise and associated Scripts)
+- Sendgrid account and API token with permissions to create lab tokens and send mail
+- Amazon Web Services subscription and access key (for Mac lesson)
 
-## Manual
+## Course Manual
 
-The manual is available at `manual/mastodon_manual.html`, which references images in the `images` directory. The manual can be published using the Course Manual Manager, which is documented here: https://github.com/skytap/course-manager-examples/tree/master/tools/course_manual_manager
+The [Course Manual](manual/mastodon_manual.html) can be published using the [Course Manual Manager](../../tools/course_manual_manager/).
 
 ## Scripts
 
-The `scripts` directory contains the Course Manager scripts that are referenced in the manual. All scripts are based on the [ruby script template](https://github.com/skytap/course-manager-examples/tree/master/script-templates/ruby). This is one of several templates that providing a starting point for developing scripts, including utilities for managing metadata, controlling lab state, testing the script locally, and deploying to Course Manager. 
+All Scripts use the [Course Manager Script template for ruby](https://github.com/skytap/course-manager-examples/tree/master/script-templates/ruby). This is one of [several templates](../../script-templates/) that providing a starting point for developing Scripts.
+
+These Scripts provide an example for Skytap customers to build their own courses or titles. They should not be used as an example for managing Mastodon.
 
 The scripts include:
-- `bot_tooter` - creates Mastodon posts as the bot user
-- `check_bot_frozen` - attempts to post as the bot user, fails if the post is successful
-- `english_tooter` - creates a Mastodon post in English
-- `provision_and_teardown/provision` - generates random IDs for use by the lab, provisions the shared course infrastructure in Azure with Terraform if not provisioned already, provisions the lab infrastructure in Azure with Terraform, customizes the Skytap environment used by the lab
-- `provision_and_teardown/teardown` - grades the user's lab, sends a grade report by email, reports grade to the LTI service that launched the lab (if relevant), destroys lab infrastructure with Terraform
-- `provision_mac` - provisions the Mac host in Aamzon Web Services
-- `server_init` - configures and deploys Mastodon to the Mastodon server VM
-- `setup_exam` - prepares the lab for the exam portion of the training
-- `setup_translator` - creates a token for the Azure translation API and the Mastodon user used for the translation portion of the course
-- `setup_users` - creates the initial Mastodon users and initial posts
-- `spanish_tooter` - creates a Mastodon post in Spanish
-- `teardown_mac` - destroys the Mac instance created in `provision_mac`
+- [provision](scripts/provision_and_teardown/provision/script/script.rb) - generates random IDs for use by the lab, provisions the [shared course infrastructure with Terraform](scripts/provision_and_teardown/provision/terraform/course/) if not provisioned already, provisions the [lab infrastructure with Terraform](scripts/provision_and_teardown/shared/terraform/lab/), customizes the Skytap environment used by the lab
+- [teardown](scripts/provision_and_teardown/teardown/script/script.rb) - grades the user's lab, sends a grade report by email, reports grade to the LTI service that launched the lab (if relevant), destroys lab infrastructure with Terraform
+- [provision_mac](scripts/provision_mac/script/script.rb) - provisions the Mac host in Aamzon Web Services
+- [server_init](scripts/server_init/script/script.rb) - configures and deploys Mastodon to the Mastodon server VM
+- [setup_exam](scripts/setup_exam/script/script.rb) - prepares the lab for the exam portion of the training
+- [setup_translator](scripts/setup_translator/script/script.rb) - creates a token for the Azure translation API and the Mastodon user used for the translation portion of the course
+- [setup_users](scripts/setup_translator/script/script.rb) - creates the initial Mastodon users and initial posts
+- [spanish_tooter](scripts/setup_translator/script/script.rb) - creates a Mastodon post in Spanish
+- [teardown_mac](scripts/teardown_mac/script/script.rb) - destroys the Mac instance created in
+- bot_tooter](scripts/bot_tooter/script/script.rb) - creates Mastodon posts as the bot user
+- [check_bot_frozen](scripts/check_bot_frozen/script/script.rb) - attempts to post as the bot user, fails if the post is successful
+- [english_tooter](scripts/english_tooter/script/script.rb) - creates a Mastodon post in English
 
-Some scripts use composition to copy shared code, located at `scripts/shared`, into a `.build` directory which is then deployed to Skytap.
-
-Some scripts post example user content to Mastodon. This content was was not created by Skytap, and was retrieved from the following sources:
+Some scripts post example user content to Mastodon. This content was retrieved from the following sources:
 
 - `scripts/shared/tooter/lib/script_support/toots/en.txt` - created by Microsoft's Bing chatbot on 9/30/2023
 - `scripts/shared/tooter/lib/script_support/toots/es.txt` - created by Microsoft's Bing chatbot on 9/30/2023
@@ -58,9 +45,9 @@ Some scripts post example user content to Mastodon. This content was was not cre
 
 ## Metadata Requirements
 
-The scripts in this course require the following metadata attributes to be created in Course Manager, as course, feature, or lab metadata. In addition, the scripts create several lab metadata attributes, which are not enumerated here.
+The Scripts in this course require the following Metadata and Sensitive Metadata attributes to be created in Course Manager, associated with the lab, event, user, course or feature. The Scripts also create several Metadata attributes for the lab that are referenced in the Course Manager
 
-### Metadata (available to lab user)
+### Metadata
 
 - `azure_tenant_id`
 - `azure_subscription_id`
@@ -87,7 +74,7 @@ The scripts in this course require the following metadata attributes to be creat
 - `mac_num_allowed_hosts`
 - `instructor_email`
 
-### Sensitive Metadata (available to scripts only)
+### Sensitive Metadata
 
 - `azure_client_id`
 - `azure_client_secret`
