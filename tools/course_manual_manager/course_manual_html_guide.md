@@ -178,13 +178,13 @@ To insert a command shortcut:
   - (blank) - Always available (default).
   - `invoke` - Available until it has been clicked once.
   - `success` - Available until it has been clicked and executed successfully.
-- **data-display** - Indicates whether to format the shortcut as a button or an inline link. The valid options are:
-  - (blank) - Button (default).
-  - `inline` - Inline link.
 - **data-timeout** - Indicates the time period in seconds beyond which the command is considered to have failed if execution has not completed. For no timeout, use `0`.
 - **data-activate** - Indicates whether the VM that accepts the command for execution should be switched into view within the Learning Console. The valid options are:
   - `false` - Don't switch to the VM (default).
   - `true` - Switch to the VM.
+- **class** - Indicates whether to format the shortcut as a button or an inline link. The valid options are:
+  - (blank) - Button (default).
+  - `inline` - Inline link.
 
 ### Script Shortcuts
 
