@@ -182,9 +182,9 @@ To insert a command shortcut:
 - **data-activate** - Indicates whether the VM that accepts the command for execution should be switched into view within the Learning Console. The valid options are:
   - `false` - Don't switch to the VM (default).
   - `true` - Switch to the VM.
-- **class** - Indicates whether to format the shortcut as a button or an inline link. The valid options are:
-  - (blank) - Button (default).
-  - `inline` - Inline link.
+- **class** - Can be set to a supported style class to indicate how to display the shortcut. The valid options are:
+  - (blank) - Format the shortcut as a button (default).
+  - `inline` - Format the shortcut as an inline link.
 
 ### Script Shortcuts
 
