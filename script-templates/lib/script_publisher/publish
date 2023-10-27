@@ -4,6 +4,13 @@ require 'yaml'
 require_relative 'script_publisher'
 
 CONFIG_FILE_NAME = ".publish.yml"
+CONFIG_OPTIONS = {
+  app_hostname: "Course Manager hostname (e.g. customername.skytap-portal.com)",
+  api_key: "Course Manager API key",
+  api_secret: "Course Manager API secret",
+  course_id: "Target course's numeric ID (from end of course URL)",
+  script_name: "Script name"
+}.freeze
 
 def prompt_for(prompt)
   print "#{prompt}: "
@@ -16,14 +23,15 @@ opts =
   if File.exist?(CONFIG_FILE_NAME)
     YAML.load_file(CONFIG_FILE_NAME).symbolize_keys
   else
-    {
-      app_hostname: prompt_for("Course Manager hostname (e.g. customername.skytap-portal.com)"),
-      api_key: prompt_for("Course Manager API key"),
-      api_secret: prompt_for("Course Manager API secret"),
-      course_id: prompt_for("Target course's numeric ID (from end of course URL)"),
-      script_name: prompt_for("Script name")
-    }
+    puts "Creating configuration file in #{File.join(Dir.pwd, CONFIG_FILE_NAME)}."
+    {}
   end
+
+CONFIG_OPTIONS.each do |key, prompt|
+  next if opts.key? key
+
+  opts[key] = prompt_for(prompt)
+end
 
 ScriptPublisher.new(**opts.to_hash).publish
 
