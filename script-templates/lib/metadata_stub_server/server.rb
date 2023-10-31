@@ -36,12 +36,42 @@ class MetadataStubServer < Sinatra::Base
   put URI(settings.control_url).path do
     body = JSON.parse(request.body.read) rescue {}
     control_data = JSON.parse(settings.control_data_json) rescue {}
-    settings.control_data_json = control_data.merge(
-      body.slice("metadata", "sensitive_metadata", "feature", "course", "user", "event")
-    ).to_json
+    settings.control_data_json = control_data_merge(control_data, body).to_json
   end
 
   post URI(settings.broadcast_url).path do
     "{}"
+  end
+
+  private
+
+  METADATA_FIELDS = [
+    ['metadata'], ['sensitive_metadata'],
+    ['feature', 'metadata'], ['feature', 'sensitive_metadata'],
+    ['course', 'metadata'], ['course', 'sensitive_metadata'],
+    ['user', 'metadata'], ['user', 'sensitive_metadata'],
+    ['event', 'metadata'], ['event', 'sensitive_metadata'],
+  ].freeze
+
+  # Merges the incoming metadata into the Control Data.
+  # @param control_data [Hash] The current Control Data.
+  # @param body [Hash] The body of the request, from which we will pull the metadata.
+  # @return [Hash] The Control Data with the updated metadata
+  def control_data_merge(control_data, body)
+    METADATA_FIELDS.each do |keys|
+      incoming_metadata = body.dig(*keys)
+      update_metadata(control_data, keys, incoming_metadata) if incoming_metadata.is_a? Hash
+    end
+    control_data
+  end
+
+  def update_metadata(control_data, keys, incoming_metadata)
+    control_data[keys.first] ||= {}
+    if keys.length > 1
+      control_data[keys.first][keys[1]] ||= {} if keys[1]
+      control_data[keys.first][keys[1]].merge!(incoming_metadata).compact!
+    else
+      control_data[keys.first].merge!(incoming_metadata).compact!
+    end
   end
 end
