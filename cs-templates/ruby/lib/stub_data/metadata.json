@@ -1,0 +1,89 @@
+{
+   "id": "11111111",
+   "name": "Windows Server 2019 Datacenter ",
+   "runstate": "running",
+   "rate_limited": false,
+   "hardware": {
+      "cpus": 2,
+      "supports_multicore": true,
+      "cpus_per_socket": 1,
+      "ram": 4096,
+      "svms": 4,
+      "guestOS": "windows9srv-64",
+      "max_cpus": 24,
+      "min_ram": 256,
+      "max_ram": 262144,
+      "vnc_keymap": "us",
+      "uuid": null,
+      "disks": [
+         {
+            "id": "disk-22222222-102586154-scsi-0-0",
+            "size": 30720,
+            "type": "SCSI",
+            "controller": "0",
+            "lun": "0"
+         }
+      ],
+      "storage": 30720,
+      "upgradable": false,
+      "time_sync_enabled": true,
+      "rtc_start_time": null,
+      "copy_paste_enabled": true,
+      "nested_virtualization": false,
+      "architecture": "x86",
+      "boot_option": "bios"
+   },
+   "error": false,
+   "error_details": false,
+   "asset_id": null,
+   "hardware_version": 11,
+   "max_hardware_version": 11,
+   "interfaces": [
+      {
+         "id": "nic-22222222-102586154-0",
+         "ip": "10.0.0.1",
+         "hostname": "wins2019d",
+         "mac": "00:50:56:11:7D:D9",
+         "services_count": 0,
+         "services": [],
+         "public_ips_count": 0,
+         "public_ips": [],
+         "vm_id": "11111111",
+         "vm_name": "Windows Server 2019 Datacenter ",
+         "status": "Running",
+         "network_id": "33333333",
+         "network_name": "Network 1",
+         "network_url": "https://cloud.skytap.com/configurations/44444444/networks/33333333",
+         "network_type": "automatic",
+         "network_subnet": "10.0.0.0/24",
+         "nic_type": "vmxnet3",
+         "secondary_ips": [],
+         "public_ip_attachments": []
+      }
+   ],
+   "notes": [],
+   "labels": [],
+   "credentials": [
+      {
+         "id": "55555555",
+         "text": "Administrator/Password1!",
+         "notes": null
+      }
+   ],
+   "license_types": [],
+   "desktop_resizable": true,
+   "local_mouse_cursor": true,
+   "maintenance_lock_engaged": false,
+   "region_backend": "skytap",
+   "created_at": "2022/12/13 18:13:05 -0800",
+   "supports_suspend": true,
+   "containers": null,
+   "licenses": [],
+   "configuration_url": "https://cloud.skytap.com/configurations/44444444",
+   "publish_set_refs": [
+      "https://cloud.skytap.com/configurations/44444444/publish_sets/66666666"
+   ],
+   "environment_locked": false,
+   "user_data": "{\"control_url\":\"https://skytap-portal.com/path/to/control/url\"}",
+   "configuration_user_data": "{\"published_url\":\"https://cloud.skytap.com/vms/ba40a7c8d2b49e7d574c9649ee607724/desktops?fit_to_window=1\",\"course_manager_root\":\"https://example.skytap-portal.com/\",\"participant_identifier\":\"user001@skytap.com\",\"participant_type\":\"SelfLearners::SelfLearner\",\"event_name\":null,\"course_name\":\"Intro to Acme DataCloud\",\"course_identifier\":null,\"participant_tags\":[\"Lab Runtime 5 hours\"],\"event_integration_data\":null,\"integration_data\":{\"cosmos_key\":\"\",\"cosmos_url\":\"\",\"cosmos_name\":\"\"},\"lab_access_url\":\"https://example.skytap-portal.com/lab_access/self_learner/360/9999999999b1213c9de6e3b0dd9e6b8ab2ffdf85704a34b1c243019b34c38248\",\"room_name\":\"tenant_84_ptype_self_learner_pid_360_token_9999999999b1213c9de6e3b0dd9e6b8ab2ffdf85704a34b1c243019b34c38248\",\"parent_room_name\":null,\"cable_url\":\"wss://example.skytap-portal.com/cable\",\"channel\":\"LearningConsoleChannel\",\"file_drop_url\":\"https://example.skytap-portal.com/lab_access/self_learner/360/9999999999b1213c9de6e3b0dd9e6b8ab2ffdf85704a34b1c243019b34c38248/content_pane/file_drop\",\"credential_data\":[{\"credential_set\":\"Acme DataCloud Credentials\",\"name\":\"Acme DataCloud Credentials 1\",\"data\":\"Username: user001\\r\\nPassword: Password123!\\r\\nLoginURL: https://tenant001.acme.com/\\r\\n\"}],\"credentials\":[{\"credential_set\":\"Acme DataCloud Credentials\",\"name\":\"Acme DataCloud Credentials 1\",\"data\":{\"Username\":\"user001\",\"Password\":\"Password123!\",\"LoginURL\":\"https://tenant001.acme.com/\"}}]}"
+}
