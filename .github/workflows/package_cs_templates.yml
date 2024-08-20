@@ -32,10 +32,11 @@ jobs:
       - name: Create zip files
         working-directory: ./cs-templates
         run: |
-          rm -f *.tar.gz
+          rm -f *.tar.gz templates.txt
           for item in *; do
             if [ -d "$item" ]; then
               pushd $item && tar cvzf ../$item.tar.gz * && popd
+              echo $item>> templates.txt
             fi
           done
       - name: Push new packages to repo
