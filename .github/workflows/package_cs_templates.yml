@@ -44,6 +44,6 @@ jobs:
         with:
           fetch: true
           default_author: github_actions
-          add: cs-templates/*.tar.gz
+          add: cs-templates/*.tar.gz cs-templates/templates.txt
           message: Updating script template packages
           push: true
