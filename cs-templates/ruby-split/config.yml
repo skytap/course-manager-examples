@@ -1,20 +1,20 @@
-# executor_build:
-#   name: ExecutorBuild
-#   dockerfile: Dockerfile.executor
-#   persistent_artifacts:
-#     - Gemfile.lock
-# build:
-#   name: Build
-#   image_name: ruby:3.2-bullseye
-#   command: ["/bin/bash", "-c", "bundle install && bundle config deployment true && bundle package"]
-#   persistent_artifacts:
-#     - Gemfile.lock
-run:
-  name: Run
-  # type: container
-  # image_name: ruby:3.2-bullseye
-  # command: ["/bin/bash", "-c", "bundle config deployment true && bundle exec ruby script.rb"]
-  command: ["/bin/bash", "-c", "bundle exec ruby script.rb"]
+executor:
+  base: ruby:3.3-bullseye
+  customizer: build/customizer
+  src:
+    - build/**/*
+    - Gemfile*
+  persistent_artifacts:
+    "Gemfile.lock": "/build/Gemfile.lock"
+script:
+  command:
+    - "/bin/bash"
+    - "-c"
+    - "bundle exec ruby script.rb"
+  src:
+    - lib/**/*
+    - script.rb
+    - Gemfile*
   env:
     - "RUBYLIB=./lib"
-    - "BUNDLE_GEMFILE=/exec/Gemfile"
+    - "BUNDLE_GEMFILE=/build/Gemfile"
