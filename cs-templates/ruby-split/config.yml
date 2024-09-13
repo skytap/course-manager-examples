@@ -1,6 +1,7 @@
 executor:
   base: ruby:3.3-bullseye
   customizer: build/customizer
+  root: /build
   src:
     - build/**/*
     - Gemfile*
@@ -11,6 +12,7 @@ script:
     - "/bin/bash"
     - "-c"
     - "bundle exec ruby script.rb"
+  root: /script
   src:
     - lib/**/*
     - script.rb
