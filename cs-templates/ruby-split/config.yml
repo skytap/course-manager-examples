@@ -17,4 +17,3 @@ script:
     - Gemfile*
   env:
     - "RUBYLIB=./lib"
-    - "BUNDLE_GEMFILE=/build/Gemfile"
