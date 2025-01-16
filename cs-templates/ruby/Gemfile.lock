@@ -6,12 +6,14 @@ GEM
       i18n (>= 1.8.11, < 2)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
+    lorem (0.1.2)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
   faker
+  lorem
 
 BUNDLED WITH
-   2.4.6
+   2.5.3

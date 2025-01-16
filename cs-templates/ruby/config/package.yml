@@ -1,0 +1,20 @@
+build:
+  runtime: ruby:3.3-bullseye
+  command:
+    - "/bin/bash"
+    - "-c"
+    - "(bundle config set path /build/bundle > /dev/null) && bundle install"
+  context:
+    - "Gemfile*"
+  devArtifacts:
+    "Gemfile.lock": "/build/Gemfile.lock"
+  artifacts:
+    "Gemfile.lock": "/build/Gemfile.lock"
+    "bundle": "/build/bundle"
+  # workDir: "/build"
+# workDir: "/script"
+src:
+  - lib/**/*
+  - script.rb
+  - Gemfile*
+  - bundle/**/*

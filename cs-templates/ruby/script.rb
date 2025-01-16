@@ -30,6 +30,7 @@ lab_control.update_control_data({ "metadata" => { "AcmeDataProUsername" => "user
 puts "Metadata updated to #{lab_control.control_data['metadata']}"
 puts "Sensitive metadata updated to #{lab_control.control_data['sensitive_metadata']} (displayed for demo purposes only -- sensitive metadata is not normally intended for exposure to end users!)"
 
-puts "Here is a nonsense sentence to demonstrate use of a Ruby gem: #{Faker::Lorem.sentence}"
+puts "Here is a nonsense sentence to demonstrate use of a Ruby gem! #{Faker::Lorem.sentence}"
 
-raise 'oh noes'
+# uncomment to see what happens if script fails
+# raise 'oh noes'

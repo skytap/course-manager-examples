@@ -1,0 +1,8 @@
+runtime: ruby:3.3-bullseye
+command:
+  - "/bin/bash"
+  - "-c"
+  - "bundle config set path /script/bundle > /dev/null && bundle exec ruby script.rb"
+env:
+  - "RUBYLIB=./lib"
+# egress: false
