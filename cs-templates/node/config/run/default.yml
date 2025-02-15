@@ -1,0 +1,8 @@
+image: node:22-bookworm
+command:
+  - "/bin/bash"
+  - "-c"
+  - "npm config set update-notifier false && npm start --silent"
+env:
+  - "NODE_PATH=./lib:./script/node_modules"
+egress: true

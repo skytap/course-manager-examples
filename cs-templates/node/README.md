@@ -1,11 +1,11 @@
-# Skytap Cloud Scripts - Ruby Script Template
+# Skytap Cloud Scripts - Node.js Script Template
 
-This is a code template that can be used as a starting point for developing a Skytap Cloud Scripts script in Ruby.
+This is a code template that can be used as a starting point for developing a Skytap Cloud Scripts script in Node.js.
 
 ## Using This Template
 
-* `script.rb` is the entry point of your script -- replace the sample code it contains with your own. You're welcome to add other files and directories under lib/ for use in the script.
-* Add any gems required by your script to `Gemfile`.
+* `script.js` is the entry point of your script -- replace the sample code it contains with your own. You're welcome to add other files and directories under lib/ for use in the script.
+* Add any npm packages required by your script to `package.json`.
 * Refer to the Skytap Cloud Scripts documentation for information about:
   * Building, running, and pushing scripts built with this template using the skytapcs command-line tool
   * Options to further customize of the runtime environment

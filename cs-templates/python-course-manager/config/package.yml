@@ -1,0 +1,16 @@
+build:
+  image: python:3.13-bookworm
+  command:
+    - "/bin/bash"
+    - "-c"
+    - "python -m pip install -r ./requirements.txt -t ./packages --upgrade --root-user-action=ignore --disable-pip-version-check"
+  context:
+    - "requirements.txt"
+  artifacts:
+    "packages": "/build/packages"
+  workDir: "/build"
+workDir: "/script"
+src:
+  - lib/**/*
+  - script.py
+  - requirements.txt

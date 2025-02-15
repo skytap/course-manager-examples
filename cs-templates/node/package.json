@@ -1,0 +1,18 @@
+{
+  "name": "cm-node-script",
+  "version": "0.1.0",
+  "description": "Course Manager Node Script",
+  "main": "script.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "node script.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.1"
+  },
+  "type": "module"
+}

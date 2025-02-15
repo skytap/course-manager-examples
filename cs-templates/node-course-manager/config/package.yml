@@ -1,0 +1,19 @@
+build:
+  image: node:22-bookworm
+  command:
+    - "/bin/bash"
+    - "-c"
+    - "npm config set update-notifier false && npm install --no-fund && ls -l /build"
+  context:
+    - "package.json"
+  devArtifacts:
+    "package-lock.json": "/build/package-lock.json"
+  artifacts:
+    "package-lock.json": "/build/package-lock.json"
+    "node_modules": "/build/node_modules"
+  workDir: "/build"
+workDir: "/script"
+src:
+  - lib/**/*
+  - script.js
+  - package*.json
