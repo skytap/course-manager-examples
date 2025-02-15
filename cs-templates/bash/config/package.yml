@@ -1,0 +1,14 @@
+# build:
+  # image: debian:bookworm
+  # command:
+  #   - "/bin/bash"
+  #   - "-c"
+  #   - "echo"
+  # context: []
+  # devArtifacts: {}
+  # artifacts: {}
+  # workDir: "/build"
+workDir: "/script"
+src:
+  - lib/**/*
+  - script.sh

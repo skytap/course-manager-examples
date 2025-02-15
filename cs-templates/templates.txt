@@ -1,2 +1,7 @@
-empty
+bash
+node
+node-course-manager
+python
+python-course-manager
 ruby
+ruby-course-manager

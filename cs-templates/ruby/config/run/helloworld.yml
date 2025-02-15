@@ -1,8 +1,0 @@
-runtime: ruby:3.3-bullseye
-command:
-  - "/bin/bash"
-  - "-c"
-  - "echo $HELLOMSG from Cloud Scripts"
-env:
-  - "HELLOMSG=Hello World"
-egress: true

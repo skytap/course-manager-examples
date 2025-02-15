@@ -1,0 +1,6 @@
+image: debian:bookworm
+command:
+  - "/bin/bash"
+  - "./script.sh"
+env: []
+egress: true

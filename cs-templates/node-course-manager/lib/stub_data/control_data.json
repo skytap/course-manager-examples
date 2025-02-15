@@ -32,15 +32,20 @@
         "sensitive_metadata": {}
     },
     "user": {
-        "metadata": {},
+        "metadata": {
+            "foo": 123
+        },
         "sensitive_metadata": {}
     },
     "event": {
-        "metadata": {},
+        "metadata": {
+            "bar": 456
+        },
         "sensitive_metadata": {}
     },
     "remaining_runtime_in_seconds": 15383,
     "request_time": "2022-12-14T02:12:52Z",
+    "skytap_environment_id": 123456,
     "tags": [
         {
             "id": 4,
