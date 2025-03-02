@@ -12,7 +12,6 @@ build:
     "Gemfile.lock": "/build/Gemfile.lock"
     "bundle": "/build/bundle"
   workDir: "/build"
-workDir: "/script"
 src:
   - lib/**/*
   - script.rb

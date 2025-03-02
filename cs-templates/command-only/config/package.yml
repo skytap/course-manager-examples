@@ -1,3 +1,4 @@
+{}
 # build:
   # image: debian:bookworm
   # command:
@@ -13,6 +14,6 @@
   #    "package-lock.json": "/build/package-lock.json"
   #    "node_modules": "/build/node_modules"
   # workDir: "/build"
-src:
-  - lib/**/*
-  - script.sh
+# src:
+#   - lib/**/*
+#   - script.sh

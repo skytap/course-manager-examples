@@ -12,7 +12,6 @@ build:
     "package-lock.json": "/build/package-lock.json"
     "node_modules": "/build/node_modules"
   workDir: "/build"
-workDir: "/script"
 src:
   - lib/**/*
   - script.js

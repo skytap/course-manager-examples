@@ -1,7 +1,8 @@
 bash
+command-only
 node
-node-course-manager
 python
-python-course-manager
 ruby
+node-course-manager
+python-course-manager
 ruby-course-manager
