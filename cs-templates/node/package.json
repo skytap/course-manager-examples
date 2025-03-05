@@ -1,7 +1,7 @@
 {
   "name": "cm-node-script",
   "version": "0.1.0",
-  "description": "Course Manager Node Script",
+  "description": "Skytap Cloud Scripts Node.js Script",
   "main": "script.js",
   "directories": {
     "lib": "lib"

@@ -6,10 +6,10 @@ build:
     - "python -m pip install -r ./requirements.txt -t ./packages --upgrade --root-user-action=ignore --disable-pip-version-check"
   context:
     - "requirements.txt"
+  # devArtifacts: {}
   artifacts:
     "packages": "/build/packages"
-  workDir: "/build"
-workDir: "/script"
+  # workDir: "/build"
 src:
   - lib/**/*
   - script.py

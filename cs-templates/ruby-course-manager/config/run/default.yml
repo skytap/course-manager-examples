@@ -3,6 +3,7 @@ command:
   - "/bin/bash"
   - "-c"
   - "bundle config set path /script/bundle > /dev/null && bundle exec ruby script.rb"
+# egress: true
 env:
   - "RUBYLIB=./lib"
-egress: true
+# workDir: "/script"

@@ -1,7 +1,8 @@
 image: debian:bookworm
 command:
   - "/bin/bash"
-  - "./script.sh"
+  - "-c"
+  - "echo Hello World"
 # egress: true
 # env:
 #   - "var1=value1"

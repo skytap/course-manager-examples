@@ -1,4 +1,5 @@
 bash
+command-only
 node
 node-course-manager
 python

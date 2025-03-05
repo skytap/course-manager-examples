@@ -3,6 +3,7 @@ command:
   - "/bin/bash"
   - "-c"
   - "python3 ./script.py"
+# egress: true
 env:
   - "PYTHONPATH=./packages:./lib"
-egress: true
+# workDir: "/script"
