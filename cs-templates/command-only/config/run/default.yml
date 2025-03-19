@@ -4,6 +4,4 @@ command:
   - "-c"
   - "echo Hello World"
 # egress: true
-# env:
-#   - "var1=value1"
 # workDir: "/script"

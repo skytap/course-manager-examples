@@ -2,8 +2,6 @@ image: python:3.13-bookworm
 command:
   - "/bin/bash"
   - "-c"
-  - "python3 ./script.py"
+  - "export PYTHONPATH=./lib:./packages && python3 ./script.py"
 # egress: true
-env:
-  - "PYTHONPATH=./packages:./lib"
 # workDir: "/script"
