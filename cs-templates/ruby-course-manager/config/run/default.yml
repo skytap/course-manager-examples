@@ -2,8 +2,6 @@ image: ruby:3.3-bookworm
 command:
   - "/bin/bash"
   - "-c"
-  - "bundle config set path /script/bundle > /dev/null && bundle exec ruby script.rb"
+  - "export RUBYLIB=./lib && (bundle config set path /script/bundle > /dev/null) && bundle exec ruby script.rb"
 # egress: true
-env:
-  - "RUBYLIB=./lib"
 # workDir: "/script"

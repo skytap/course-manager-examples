@@ -3,6 +3,4 @@ command:
   - "/bin/bash"
   - "./script.sh"
 # egress: true
-# env:
-#   - "var1=value1"
 # workDir: "/script"
