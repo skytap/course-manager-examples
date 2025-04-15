@@ -1,6 +1,7 @@
 import json
 import os
 import requests
+from requests.auth import HTTPBasicAuth
 
 class LabControl:
     _instance = None
@@ -8,9 +9,9 @@ class LabControl:
     @classmethod
     def get(cls):
         if cls._instance is None:
-            control_url = os.getenv("LAB_CONTROL_PROXY_URL")
+            control_url = os.getenv("CONTROL_ENDPOINT_URL")
             if control_url:
-                cls._instance = LiveLabControl(control_url)
+                cls._instance = LiveLabControl(control_url, os.getenv("CREDENTIAL_USERNAME"), os.getenv("CREDENTIAL_TOKEN"))
             else:
                 cls._instance = StubbedLabControl()
         return cls._instance
@@ -50,13 +51,18 @@ class LabControl:
     def control_data_json(self):
         raise NotImplementedError
 
-
 class LiveLabControl(LabControl):
-    def __init__(self, control_url):
+    def __init__(self, control_url, username, token):
         self._control_url = control_url
+        self._username = username
+        self._token = token
 
     def update_control_data(self, data):
-        response = requests.put(self._control_url, json=data)
+        response = requests.put(
+            self._control_url,
+            json=data,
+            auth=HTTPBasicAuth(self._username, self._token)
+        )
         response.raise_for_status()
         self._control_data_json = response.text
 
@@ -68,16 +74,21 @@ class LiveLabControl(LabControl):
 
     def _lab_broadcast(self, type):
         broadcast_url = f"{self.control_data()['user_access_url']}/learning_console/broadcast"
-        response = requests.post(broadcast_url, json={"type": type})
+        response = requests.post(
+            broadcast_url,
+            json={"type": type}
+        )
         response.raise_for_status()
 
     def control_data_json(self):
         if not hasattr(self, '_control_data_json'):
-            response = requests.get(self._control_url)
+            response = requests.get(
+                self._control_url,
+                auth=HTTPBasicAuth(self._username, self._token)
+            )
             response.raise_for_status()
             self._control_data_json = response.text
         return self._control_data_json
-
 
 class StubbedLabControl(LabControl):
     METADATA_FIELDS = [
