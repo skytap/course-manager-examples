@@ -18,11 +18,11 @@ require_relative "api_helper"
 class LabControl
   def self.get
     @lab_control ||=
-      if control_url = ENV["LAB_CONTROL_PROXY_URL"]
-        LiveLabControl.new(control_url)
-    else
-      StubbedLabControl.new
-    end
+      if control_url = ENV["CONTROL_ENDPOINT_URL"]
+        LiveLabControl.new(control_url, ENV["CREDENTIAL_USERNAME"], ENV["CREDENTIAL_TOKEN"])
+      else
+        StubbedLabControl.new
+      end
   end
 
   def control_data
@@ -52,12 +52,14 @@ class LabControl
 end
 
 class LiveLabControl < LabControl
-  def initialize(control_url)
+  def initialize(control_url, username, token)
     @control_url = control_url
+    @username = username
+    @token = token
   end
 
   def update_control_data(data)
-    result_body = APIHelper.rest_call(@control_url, "put", data)
+    result_body = APIHelper.rest_call(@control_url, "put", data, @username, @token)
     @control_data_json = result_body
   end
 
@@ -73,7 +75,7 @@ class LiveLabControl < LabControl
   end
 
   def control_data_json
-    @control_data_json ||= APIHelper.rest_call(@control_url, "get")
+    @control_data_json ||= APIHelper.rest_call(@control_url, "get", nil, @username, @token)
   end
 end
 

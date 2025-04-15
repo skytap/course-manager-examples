@@ -18,7 +18,7 @@ require "net/http"
 class APIHelper
   class OperationFailedError < StandardError; end
 
-  def self.rest_call(url, verb, data=nil)
+  def self.rest_call(url, verb, data=nil, username=nil, password=nil)
     uri = URI(url)
     host, port, path = uri.host, uri.port, uri.path
     path = "/" if path == ""
@@ -30,6 +30,7 @@ class APIHelper
     req = Object.const_get("Net::HTTP::#{verb.capitalize}").new(path)
     req.body = data
     req["Content-Type"] = "application/json"
+    req.basic_auth(username, password) if username && password
     
     result = http.request(req)
     raise OperationFailedError, "#{result.code} #{result.message}" unless result.code == "200"
