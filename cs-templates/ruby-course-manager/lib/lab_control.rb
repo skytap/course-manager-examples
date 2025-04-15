@@ -1,11 +1,11 @@
 # Copyright 2025 Skytap Inc.
-
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,7 @@
 # limitations under the License.
 
 require "json"
-require_relative "api_helper"
+require "faraday"
 
 class LabControl
   def self.get
@@ -30,7 +30,9 @@ class LabControl
   end
 
   def update_control_data(data) = raise NotImplementedError
+
   def refresh_content_pane = raise NotImplementedError
+
   def refresh_lab = raise NotImplementedError
 
   def find_metadata_attr(key, within = nil)
@@ -52,15 +54,24 @@ class LabControl
 end
 
 class LiveLabControl < LabControl
+  attr_reader :control_url, :username, :token, :connection
+
   def initialize(control_url, username, token)
     @control_url = control_url
     @username = username
     @token = token
+
+    @connection = Faraday.new do |conn|
+      conn.request :json
+      conn.request :authorization, :basic, @username, @token if @username && @token
+      conn.response :raise_error
+      conn.adapter Faraday.default_adapter
+    end
   end
 
   def update_control_data(data)
-    result_body = APIHelper.rest_call(@control_url, "put", data, @username, @token)
-    @control_data_json = result_body
+    response = @connection.put(@control_url, data)
+    @control_data_json = response.body
   end
 
   def refresh_content_pane = lab_broadcast(:refresh_content_pane)
@@ -71,29 +82,29 @@ class LiveLabControl < LabControl
 
   def lab_broadcast(type)
     broadcast_url = "#{control_data['user_access_url']}/learning_console/broadcast"
-    APIHelper.rest_call(broadcast_url, "post", {type: type})
+    @connection.post(broadcast_url, { type: type })
   end
 
   def control_data_json
-    @control_data_json ||= APIHelper.rest_call(@control_url, "get", nil, @username, @token)
+    @control_data_json ||= @connection.get(@control_url).body
   end
 end
 
 class StubbedLabControl < LabControl
   def refresh_content_pane = nil
+
   def refresh_lab = nil
 
   def control_data_json
-    @control_data_json ||=
-      File.read(
-        File.join(File.dirname(__FILE__), "stub_data/control_data.json")
-      )
+    @control_data_json ||= File.read(
+      File.join(File.dirname(__FILE__), "stub_data/control_data.json")
+    )
   end
 
   def update_control_data(data)
     METADATA_FIELDS.each do |keys|
       incoming_metadata = data.dig(*keys)
-      update_metadata(keys, incoming_metadata) if incoming_metadata.is_a? Hash
+      update_metadata(keys, incoming_metadata) if incoming_metadata.is_a?(Hash)
     end
     control_data
   end
