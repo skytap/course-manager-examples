@@ -24,6 +24,4 @@ import LabControl from './lib/labControl.js';
 
   console.log(`Metadata updated to ${JSON.stringify((await labControl.controlData()).metadata)}`);
   console.log(`Sensitive metadata updated to ${JSON.stringify((await labControl.controlData()).sensitive_metadata)} (displayed for demo purposes only -- sensitive metadata is not normally intended for exposure to end users!)`);
-  console.log(await labControl.findMetadataAttr('AcmeDataProUsername'))
-  console.log(await labControl.findMetadataAttr('AcmeDataProPassword'))
 })();

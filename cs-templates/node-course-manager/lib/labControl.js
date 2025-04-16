@@ -1,3 +1,17 @@
+// Copyright 2025 Skytap Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
@@ -8,24 +22,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default class LabControl {
-  static _instance = null;
+  static #instance = null;
 
   static get() {
-    if (!LabControl._instance) {
-      const controlUrl = process.env.LAB_CONTROL_PROXY_URL;
+    if (!LabControl.#instance) {
+      const controlUrl = process.env.CONTROL_ENDPOINT_URL;
       if (controlUrl) {
-        LabControl._instance = new LiveLabControl(controlUrl);
+        LabControl.#instance = new LiveLabControl(controlUrl, process.env.CREDENTIAL_USERNAME, process.env.CREDENTIAL_TOKEN);
       } else {
-        LabControl._instance = new StubbedLabControl();
+        LabControl.#instance = new StubbedLabControl();
       }
     }
-    return LabControl._instance;
+    return LabControl.#instance;
   }
 
   async controlData() {
     if (!this._controlData) {
-      const controlDataJson = await this.controlDataJson();
-      this._controlData = JSON.parse(controlDataJson);
+      this._controlData = await this.loadControlData();
     }
     return this._controlData;
   }
@@ -47,8 +60,8 @@ export default class LabControl {
     const collections = within ? [within] : ['metadata', 'sensitive_metadata'];
     for (const collection of collections) {
       for (const obj of [null, 'event', 'course', 'user', 'feature']) {
-        const path = obj ? [obj, collection, key] : [collection, key];
-        const value = this._dig(controlData, ...path.filter(Boolean));
+        const pathArray = obj ? [obj, collection, key] : [collection, key];
+        const value = this._dig(controlData, ...pathArray.filter(Boolean));
         if (value !== undefined) {
           return value;
         }
@@ -68,55 +81,75 @@ export default class LabControl {
     return data;
   }
 
-  controlDataJson() {
+  async loadControlData() {
     throw new Error('NotImplementedError');
   }
 }
 
 class LiveLabControl extends LabControl {
-  constructor(controlUrl) {
+  #controlUrl;
+  #username;
+  #token;
+  #controlDataObject;
+
+  constructor(controlUrl, username, token) {
     super();
-    this._controlUrl = controlUrl;
+    this.#controlUrl = controlUrl;
+    this.#username = username;
+    this.#token = token;
   }
 
   async updateControlData(data) {
-    const response = await axios.put(this._controlUrl, data);
-    this._controlDataJson = response.data;
+    const response = await axios.put(this.#controlUrl, data, {
+      auth: {
+        username: this.#username,
+        password: this.#token
+      }
+    });
+    this.#controlDataObject = response.data;
   }
 
   async refreshContentPane() {
-    await this._labBroadcast('refresh_content_pane');
+    await this.#labBroadcast('refresh_content_pane');
   }
 
   async refreshLab() {
-    await this._labBroadcast('refresh_lab');
+    await this.#labBroadcast('refresh_lab');
   }
 
-  async _labBroadcast(type) {
-    const broadcastUrl = `${this.controlData().user_access_url}/learning_console/broadcast`;
+  async #labBroadcast(type) {
+    const controlData = await this.controlData();
+    const broadcastUrl = `${controlData.user_access_url}/learning_console/broadcast`;
     await axios.post(broadcastUrl, { type });
   }
 
-  async controlDataJson() {
-    if (!this._controlDataJson) {
-      const response = await axios.get(this._controlUrl);
-      this._controlDataJson = response.data;
+  async loadControlData() {
+    if (!this.#controlDataObject) {
+      const response = await axios.get(this.#controlUrl, {
+        auth: {
+          username: this.#username,
+          password: this.#token
+        }
+      });
+      this.#controlDataObject = response.data;
     }
-    return this._controlDataJson;
+    return this.#controlDataObject;
   }
 }
 
 class StubbedLabControl extends LabControl {
-  constructor() {
-    super();
-    this.METADATA_FIELDS = [
-      ['metadata'], ['sensitive_metadata'],
-      ['feature', 'metadata'], ['feature', 'sensitive_metadata'],
-      ['course', 'metadata'], ['course', 'sensitive_metadata'],
-      ['user', 'metadata'], ['user', 'sensitive_metadata'],
-      ['event', 'metadata'], ['event', 'sensitive_metadata'],
-    ];
-  }
+  #METADATA_FIELDS = [
+    ['metadata'],
+    ['sensitive_metadata'],
+    ['feature', 'metadata'],
+    ['feature', 'sensitive_metadata'],
+    ['course', 'metadata'],
+    ['course', 'sensitive_metadata'],
+    ['user', 'metadata'],
+    ['user', 'sensitive_metadata'],
+    ['event', 'metadata'],
+    ['event', 'sensitive_metadata']
+  ];
 
   async refreshContentPane() {
     // No operation, but async
@@ -126,17 +159,18 @@ class StubbedLabControl extends LabControl {
     // No operation, but async
   }
 
-  async controlDataJson() {
-    if (!this._controlDataJson) {
+  async loadControlData() {
+    if (!this._controlDataObject) {
       const filePath = path.join(__dirname, 'stub_data', 'control_data.json');
-      this._controlDataJson = await fs.promises.readFile(filePath, 'utf8');
+      const fileString = await fs.promises.readFile(filePath, 'utf8');
+      this._controlDataObject = JSON.parse(fileString);
     }
-    return this._controlDataJson;
+    return this._controlDataObject;
   }
 
   async updateControlData(data) {
     const controlData = await this.controlData();
-    for (const keys of this.METADATA_FIELDS) {
+    for (const keys of this.#METADATA_FIELDS) {
       const incomingMetadata = this._dig(data, ...keys);
       if (typeof incomingMetadata === 'object') {
         this._updateMetadata(controlData, keys, incomingMetadata);
