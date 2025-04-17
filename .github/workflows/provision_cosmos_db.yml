@@ -35,7 +35,7 @@ jobs:
           rm -f ../provision_cosmos_db.zip
           zip -r ../provision_cosmos_db.zip *
       - name: Push new zip file to repo
-        uses: EndBug/add-and-commit@d4d066316a2a85974a05efb42be78f897793c6d9
+        uses: ./.github/actions/add-and-commit
         with:
           fetch: true
           default_author: github_actions
