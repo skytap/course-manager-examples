@@ -4,7 +4,7 @@ command:
   - "-c"
   - "python3 ./script.py"
 env:
-  PYTHONPATH: "./lib:./packages"
+  PYTHONPATH: "./packages"
 # egress: true
 # workDir: "/script"
 # scriptDir: "/script"
