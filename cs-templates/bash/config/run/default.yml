@@ -4,3 +4,6 @@ command:
   - "./script.sh"
 # egress: true
 # workDir: "/script"
+# scriptDir: "/script"
+# env:
+#   foo: "bar"

@@ -5,3 +5,6 @@ command:
   - "echo Hello World"
 # egress: true
 # workDir: "/script"
+# scriptDir: "/script"
+# env:
+#   foo: "bar"
