@@ -13,6 +13,5 @@ build:
     "bundle": "/build/bundle"
   workDir: "/build"
 src:
-  - lib/**/*
   - script.rb
   - Gemfile*

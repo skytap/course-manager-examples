@@ -11,6 +11,5 @@ build:
     "packages": "/build/packages"
   # workDir: "/build"
 src:
-  - lib/**/*
   - script.py
   - requirements.txt
