@@ -61,7 +61,7 @@ This script uses the Azure CLI to provision a database in Azure CosmosDB and the
 
 ## License 
 
-Copyright 2022 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

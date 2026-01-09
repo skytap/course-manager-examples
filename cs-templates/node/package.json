@@ -1,7 +1,7 @@
 {
   "name": "cm-node-script",
   "version": "0.1.0",
-  "description": "Skytap Cloud Scripts Node.js Script",
+  "description": "Cloud Scripts Node.js Script",
   "main": "script.js",
   "directories": {
     "lib": "lib"

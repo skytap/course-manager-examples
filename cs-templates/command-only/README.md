@@ -1,6 +1,6 @@
-# Skytap Cloud Scripts - Command Only Template
+# Cloud Scripts - Command Only Template
 
-This is a code template that can be used as a starting point for developing a "command only" Skytap Cloud Scripts script. It is intended to simply execute a command on an image, with no customer-provided code files.
+This is a code template that can be used as a starting point for developing a "command only" Cloud Scripts script. It is intended to simply execute a command on an image, with no customer-provided code files.
 
 ## Using This Template
 
@@ -8,7 +8,7 @@ Simply update the run spec definition (e.g. config/run/default.yml) with your de
 
 ## License
 
-Copyright 2025 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

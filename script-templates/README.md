@@ -52,7 +52,7 @@ If a script needs "scratch space," scripts can write files to the `/script_data`
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
-The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
+The Kyndryl Cloud Uplift Metadata Service provides read-only metadata about the Kyndryl Cloud Uplift environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
 
 The Metadata Service and Control Endpoint can be accessed from within your scripts via HTTP API calls using `curl` within the Bash script template or language-specific libraries within the Ruby, Node and Python script templates. Please consult the README file for the respective template for details.
 
@@ -70,7 +70,7 @@ Whenever a script is invoked within a lab, the latest version is used. This allo
 
 ## License
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

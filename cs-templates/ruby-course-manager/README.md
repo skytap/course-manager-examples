@@ -1,13 +1,13 @@
-# Skytap Cloud Scripts - Ruby Script Template for Course Manager
+# Cloud Scripts - Ruby Script Template for Course Manager
 
-This is a code template that can be used as a starting point for developing a Skytap Cloud Scripts script for Course Manager in Ruby.
+This is a code template that can be used as a starting point for developing a Cloud Scripts script for Course Manager in Ruby.
 
 ## Using This Template
 
 * `script.rb` is the entry point of your script -- replace the sample code it contains with your own. You're welcome to add other files and directories under lib/ for use in the script.
 * Add any gems required by your script to `Gemfile`.
-* Refer to the Skytap Cloud Scripts documentation for information about:
-  * Building, running, and pushing scripts built with this template using the skytapcs command-line tool
+* Refer to the Cloud Scripts documentation for information about:
+  * Building, running, and pushing scripts built with this template using the cloudscripts command-line tool
   * Options to further customize of the runtime environment
 
 ## Interacting with Course Manager From Your Script
@@ -33,7 +33,7 @@ Then, you can call methods as follows:
 control.control_data                                               # => returns control metadata as a hash
 control.update_control_data(data)                                  # => updates control data (see below)
 control.refresh_content_pane                                       # => requests any open content panes for the lab to refresh
-control.refresh_lab                                                # => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.refresh_lab                                                # => requests any open learning consoles for the lab to refresh their Kyndryl Cloud Uplift environment view
 control.find_metadata_attr('myMetadataKey')                        # => finds and returns a standard or sensitive metadata attribute with the specified name on the lab / event participant, event, course, user, or feature, in that order
 control.find_metadata_attr('myMetadataKey', 'metadata')            # => same as above but limited to standard metadata
 control.find_metadata_attr('myMetadataKey', 'sensitive_metadata')  # => same as above but limited to sensitive metadata   
@@ -61,11 +61,11 @@ control.update_control_data({ course: { metadata: { course_last_provisioned: '07
 
 ### Control Data Stubbing for Local Development
 
-A challenge in developing scripts that interact with the Control Endpoint is that it is only available from within a Skytap environment. To help with this, LabControl supports the use of "stub" data for local development. If you would like to modify the stubbed data returned when running your script locally, simply modify the file in `lib/script_support/stub_data/lab_control/control_data.json`.
+A challenge in developing scripts that interact with the Control Endpoint is that it is only available from within a Kyndryl Cloud Uplift environment. To help with this, LabControl supports the use of "stub" data for local development. If you would like to modify the stubbed data returned when running your script locally, simply modify the file in `lib/script_support/stub_data/lab_control/control_data.json`.
 
 ## License
 
-Copyright 2025 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

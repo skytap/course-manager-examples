@@ -8,7 +8,7 @@ This template and the supporting scripts should work on Linux and macOS.
 
 In addition, building a script from this template requires Docker to run containers. The `docker` utility should be on your system path.
 
-Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Skytap Support to have API access enabled for your account.
+Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Kyndryl Cloud Uplift Support to have API access enabled for your account.
 
 Scripts developed from this template require **Course Manager Script Host v10 or higher** for full compatibility.
 
@@ -25,7 +25,7 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
-The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab. This template provides `SkytapMetadata` and `LabControl` classes, which provide lightweight interfaces to these two service endpoints that can be used from your script code. These classes make it easier to consume the Metadata and Control Endpoint services. In addition, they make it easier to develop your scripts locally.
+The Kyndryl Cloud Uplift Metadata Service provides read-only metadata about the Kyndryl Cloud Uplift environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab. This template provides `SkytapMetadata` and `LabControl` classes, which provide lightweight interfaces to these two service endpoints that can be used from your script code. These classes make it easier to consume the Metadata and Control Endpoint services. In addition, they make it easier to develop your scripts locally.
 
 ### SkytapMetadata Interface
 
@@ -45,9 +45,9 @@ const metadata = SkytapMetadata.get();
 Then, you can call methods as follows:
 
 ```
-metadata.metadata()                            // => returns Skytap metadata as a hash
-metadata.userData                              // => parses the Skytap metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
-metadata.configurationUserData()               // => parses the Skytap metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
+metadata.metadata()                            // => returns Kyndryl Cloud Uplift metadata as a hash
+metadata.userData                              // => parses the Kyndryl Cloud Uplift metadata's "user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and then returns it
+metadata.configurationUserData()               // => parses the Kyndryl Cloud Uplift metadata's "configuration_user_data" attribute, which is typically JSON for Course Manager-provisioned labs, as a hash and returns it
 metadata.controlURL()                          // => returns the control endpoint URL
 ```
 
@@ -70,7 +70,7 @@ Then, you can call methods as follows:
 control.controlData()                                            // => returns control metadata as a hash
 control.updateControlData(data)                                  // => updates control data (see below)
 control.refreshContentPane()                                     // => requests any open content panes for the lab to refresh
-control.refreshLab()                                             // => requests any open learning consoles for the lab to refresh their Skytap environment view
+control.refreshLab()                                             // => requests any open learning consoles for the lab to refresh their Kyndryl Cloud Uplift environment view
 control.findMetadataAttr('myMetadataKey')                        // => finds and returns a standard or sensitive metadata attribute with the specified name on the lab / event participant, event, course, user, or feature, in that order
 control.findMetadataAttr('myMetadataKey', 'metadata')            // => same as above but limited to standard metadata
 control.findMetadataAttr('myMetadataKey', 'sensitive_metadata')  // => same as above but limited to sensitive metadata
@@ -98,11 +98,11 @@ control.updateControlData({ 'course': { 'metadata': { 'course_last_provisioned':
 
 ### Metadata Stub Service
 
-A challenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, simply modify the files in `lib/script_support/stub_data`.
+A challenge in developing scripts that interact with lab metadata is that it is only available from within a Kyndryl Cloud Uplift environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, simply modify the files in `lib/script_support/stub_data`.
 
 ## License
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

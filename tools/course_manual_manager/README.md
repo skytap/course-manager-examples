@@ -1,8 +1,8 @@
-# Skytap Course Manager - Course Manual Manager
+# Course Manager - Course Manual Manager
 
 ## Introduction
 
-Skytap Course Manager allows you to create rich lab experiences for your end users through the use of the [Course Manuals](https://help.skytap.com/course-manager-use-manual-in-learning-console.html) feature. Manuals can be edited directly in the embedded [Manual editor](https://help.skytap.com/course-manager-edit-manual.html) within Course Manager. However, many customers prefer to develop and maintain instructional content using an external documentation management tool, and/or to store these resources in a source code management platform like GitHub. 
+Course Manager allows you to create rich lab experiences for your end users through the use of the [Course Manuals](https://help.skytap.com/course-manager-use-manual-in-learning-console.html) feature. Manuals can be edited directly in the embedded [Manual editor](https://help.skytap.com/course-manager-edit-manual.html) within Course Manager. However, many customers prefer to develop and maintain instructional content using an external documentation management tool, and/or to store these resources in a source code management platform like GitHub. 
 
 By using this tool, you can upload, publish or delete a HTML-based course manual directly to a Course Manager course. Embedded images and attachments linked from the content can automatically be uploaded and linked to the content. The tool can be run manually or automatically, and can even form part of a continuous delivery pipeline for your course documentation if desired.
 
@@ -64,7 +64,7 @@ To enable verbose logging, set the environment variable VERBOSE to any value.
 
 ## License
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
