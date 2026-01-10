@@ -21,6 +21,9 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: repo-commit-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -49,6 +52,7 @@ jobs:
         uses: ./.github/actions/add-and-commit
         with:
           fetch: true
+          pull: '--rebase --autostash'
           default_author: github_actions
           add: scripts/${{ inputs.script_name }}.zip
           message: Updating zip file
