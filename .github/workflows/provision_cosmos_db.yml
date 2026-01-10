@@ -24,8 +24,8 @@ on:
       - "scripts/provision_cosmos_db/**"
 
 concurrency:
-  group: repo-commit-${{ github.ref }}
-  cancel-in-progress: false
+  group: provision-cosmos-db-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:

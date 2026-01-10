@@ -24,8 +24,8 @@ on:
       - "cs-templates/**"
 
 concurrency:
-  group: repo-commit-${{ github.ref }}
-  cancel-in-progress: false
+  group: package-cs-templates-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:

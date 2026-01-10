@@ -24,8 +24,8 @@ on:
       - "script-templates/**"
 
 concurrency:
-  group: repo-commit-${{ github.ref }}
-  cancel-in-progress: false
+  group: zip-script-templates-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:

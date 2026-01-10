@@ -22,8 +22,8 @@ on:
         type: string
 
 concurrency:
-  group: repo-commit-${{ github.ref }}
-  cancel-in-progress: false
+  group: build-node-script-${{ github.ref }}-${{ inputs.script_name }}
+  cancel-in-progress: true
 
 jobs:
   build:
