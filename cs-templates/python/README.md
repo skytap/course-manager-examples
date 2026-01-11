@@ -1,18 +1,18 @@
-# Skytap Cloud Scripts - Python Script Template
+# Cloud Scripts - Python Script Template
 
-This is a code template that can be used as a starting point for developing a Skytap Cloud Scripts script in Python.
+This is a code template that can be used as a starting point for developing a Cloud Scripts script in Python.
 
 ## Using This Template
 
 * `script.py` is the entry point of your script -- replace the sample code it contains with your own. You're welcome to add other files and directories under lib/ for use in the script.
 * Add any pip packages required by your script to `requirements.txt`.
-* Refer to the Skytap Cloud Scripts documentation for information about:
-  * Building, running, and pushing scripts built with this template using the skytapcs command-line tool
+* Refer to the Cloud Scripts documentation for information about:
+  * Building, running, and pushing scripts built with this template using the cloudscripts command-line tool
   * Options to further customize of the runtime environment
 
 ## License
 
-Copyright 2025 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

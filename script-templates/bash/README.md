@@ -8,7 +8,7 @@ This template and the supporting scripts should work on Linux and macOS.
 
 In addition, building a script from this template requires Docker to run containers. The `docker` utility should be on your system path.
 
-Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Skytap Support to have API access enabled for your account.
+Access to the Course Manager API is required to build and publish packages to Course Manager. Before getting started, login as an administrator to Course Manager, access Admin menu > API keys, and create a new API key/secret pair to use. If you do not see this menu option, please contact Kyndryl Cloud Uplift Support to have API access enabled for your account.
 
 Scripts developed from this template require **Course Manager Script Host v10 or higher** for full compatibility.
 
@@ -24,11 +24,11 @@ Scripts developed from this template require **Course Manager Script Host v10 or
 
 ## Accessing Metadata & Control Endpoint From Your Script
 
-The Skytap Metadata Service provides read-only metadata about the Skytap environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
+The Kyndryl Cloud Uplift Metadata Service provides read-only metadata about the Kyndryl Cloud Uplift environment hosting an end user's lab. The Course Manager Control Endpoint provides metadata oriented around the end user lab itself, and it also allows limited modifications of the metadata and state of the lab.
 
 The Metadata Service and Control Endpoint can be accessed from within your scripts using HTTP API calls. The examples below use the `curl` utility.
 
-### Skytap Metadata Service
+### Kyndryl Cloud Uplift Metadata Service
 
 Access the Metadata Service using the URL `http://skytap-metadata/skytap` from your script. For example:
 
@@ -38,7 +38,7 @@ curl -s http://skytap-metadata/skytap # => { "id":"11111111", "name":"Windows Se
 
 ### Lab Control Endpoint
 
-The URL for the Lab Control Endpoint must be retrieved from the Skytap Metadata Service. For example:
+The URL for the Lab Control Endpoint must be retrieved from the Kyndryl Cloud Uplift Metadata Service. For example:
 
 ```
 CONTROL_URL=$(curl -s http://skytap-metadata/skytap|jq -r ".user_data | fromjson | .control_url")
@@ -87,7 +87,7 @@ curl -s -X POST $BROADCAST_URL -d '{"type":"refresh_lab"}'
 
 ### Metadata Stub Service
 
-A challenge in developing scripts that interact with lab metadata is that it is only available from within a Skytap environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, simply modify the files in `lib/script_support/stub_data`.
+A challenge in developing scripts that interact with lab metadata is that it is only available from within a Kyndryl Cloud Uplift environment. To help with this, the `bin/run` script runs a "metadata stub" service, simulating the behavior of the Metadata Service and Control Endpoint locally and returning stubbed data. If you would like to modify the stubbed data returned when running your script locally, simply modify the files in `lib/script_support/stub_data`.
 
 **Important**: To ensure that your scripts can be run both locally and in your Course Manager labs, please take note of the following:
 
@@ -96,7 +96,7 @@ A challenge in developing scripts that interact with lab metadata is that it is 
 
 ## License
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,6 +1,6 @@
 # Course Manager code examples
 
-This repository contains example code examples for use with Course Manager by Skytap. If you are not already a Skytap customer and would like to learn more about our product, you can [find more information here](https://www.skytap.com/skytap-virtual-it-labs/)
+This repository contains example code examples for use with Course Manager. If you are not already a Kyndryl Cloud Uplift customer and would like to learn more about our product, you can [find more information here](https://www.kyndryl.com/us/en/services/cloud-uplift/virtual-labs).
 
 ## Contents
 
@@ -11,7 +11,7 @@ This repository contains example code examples for use with Course Manager by Sk
 
 ## License
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

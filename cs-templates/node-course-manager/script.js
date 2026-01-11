@@ -1,4 +1,4 @@
-// Copyright 2025 Skytap Inc.
+// Copyright 2026 Kyndryl Inc.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import LabControl from './lib/labControl.js';
   const labControl = LabControl.get();
 
   console.log(`Welcome to ${(await labControl.controlData()).title}!`);
-  console.log(`This Skytap environment ID is ${(await labControl.controlData()).skytap_environment_id}`)
+  console.log(`This Kyndryl Cloud Uplift environment ID is ${(await labControl.controlData()).skytap_environment_id}`)
 
   await labControl.updateControlData({ 'metadata': { 'AcmeDataProUsername': 'user_assigned_from_script' }, 'sensitive_metadata': { 'AcmeDataProPassword': 'password_assigned_from_script' } });
 

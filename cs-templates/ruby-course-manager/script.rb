@@ -1,4 +1,4 @@
-# Copyright 2025 Skytap Inc.
+# Copyright 2026 Kyndryl Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ $stderr.sync = true
 lab_control = LabControl.get
 
 puts "Welcome to #{lab_control.control_data['title']}!"
-puts "This Skytap environment ID is #{lab_control.control_data['skytap_environment_id']}"
+puts "This Kyndryl Cloud Uplift environment ID is #{lab_control.control_data['skytap_environment_id']}"
 
 lab_control.update_control_data({ "metadata" => { "AcmeDataProUsername" => "user_assigned_from_script" }, "sensitive_metadata" => { "AcmeDataProPassword" => "password_assigned_from_script" } })
 

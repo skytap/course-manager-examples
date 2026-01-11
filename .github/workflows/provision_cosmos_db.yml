@@ -23,6 +23,10 @@ on:
     paths:
       - "scripts/provision_cosmos_db/**"
 
+concurrency:
+  group: provision-cosmos-db-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,6 +42,7 @@ jobs:
         uses: ./.github/actions/add-and-commit
         with:
           fetch: true
+          pull: '--rebase --autostash'
           default_author: github_actions
           add: scripts/provision_cosmos_db.zip
           message: Updating zip file

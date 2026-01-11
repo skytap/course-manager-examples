@@ -21,6 +21,9 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: build-node-script-${{ github.ref }}-${{ inputs.script_name }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -48,6 +51,7 @@ jobs:
         uses: ./.github/actions/add-and-commit
         with:
           fetch: true
+          pull: '--rebase --autostash'
           default_author: github_actions
           add: scripts/${{ inputs.script_name }}.zip
           message: Updating zip file

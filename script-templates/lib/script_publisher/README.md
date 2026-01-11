@@ -2,7 +2,7 @@
 
 ## How this script works
 
-This script uses the Skytap Course Manager API to upload a manual and its attachments.
+This script uses the Course Manager API to upload a manual and its attachments.
 
 To authenticate to Course Manager, the script needs an API key and secret generated in Course Manager.
 
@@ -13,7 +13,7 @@ To authenticate to Course Manager, the script needs an API key and secret genera
 
 ## License
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

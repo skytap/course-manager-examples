@@ -2,9 +2,9 @@
 
 ## How this script works
 
-This script uses the Skytap API to create a network tunnel between the Course Manager lab environment and a shared environment in the same region.
+This script uses the Kyndryl Cloud Uplift API to create a network tunnel between the Course Manager lab environment and a shared environment in the same region.
 
-To authenticate to Skytap, the script uses credentials stored in the script host [VM metadata](https://help.skytap.com/accessing-vm-metadata-service-from-within-a-vm.html#EditingVMuserdata)
+To authenticate to Kyndryl Cloud Uplift, the script uses credentials stored in the script host [VM metadata](https://help.skytap.com/accessing-vm-metadata-service-from-within-a-vm.html#EditingVMuserdata)
 
 To identify the target environment, the script uses a [tag set on the source template](https://help.skytap.com/adding-tags-to-templates.html#adding-and-removing-tags-for-templates).
 
@@ -12,9 +12,9 @@ To identify the target environment, the script uses a [tag set on the source tem
 
 ### Create the service user
 
-  - Log into Skytap as an admin user
-  - Create a new Skytap user with user type 'restricted'
-  - Create a Skytap project for your shared environments
+  - Log into Kyndryl Cloud Uplift as an admin user
+  - Create a new Kyndryl Cloud Uplift user with user type 'restricted'
+  - Create a Kyndryl Cloud Uplift project for your shared environments
   - Add the new service account to the shared environment project with role 'editor'
   - Add the new service account to the project containing your Course Manager lab environments (usually called 'Course Manager Resources') with role 'editor'
   - Log in as the new user and create an API token. Note the username and token for use later
@@ -28,7 +28,7 @@ To identify the target environment, the script uses a [tag set on the source tem
 
 ### Prepare the lab templates
 
-  - Import the shared Script Host v9 template to your account. If you do not yet have access to this template, ask your Skytap relationship manager for help.
+  - Import the shared Script Host v9 template to your account. If you do not yet have access to this template, ask your Kyndryl Cloud Uplift relationship manager for help.
   - Create a new environment from this template
   - Add the following to the script host VM metadata [(instructions here)](https://help.skytap.com/accessing-vm-metadata-service-from-within-a-vm.html#EditingVMuserdata)
     ```
@@ -71,7 +71,7 @@ To identify the target environment, the script uses a [tag set on the source tem
 
 ## License 
 
-Copyright 2022 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

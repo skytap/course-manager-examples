@@ -1,12 +1,12 @@
 # Course Manager Lab Concept: Mastodon
 
-This directory contains the Course Manual, Scripts and utilities used to create the [Intro to Mastodon](manual/mastodon_manual.html) concept training lab on Course Manager by Skytap. Used together, they build an integrated hybrid cloud lab environment in Skytap using services from Microsoft Azure, Amazon Web Servies and Twilio Sendgrid. The lab uses synthetic data to train the user on an ephemeral instance of Mastodon. 
+This directory contains the Course Manual, Scripts and utilities used to create the [Intro to Mastodon](manual/mastodon_manual.html) concept training lab on Course Manager. Used together, they build an integrated hybrid cloud lab environment in Kyndryl Cloud Uplift using services from Microsoft Azure, Amazon Web Servies and Twilio Sendgrid. The lab uses synthetic data to train the user on an ephemeral instance of Mastodon. 
 
-If you are not a Skytap customer and would like to learn more, please [contact us and request a demo](https://www.skytap.com/contact-us/).
+If you are not a Kyndryl Cloud Uplift customer and would like to learn more, please [contact us and request a demo](https://www.kyndryl.com/us/en/services/cloud-uplift/contact-us).
 
 ## Dependencies
 
-- Skytap templates for the Mastodon server and clients
+- Kyndryl Cloud Uplift templates for the Mastodon server and clients
 - Microsoft Azure subscription and service principal
 - Microsoft Azure storage account (for Terraform state)
 - Microsoft Azure Translation API account (for translation bot exercise and associated Scripts)
@@ -21,12 +21,12 @@ The [Course Manual](manual/mastodon_manual.html) can be published using the [Cou
 
 All Scripts use the [Course Manager Script template for ruby](https://github.com/skytap/course-manager-examples/tree/master/script-templates/ruby). This is one of [several templates](../../script-templates/) that providing a starting point for developing Scripts.
 
-These Scripts provide an example for Skytap customers to build their own courses or titles. They should not be used as an example for managing Mastodon.
+These Scripts provide an example for Kyndryl Cloud Uplift customers to build their own courses or titles. They should not be used as an example for managing Mastodon.
 
 The scripts include:
-- [provision](scripts/provision_and_teardown/provision/script/script.rb) - generates random IDs for use by the lab, provisions the [shared course infrastructure with Terraform](scripts/provision_and_teardown/provision/terraform/course/) if not provisioned already, provisions the [lab infrastructure with Terraform](scripts/provision_and_teardown/shared/terraform/lab/), customizes the Skytap environment used by the lab
+- [provision](scripts/provision_and_teardown/provision/script/script.rb) - generates random IDs for use by the lab, provisions the [shared course infrastructure with Terraform](scripts/provision_and_teardown/provision/terraform/course/) if not provisioned already, provisions the [lab infrastructure with Terraform](scripts/provision_and_teardown/shared/terraform/lab/), customizes the Kyndryl Cloud Uplift environment used by the lab
 - [teardown](scripts/provision_and_teardown/teardown/script/script.rb) - grades the user's lab, sends a grade report by email, reports grade to the LTI service that launched the lab (if relevant), destroys lab infrastructure with Terraform
-- [provision_mac](scripts/provision_mac/script/script.rb) - provisions the Mac host in Aamzon Web Services
+- [provision_mac](scripts/provision_mac/script/script.rb) - provisions the Mac host in Amazon Web Services
 - [server_init](scripts/server_init/script/script.rb) - configures and deploys Mastodon to the Mastodon server VM
 - [setup_exam](scripts/setup_exam/script/script.rb) - prepares the lab for the exam portion of the training
 - [setup_translator](scripts/setup_translator/script/script.rb) - creates a token for the Azure translation API and the Mastodon user used for the translation portion of the course
@@ -44,7 +44,7 @@ Some scripts post example user content to Mastodon. This content was retrieved f
 
 ## Metadata Requirements
 
-The Scripts in this course require the following Metadata and Sensitive Metadata attributes to be created in Course Manager, associated with the lab, event, user, course or feature. The Scripts also create several Metadata attributes for the lab that are referenced in the Course Manager
+The Scripts in this course require the following Metadata and Sensitive Metadata attributes to be created in Course Manager, associated with the lab, event, user, course or feature. The Scripts also create several Metadata attributes for the lab that are referenced in the Course Manager Manual.
 
 ### Metadata
 
@@ -89,7 +89,7 @@ The Scripts in this course require the following Metadata and Sensitive Metadata
 
 ## License 
 
-Copyright 2023 Skytap Inc.
+Copyright 2026 Kyndryl Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

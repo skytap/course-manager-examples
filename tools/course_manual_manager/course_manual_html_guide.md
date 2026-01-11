@@ -165,7 +165,7 @@ To insert a command shortcut:
 - **data-description** - The text that will be displayed as a tooltip when the mouse is hovered over the shortcut.
 
 #### Optional Attributes
-- **data-target** - The name or partial name of the target VM as assigned in Skytap. If blank, the command may run on any available VM.
+- **data-target** - The name or partial name of the target VM as assigned in Kyndryl Cloud Uplift. If blank, the command may run on any available VM.
 - **data-blocking** - Indicates whether navigation beyond the current Manual page should be affected by the status of this command shortcut. The valid options are:
   - (blank) - Never block navigation.
   - `invoke` - Block Manual navigation until the command shortcut has been executed.
@@ -207,7 +207,7 @@ Browser shortcuts are a special type of command shortcut. Most of the same optio
 - **data-command** - Must be set to `launch [identifier] "[application] [destination]"`.
   - **identifier** - An identifier for the browser shortcut. It does not need to be unique within the Manual. If the lab end user has already clicked a browser shortcut or lab action with the same identifier, they will be returned to the existing browser instance rather than a new one being opened.
   - **application** - The method used to connect to the destination. The valid options are are `browser`, `sshterm`, and `vnc`.
-  - **destination** - The destination of the browser shortcut. The destination can refer to an external resource or one residing within the user's Skytap lab.
+  - **destination** - The destination of the browser shortcut. The destination can refer to an external resource or one residing within the user's Kyndryl Cloud Uplift lab.
 
 ### Questions
 
