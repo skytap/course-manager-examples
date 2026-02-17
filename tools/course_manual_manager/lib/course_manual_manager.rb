@@ -30,7 +30,7 @@ class CourseManualManager
   class UnexpectedStateError < StandardError; end
 
   POLL_SLEEP_SECS = 5
-  MAX_POLLS = 20
+  MAX_POLLS = (ENV['MAX_POLLS'] || 20).to_i
 
   attr_reader :course_id, :html_file, :app_hostname, :api_key, :api_secret, :base_dir,
               :deleting, :uploading, :publishing,
@@ -215,7 +215,7 @@ class CourseManualManager
 
     desired_states_str = desired_states.map(&:humanize).map(&:downcase).join(' or ')
 
-    MAX_POLLS.times do
+    MAX_POLLS.times do |i|
       current_state = request.try(:[], 'state') ||
                         raise(UnexpectedStateError, "No state found")
 
@@ -227,7 +227,7 @@ class CourseManualManager
       elsif failure_states.include?(current_state)
         raise UnexpectedStateError, "Failure: unexpectedly #{current_state_str}"
       else
-        puts "Currently #{current_state_str}, waiting until #{desired_states_str}"
+        puts "Currently #{current_state_str}, waiting until #{desired_states_str} (#{i + 1}/#{MAX_POLLS})"
         sleep POLL_SLEEP_SECS
       end
     end

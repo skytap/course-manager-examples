@@ -15,6 +15,19 @@ CONFIG_OPTIONS = {
 }.freeze
 
 def prompt_for(prompt)
+  unless $stdin.tty?
+    abort <<~ERROR
+      Error: Interactive input required but not available.
+
+      This script needs to prompt for configuration values, but it's not running in an interactive terminal.
+
+      Solutions:
+      1. Run with interactive flags: docker run -it cmmtest1
+      2. Create a .publish.yml config file with required settings
+      3. Mount an existing config: docker run -v "$(pwd)/.publish.yml:/script/.publish.yml" cmmtest1
+    ERROR
+  end
+
   Readline.readline("#{prompt}: ").tap do |val|
     val.rstrip!
     abort("#{prompt} not specified") if val.empty?

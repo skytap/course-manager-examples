@@ -1,8 +1,35 @@
 #!/bin/bash
 
-if [ "$1" == "" ]; then
+REPO=skytapcmscripttools.azurecr.io/course_manual_manager
+
+LOAD_OR_PUSH=$1
+
+if  [ "$LOAD_OR_PUSH" != "load" ] && [ "$LOAD_OR_PUSH" != "push" ]; then
+  echo "Invalid operation: $LOAD_OR_PUSH. Must be load or push."
+  exit 1
+fi
+
+VERSION=$2
+
+if [ "$VERSION" == "" ]; then
   echo "Must specify version number"
   exit 1
 fi
 
-docker build . -t skytapcmscripttools.azurecr.io/course_manual_manager:latest -t skytapcmscripttools.azurecr.io/course_manual_manager:$1
+if which colima > /dev/null; then
+  COLIMA_STATUS=$(colima status 2>&1)
+  if echo "$COLIMA_STATUS" | grep -q "colima is running" && echo "$COLIMA_STATUS" | grep -q "Virtualization.Framework"; then
+    echo "Colima already running with virtualization enabled, skipping restart..."
+  else
+    colima stop
+    colima start --arch aarch64 --vm-type vz --cpu 4 --memory 8
+  fi
+fi
+docker run --privileged --rm tonistiigi/binfmt --install all
+(docker buildx ls 2>&1 | grep colima-builder) || (docker buildx create --use --name colima-builder)
+
+if [ "$LOAD_OR_PUSH" == "load" ]; then
+  docker buildx build --load -t $REPO:latest -t $REPO:$VERSION .
+else
+  docker buildx build --push --platform linux/amd64,linux/arm64 -t $REPO:latest -t $REPO:$VERSION .
+fi
