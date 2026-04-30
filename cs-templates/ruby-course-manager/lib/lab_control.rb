@@ -72,6 +72,7 @@ class LiveLabControl < LabControl
   def update_control_data(data)
     response = @connection.put(@control_url, data)
     @control_data_json = response.body
+    @control_data = nil
   end
 
   def refresh_content_pane = lab_broadcast(:refresh_content_pane)

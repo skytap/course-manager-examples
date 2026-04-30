@@ -79,6 +79,8 @@ class LiveLabControl(LabControl):
         )
         response.raise_for_status()
         self._control_data_json = response.text
+        if hasattr(self, '_control_data'):
+            del self._control_data
 
     def refresh_content_pane(self):
         self._lab_broadcast('refresh_content_pane')
