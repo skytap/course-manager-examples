@@ -107,6 +107,7 @@ class LiveLabControl extends LabControl {
       }
     });
     this.#controlDataObject = response.data;
+    this._controlData = null;
   }
 
   async refreshContentPane() {
